@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<xpd>
+    <description>Modbus TCP Component</description>
+    <location>git@github.com:xcore/sc_modbus_tcp.git</location>
+    <name>sc_modbus_tcp</name>
+    <maintainer>Vinith Mundhra</maintainer>
+    <xpd_version>1.0</xpd_version>
+</xpd>
