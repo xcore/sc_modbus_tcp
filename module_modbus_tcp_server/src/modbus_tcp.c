@@ -26,8 +26,9 @@ modifications to the code are still covered by the copyright notice above.
 /*------------------------------------------------------------------------------
 Include files
 ------------------------------------------------------------------------------*/
+#include "system.h"
 #include "modbus_tcp.h"
-#include "xmodbus_transaction.h"
+//#include "xmodbus_transaction.h"
 
 /*------------------------------------------------------------------------------
 Extern Variables
@@ -49,62 +50,29 @@ Global Variables
 Static Variables
 ------------------------------------------------------------------------------*/
 static uint16_t transid;
+static uint8_t  adu[SIZE_MODBUS_ADU];
 
 /*------------------------------------------------------------------------------
 Prototypes
 ------------------------------------------------------------------------------*/
-static void mbtcp_init();
-
+void mbtcp_init();
 static uint16_t mbtcp_get_transid();
-
 static void mbtcp_receive_adu(chanend c_xtcp,
                               xtcp_connection_t *conn,
                               chanend c_user);
-
-static uint8_t mbtcp_parse_adu(s_modbus_tcp_adu_t *adu);
-
-static uint8_t mb_check_mbap(s_modbus_tcp_adu_t *mbap);
-
+static uint8_t mbtcp_parse_adu();
+static uint8_t mb_check_mbap();
 static uint8_t mb_check_illegal_function(uint8_t function_code);
-
 static uint8_t mb_check_illegal_data_address_and_value(uint16_t address,
-                                                        uint16_t size);
-
+                                                       uint16_t size);
 static void mbtcp_send_adu(chanend c_xtcp,
                            xtcp_connection_t *conn,
                            chanend c_user);
-
 static void mbtcp_init_state(chanend c_xtcp, xtcp_connection_t *conn);
 
 /*------------------------------------------------------------------------------
 Implementation
 ------------------------------------------------------------------------------*/
-
-/*------------------------------------------------------------------------------
-Name:
-Purpose:
-Input:
-Output:
-Notes:
-------------------------------------------------------------------------------*/
-static void mbtcp_init()
-{
-//   uint16_t index;
-   transid = 0u;
-//
-//   adu[INDEX_HI_TRANSACTION_ID]    = 0u;
-//   adu[INDEX_HI_TRANSACTION_ID + 1u] = 0u;
-//   adu[INDEX_HI_PROTOCOL_ID]       = (MODBUS_PROTOCOL_IDENTIFIER >> 8u) & 0x0Fu;
-//   adu[INDEX_HI_PROTOCOL_ID + 1u]  = MODBUS_PROTOCOL_IDENTIFIER  & 0x0Fu;
-//   adu[INDEX_HI_LENGTH_FIELD]      = 0u;
-//   adu[INDEX_HI_LENGTH_FIELD + 1u] = 0u;
-//   adu[INDEX_UNIT_ID]              = MODBUS_UNIT_IDENTIFIER;
-//
-//   for(index = INDEX_FUNCTION_CODE; index < SIZE_MODBUS_ADU; index++)
-//   {
-//      adu[index] = 0u;
-//   }
-}
 
 /*------------------------------------------------------------------------------
 Name:
@@ -129,18 +97,16 @@ static void mbtcp_receive_adu(chanend c_xtcp,
                               xtcp_connection_t *conn,
                               chanend c_user)
 {
-   s_modbus_tcp_adu_t adu;
-
-   uint16_t data_length;
+   uint16_t length;
    uint8_t check_adu;
    uint16_t index;
 
-   data_length = (uint16_t)(xtcp_recv(c_xtcp, adu) - SIZE_MODBUS_MBAP);
+   length = (uint16_t)(xtcp_recv(c_xtcp, adu));
    check_adu = mbtcp_parse_adu();
 
    if(check_adu == ALL_OK)
    {
-      xmodbus_receive(c_user, adu);
+//      xmodbus_receive(c_user, &adu, length);
 
       xtcp_init_send(c_xtcp, conn);
    }
@@ -157,22 +123,22 @@ Input:
 Output:
 Notes:
 ------------------------------------------------------------------------------*/
-static uint8_t mbtcp_parse_adu(s_modbus_tcp_adu_t *adu)
+static uint8_t mbtcp_parse_adu()
 {
    uint8_t check_mbap;
    uint8_t check_illegal_function;
-   uint8_t check_illegal_data_address_and_value;
+   //uint8_t check_illegal_data_address_and_value;
 
    uint8_t function_code;
-   uint16_t address;
-   uint16_t size;
+   //uint16_t address;
+   //uint16_t size;
 
-   check_mbap = mb_check_mbap(adu);
+   check_mbap = mb_check_mbap();
 
    if(check_mbap == ALL_OK)
    {
       // MBAP OK
-      function_code = adu.function_code;
+      function_code = adu[INDEX_FUNCTION_CODE];
       check_illegal_function = mb_check_illegal_function(function_code);
 
       if(check_illegal_function == ALL_OK)
@@ -224,13 +190,16 @@ ALL_OK = all OK
 2 = Protocol identifier mismatch
 3 = Length field too long (260 - 2(TxID) - 2(PID) - 2(LengthF) = 254)
 ------------------------------------------------------------------------------*/
-static uint8_t mb_check_mbap(s_modbus_tcp_adu_t *mbap)
+static uint8_t mb_check_mbap()
 {
-   uint16_t tid = mbap.transaction_id;
+   uint16_t tid = (uint16_t)((uint16_t)(adu[INDEX_HI_TRANSACTION_ID] << 8u) +
+                             (uint16_t)(adu[INDEX_HI_TRANSACTION_ID + 1u]));
 
-   uint16_t pid = mbap.protocol_id;
+   uint16_t pid = (uint16_t)((uint16_t)(adu[INDEX_HI_PROTOCOL_ID] << 8u) +
+                             (uint16_t)(adu[INDEX_HI_PROTOCOL_ID + 1u]));
 
-   uint16_t len = mbap.length_field;
+   uint16_t len = (uint16_t)((uint16_t)(adu[INDEX_HI_LENGTH_FIELD] << 8u) +
+                             (uint16_t)(adu[INDEX_HI_LENGTH_FIELD + 1u]));
 
    if(tid == mbtcp_get_transid())
    {
@@ -345,10 +314,11 @@ static void mbtcp_send_adu(chanend c_xtcp,
                            chanend c_user)
 {
    uint16_t length;
-   s_modbus_tcp_adu_t adu;
 
-   xmodbus_transmit(c_user, &adu);
-   length = adu.length_field + SIZE_MODBUS_MBAP;
+//   xmodbus_transmit(c_user, &adu, SIZE_MODBUS_ADU);
+   length = (uint16_t)((uint16_t)(adu[INDEX_HI_LENGTH_FIELD] << 8u) +
+                       (uint16_t)(adu[INDEX_HI_LENGTH_FIELD + 1u]) +
+                        SIZE_MODBUS_MBAP);
 
    xtcp_send(c_xtcp, &adu, length);
    xtcp_complete_send(c_xtcp);
@@ -375,9 +345,9 @@ Output:
 Notes:
 Will return appropriate error values
 ------------------------------------------------------------------------------*/
-uint8_t mbtcp_handle_event(chanend c_xtcp,
-                                  xtcp_connection_t *conn,
-                                  chanend c_user)
+void mbtcp_handle_event(chanend c_xtcp,
+                        REFERENCE_PARAM(xtcp_connection_t, conn),
+                        chanend c_user)
 {
    switch(conn->event)
    {
@@ -416,7 +386,32 @@ uint8_t mbtcp_handle_event(chanend c_xtcp,
       }
       conn->event = XTCP_ALREADY_HANDLED;
    }
-   return 0u;
+}
+
+/*------------------------------------------------------------------------------
+Name:
+Purpose:
+Input:
+Output:
+Notes:
+------------------------------------------------------------------------------*/
+void mbtcp_init()
+{
+   uint16_t index;
+   transid = 0u;
+
+   adu[INDEX_HI_TRANSACTION_ID]    = 0u;
+   adu[INDEX_HI_TRANSACTION_ID + 1u] = 0u;
+   adu[INDEX_HI_PROTOCOL_ID]       = (MODBUS_PROTOCOL_IDENTIFIER >> 8u) & 0x0Fu;
+   adu[INDEX_HI_PROTOCOL_ID + 1u]  = MODBUS_PROTOCOL_IDENTIFIER  & 0x0Fu;
+   adu[INDEX_HI_LENGTH_FIELD]      = 0u;
+   adu[INDEX_HI_LENGTH_FIELD + 1u] = 0u;
+   adu[INDEX_UNIT_ID]              = MODBUS_UNIT_IDENTIFIER;
+
+   for(index = INDEX_FUNCTION_CODE; index < SIZE_MODBUS_ADU; index++)
+   {
+      adu[index] = 0u;
+   }
 }
 
 /*============================================================================*/

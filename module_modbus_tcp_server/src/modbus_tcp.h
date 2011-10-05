@@ -26,7 +26,6 @@ modifications to the code are still covered by the copyright notice above.
 /*------------------------------------------------------------------------------
 Include files
 ------------------------------------------------------------------------------*/
-#include "system.h"
 #include "xtcp_client.h"
 
 /*------------------------------------------------------------------------------
@@ -113,15 +112,15 @@ Manifest constants
 /*------------------------------------------------------------------------------
 Typedefs
 ------------------------------------------------------------------------------*/
-typedef struct
-{
-   uint16_t transaction_id;
-   uint16_t protocol_id;
-   uint16_t length_field;
-   uint8_t  unit_id;
-   uint8_t  function_code;
-   uint8_t  data[SIZE_MODBUS_DATA];
-} s_modbus_tcp_adu_t;
+//typedef struct
+//{
+//   uint16_t transaction_id;
+//   uint16_t protocol_id;
+//   uint16_t length_field;
+//   uint8_t  unit_id;
+//   uint8_t  function_code;
+//   uint8_t  data[SIZE_MODBUS_DATA];
+//} s_modbus_tcp_adu_t;
 
 /*------------------------------------------------------------------------------
 Global Variables
@@ -134,8 +133,10 @@ Static Variables
 /*------------------------------------------------------------------------------
 Prototypes
 ------------------------------------------------------------------------------*/
-uint8_t mbtcp_handle_event(chanend c_xtcp,
-                           xtcp_connection_t *conn,
-                           chanend c_user);
+void mbtcp_init(void);
+
+void mbtcp_handle_event(chanend c_xtcp,
+                        REFERENCE_PARAM(xtcp_connection_t, conn),
+                        chanend c_user);
 
 /*============================================================================*/

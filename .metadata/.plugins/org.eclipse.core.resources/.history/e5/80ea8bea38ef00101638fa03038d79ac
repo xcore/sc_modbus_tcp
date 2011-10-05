@@ -87,8 +87,8 @@ int main(void)
 
 	par
 	{
-	  // The ethernet server
-      on stdcore[2]:
+		// The ethernet server
+		on stdcore[2]:
       {
          int mac_address[2];
          ethernet_getmac_otp(otp_data,

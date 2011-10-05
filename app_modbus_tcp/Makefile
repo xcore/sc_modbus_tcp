@@ -16,7 +16,7 @@ APP_NAME =
 XCC_FLAGS = -O3 -save-temps -g -report -Xmapper --map -Xmapper MAPFILE
 
 # The USED_MODULES variable lists other module used by the application.
-USED_MODULES = module_modbus_tcp module_xtcp module_ethernet module_locks
+USED_MODULES = module_modbus_tcp_server module_xtcp module_ethernet module_locks
 # USED_MODULES = module_modbus module_xtcp.2v0 module_ethernet.1v4 module_locks.1v1
 
 # This uses the tcp mac filtering in module_xtcp

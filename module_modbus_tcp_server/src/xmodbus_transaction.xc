@@ -66,10 +66,17 @@ Input:
 Output:
 Notes:
 ------------------------------------------------------------------------------*/
-void xmodbus_transmit(chanend c, uint8_t &p)
+/*
+void xmodbus_transmit(chanend c, REFERENCE_PARAM(int, p), int length)
 {
-   c :> p;
+   uint8_t index;
+
+   for(index = 0u; index < length; index++)
+   {
+      c :> p[index];
+   }
 }
+*/
 
 /*------------------------------------------------------------------------------
 Name:
@@ -78,10 +85,17 @@ Input:
 Output:
 Notes:
 ------------------------------------------------------------------------------*/
-void xmodbus_receive(chanend c, uint8_t &p)
+/*
+void xmodbus_receive(chanend c, REFERENCE_PARAM(int, p), int length)
 {
-   c <: p;
+   uint8_t index;
+
+   for(index = 0u; index < length; index++)
+   {
+      c <: p[index];
+   }
 }
+*/
 
 /*------------------------------------------------------------------------------
 Name:

@@ -26,7 +26,6 @@ modifications to the code are still covered by the copyright notice above.
 /*------------------------------------------------------------------------------
 Include files
 ------------------------------------------------------------------------------*/
-#include "system.h"
 
 /*------------------------------------------------------------------------------
 Extern Variables
@@ -51,7 +50,7 @@ Static Variables
 /*------------------------------------------------------------------------------
 Prototypes
 ------------------------------------------------------------------------------*/
-void xmodbus_transmit(chanend c, uint8_t &p);
-void xmodbus_receive(chanend c, uint8_t &p);
+//void xmodbus_transmit(chanend c, REFERENCE_PARAM(int, p), int length);
+//void xmodbus_receive(chanend c, REFERENCE_PARAM(int, p), int length);
 
 /*============================================================================*/
