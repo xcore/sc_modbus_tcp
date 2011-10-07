@@ -53,16 +53,10 @@ Global Variables
 ------------------------------------------------------------------------------*/
 // IP Config - change this to suit your network.  Leave with all
 // 0 values to use DHCP
-//xtcp_ipconfig_t ipconfig = {
-//		{ 172, 17, 0, 6 }, // ip address (eg 192,168,0,2)
-//		{ 255, 255, 0, 0 }, // netmask (eg 255,255,255,0)
-//		{ 172, 17, 0, 1 } // gateway (eg 192,168,0,1)
-//};
-
 xtcp_ipconfig_t ipconfig = {
-		{ 0, 0, 0, 0 }, // ip address (eg 192,168,0,2)
-		{ 0, 0, 0, 0 }, // netmask (eg 255,255,255,0)
-		{ 0, 0, 0, 0 } // gateway (eg 192,168,0,1)
+		{ 172, 17, 0, 6 }, // ip address (eg 192,168,0,2)
+		{ 255, 255, 0, 0 }, // netmask (eg 255,255,255,0)
+		{ 172, 17, 0, 1 } // gateway (eg 192,168,0,1)
 };
 
 /*------------------------------------------------------------------------------
@@ -90,6 +84,11 @@ int main(void)
 {
    chan c_user;
    chan mac_rx[1], mac_tx[1], xtcp[1], connect_status;
+
+   for(;;)
+   {
+	   int i = 10;
+   }
 
 	par
 	{
@@ -135,7 +134,6 @@ int main(void)
       on stdcore[0]: xmodbus_tcp(c_user, xtcp[0]);
       on stdcore[0]: application(c_user);
 	}
-
 	return 0;
 }
 
@@ -148,6 +146,8 @@ Notes:
 ------------------------------------------------------------------------------*/
 static void application(chanend c_user)
 {
-	while(1)
-	{}
+	for(;;)
+	{
+		c_user :> int;
+	}
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="&#x09;par&#x0A;&#x09;{&#x0A;&#x09;  // The ethernet server&#x0A;      on stdcore[2]:&#x0A;      {&#x0A;         int mac_address[2];&#x0A;         ethernet_getmac_otp(otp_data,&#x0A;                             otp_addr,&#x0A;                             otp_ctrl,&#x0A;                             (mac_address, char[]));&#x0A;&#x0A;         phy_init(clk_smi,&#x0A;                  #ifdef PORT_ETH_RST_N&#x0A;                     p_mii_resetn,&#x0A;                  #else&#x0A;                     null,&#x0A;                  #endif&#x0A;                  smi, mii);&#x0A;&#x0A;         ethernet_server(mii,&#x0A;                         mac_address,&#x0A;                         mac_rx,&#x0A;                         1,&#x0A;                         mac_tx,&#x0A;                         1,&#x0A;                         smi,&#x0A;                         connect_status);&#x0A;      }&#x0A;&#x0A;      // The TCP/IP server thread&#x0A;      on stdcore[3]:&#x0A;      {&#x0A;         uip_server(mac_rx[0],&#x0A;                    mac_tx[0],&#x0A;                    xtcp,&#x0A;                    1,&#x0A;                    ipconfig,&#x0A;                    connect_status);&#x0A;      }&#x0A;&#x0A;      // Modbus thread&#x0A;      on stdcore[0]: xmodbus_tcp(c_user, xtcp[0]);&#x0A;      on stdcore[0]: application(c_user);&#x0A;&#x09;}" key="selection"/>
+		<list key="findhistory">
+			<item value="&#x09;par"/>
+		</list>
+	</section>
+</section>

@@ -132,8 +132,10 @@ int main(void)
       }
 
       // Modbus thread
-      on stdcore[0]: xmodbus_tcp(c_user, xtcp[0]);
-      on stdcore[0]: application(c_user);
+      //on stdcore[0]: xmodbus_tcp(c_user, xtcp[0]);
+      //on stdcore[0]: application(c_user);
+
+      on stdcore[0]: application(xtcp[0]);
 	}
 
 	return 0;
@@ -148,6 +150,8 @@ Notes:
 ------------------------------------------------------------------------------*/
 static void application(chanend c_user)
 {
-	while(1)
-	{}
+	for(;;)
+	{
+		c_user :> int;
+	}
 }

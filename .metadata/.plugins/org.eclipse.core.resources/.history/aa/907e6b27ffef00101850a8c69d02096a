@@ -149,5 +149,7 @@ Notes:
 static void application(chanend c_user)
 {
 	while(1)
-	{}
+	{
+		c_user :> int;
+	}
 }

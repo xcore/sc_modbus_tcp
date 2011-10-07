@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.xmos.cdt.core.simulatorLaunchRun">
+<booleanAttribute key="com.xmos.cdt.continue_with_sims" value="true"/>
+<stringAttribute key="com.xmos.cdt.device_id" value="XM189202"/>
+<booleanAttribute key="com.xmos.cdt.displaystats" value="false"/>
+<booleanAttribute key="com.xmos.cdt.io" value="true"/>
+<stringAttribute key="com.xmos.cdt.jtagspeed" value=""/>
+<booleanAttribute key="com.xmos.cdt.jtagspeed.enable" value="false"/>
+<booleanAttribute key="com.xmos.cdt.maxcycles" value="false"/>
+<stringAttribute key="com.xmos.cdt.maxcyclestext" value=""/>
+<booleanAttribute key="com.xmos.cdt.pins" value="false"/>
+<listAttribute key="com.xmos.cdt.pins.connections"/>
+<booleanAttribute key="com.xmos.cdt.simtrace" value="false"/>
+<booleanAttribute key="com.xmos.cdt.simulator_launch" value="false"/>
+<booleanAttribute key="com.xmos.cdt.tracefile" value="false"/>
+<stringAttribute key="com.xmos.cdt.tracefiletext" value=""/>
+<booleanAttribute key="com.xmos.cdt.uart" value="false"/>
+<listAttribute key="com.xmos.cdt.userPlugins"/>
+<booleanAttribute key="com.xmos.cdt.vcd.pads.tracing" value="false"/>
+<listAttribute key="com.xmos.cdt.vcd.trace_points"/>
+<booleanAttribute key="com.xmos.cdt.vcd.tracing" value="false"/>
+<booleanAttribute key="com.xmos.cdt.xprobe.enable" value="false"/>
+<stringAttribute key="com.xmos.cdt.xprobe.filename" value=""/>
+<booleanAttribute key="com.xmos.cdt.xprobe.filespecified" value="false"/>
+<booleanAttribute key="com.xmos.cdt.xprobe.limitmaxrecords" value="false"/>
+<stringAttribute key="com.xmos.cdt.xprobe.maxrecords" value=""/>
+<stringAttribute key="org.eclipse.cdt.launch.DEBUGGER_ID" value="com.xmos.cdt.debug.core.debugger"/>
+<stringAttribute key="org.eclipse.cdt.launch.DEBUGGER_START_MODE" value="run"/>
+<booleanAttribute key="org.eclipse.cdt.launch.DEBUGGER_STOP_AT_MAIN" value="false"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="bin/Release/app_modbus_tcp.xe"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="app_modbus_tcp"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value="com.xmos.cdt.toolchain.504238706"/>
+<booleanAttribute key="org.eclipse.cdt.launch.use_terminal" value="true"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/app_modbus_tcp"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+</launchConfiguration>

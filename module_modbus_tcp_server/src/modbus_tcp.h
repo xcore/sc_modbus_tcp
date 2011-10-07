@@ -107,7 +107,7 @@ Manifest constants
 #define INDEX_FUNCTION_CODE                     7u
 #define INDEX_START_DATA                        8u
 
-#define PORT_LISTEN                             80
+#define PORT_LISTEN                             502
 
 /*------------------------------------------------------------------------------
 Typedefs
