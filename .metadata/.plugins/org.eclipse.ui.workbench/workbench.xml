@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench progressCount="37" version="2.0">
+<workbench progressCount="16" version="2.0">
 <workbenchAdvisor/>
-<window height="768" maximized="true" minimized="true" width="1024" x="120" y="120">
+<window height="1046" width="960" x="0" y="0">
 <fastViewData fastViewLocation="1024"/>
 <perspectiveBar>
 <itemSize x="160"/>
 </perspectiveBar>
 <coolbarLayout locked="0">
 <coolItem id="group.file" itemType="typeGroupMarker"/>
-<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="185" y="22"/>
+<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="182" y="22"/>
 <coolItem id="additions" itemType="typeGroupMarker"/>
 <coolItem id="com.xmos.xta.ui.menuActions" itemType="typeToolBarContribution" x="57" y="22"/>
 <coolItem id="org.eclipse.cdt.ui.CElementCreationActionSet" itemType="typeToolBarContribution" x="183" y="22"/>
@@ -21,8 +21,9 @@
 <coolItem id="group.nav" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="206" y="22"/>
 <coolItem id="group.editor" itemType="typeGroupMarker"/>
-<coolItem id="org.eclipse.cdt.make.editor" itemType="typeToolBarContribution" x="-1" y="-1"/>
-<coolItem id="com.xmos.cdt.ui.XCEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="org.eclipse.ui.DefaultTextEditor" itemType="typePlaceholder" x="-1" y="-1"/>
+<coolItem id="org.eclipse.cdt.make.editor" itemType="typePlaceholder" x="-1" y="-1"/>
+<coolItem id="com.xmos.cdt.ui.XCEditor" itemType="typePlaceholder" x="-1" y="-1"/>
 <coolItem id="group.help" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
 </coolbarLayout>
@@ -31,16 +32,10 @@
 <editorArea activeWorkbook="DefaultEditorWorkbook">
 <info part="DefaultEditorWorkbook">
 <folder appearance="1" expanded="2">
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
-<part id="0"/>
-</presentation>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
 </editorArea>
-<editor activePart="true" focus="true" id="com.xmos.cdt.ui.XCEditor" name="main.xc" partName="main.xc" path="C:/vinith/modbus/sc_modbus_tcp/app_modbus_tcp/src/main.xc" title="main.xc" tooltip="app_modbus_tcp/src/main.xc" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/app_modbus_tcp/src/main.xc"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4387" selectionTopPixel="2560"/>
-</editor>
 </editors>
 <views>
 <view id="org.eclipse.ui.navigator.ProjectExplorer" partName="Project Explorer">
@@ -62,7 +57,7 @@
 <viewState/>
 </view>
 </views>
-<perspectives activePart="com.xmos.cdt.ui.XCEditor" activePerspective="org.eclipse.cdt.ui.CPerspective">
+<perspectives activePart="org.eclipse.ui.navigator.ProjectExplorer" activePerspective="org.eclipse.cdt.ui.CPerspective">
 <perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
 <descriptor class="org.eclipse.cdt.internal.ui.CPerspectiveFactory" id="org.eclipse.cdt.ui.CPerspective" label="C/XC"/>
 <alwaysOnActionSet id="com.xmos.cdt.core.xmosHelpActions"/>
@@ -134,8 +129,8 @@
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
-<info part="org.eclipse.ui.editorss" ratio="0.08748036" ratioLeft="167" ratioRight="1742" relationship="2" relative="topLeft"/>
-<info folder="true" part="bottom" ratio="0.6168831" ratioLeft="570" ratioRight="354" relationship="4" relative="org.eclipse.ui.editorss">
+<info part="org.eclipse.ui.editorss" ratio="0.15400733" ratioLeft="294" ratioRight="1615" relationship="2" relative="topLeft"/>
+<info folder="true" part="bottom" ratio="0.42965367" ratioLeft="397" ratioRight="527" relationship="4" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ProblemView" label="Problems"/>
 <page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
@@ -162,33 +157,7 @@
 </perspective>
 </perspectives>
 <workingSets/>
-<navigationHistory>
-<editors>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.xmos.cdt.ui.XCEditor" path="/app_modbus_tcp/src/main.xc"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.make.editor" path="/app_modbus_tcp/Makefile"/>
-</editors>
-<item historyLabel="main.xc" index="0">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="main.xc" index="0">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="main.xc" index="0">
-<position info="not_deleted" x="4221" y="0"/>
-</item>
-<item historyLabel="Makefile" index="1">
-<position info="not_deleted" x="1212" y="0"/>
-</item>
-<item historyLabel="main.xc" index="0">
-<position info="not_deleted" x="3936" y="0"/>
-</item>
-<item historyLabel="main.xc" index="0">
-<position info="not_deleted" x="2948" y="0"/>
-</item>
-<item active="true" historyLabel="main.xc" index="0">
-<position info="not_deleted" x="4444" y="0"/>
-</item>
-</navigationHistory>
+<navigationHistory/>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
 </page>
 <workbenchWindowAdvisor/>
@@ -207,6 +176,9 @@
 <mruList>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.make.editor" name="Makefile" tooltip="app_modbus_tcp/Makefile">
 <persistable path="/app_modbus_tcp/Makefile"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.DefaultTextEditor" name="README" tooltip="app_modbus_tcp/src/README">
+<persistable path="/app_modbus_tcp/src/README"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.xmos.cdt.ui.XCEditor" name="main.xc" tooltip="app_modbus_tcp/src/main.xc">
 <persistable path="/app_modbus_tcp/src/main.xc"/>

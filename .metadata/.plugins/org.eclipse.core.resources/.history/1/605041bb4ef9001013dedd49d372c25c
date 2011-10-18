@@ -119,8 +119,7 @@ int main(void)
                                 connect_status);
 
       // The webserver thread
-      on stdcore[0]: xmodbus(xtcp[0], c_user);
-      on stdcore[0]: application(c_user);
+      on stdcore[0]: xhttpd(xtcp[0]);
 
    }
    return 0;

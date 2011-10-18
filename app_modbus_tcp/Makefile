@@ -24,7 +24,7 @@ USE_XTCP_MAC_CUSTOM_FILTER=1
 
 # The VERBOSE variable, if set to 1, enables verbose output from the make
 # system.
-VERBOSE=1
+VERBOSE=0
 
 #=============================================================================
 # The following part of the Makefile includes the common build infrastructure

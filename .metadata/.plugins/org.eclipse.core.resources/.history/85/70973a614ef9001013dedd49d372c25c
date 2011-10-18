@@ -87,40 +87,30 @@ int main(void)
       on stdcore[2]:
       {
          int mac_address[2];
-         ethernet_getmac_otp(otp_data,
-                             otp_addr,
-                             otp_ctrl,
-                             (mac_address, char[]));
-         phy_init(clk_smi,
-                  #ifdef PORT_ETH_RST_N
-                     p_mii_resetn,
-                  #else
-                     null,
-                  #endif
-                  smi,
-                  mii);
 
-         ethernet_server(mii,
-                         mac_address,
-                         mac_rx,
-                         1,
-                         mac_tx,
-                         1,
-                         smi,
-                         connect_status);
+         ethernet_getmac_otp(otp_data, otp_addr, otp_ctrl,
+               (mac_address, char[]));
+
+         phy_init(clk_smi,
+#ifdef PORT_ETH_RST_N
+               p_mii_resetn,
+#else
+               null,
+#endif
+               smi, mii);
+
+         ethernet_server(mii, mac_address,
+               mac_rx, 1, mac_tx, 1, smi,
+               connect_status);
       }
 
       // The TCP/IP server thread
-      on stdcore[3]: uip_server(mac_rx[0],
-                                mac_tx[0],
-                                xtcp,
-                                1,
-                                ipconfig,
-                                connect_status);
+      on stdcore[3]: uip_server(mac_rx[0], mac_tx[0],
+            xtcp, 1, ipconfig,
+            connect_status);
 
       // The webserver thread
-      on stdcore[0]: xmodbus(xtcp[0], c_user);
-      on stdcore[0]: application(c_user);
+      on stdcore[0]: xhttpd(xtcp[0]);
 
    }
    return 0;

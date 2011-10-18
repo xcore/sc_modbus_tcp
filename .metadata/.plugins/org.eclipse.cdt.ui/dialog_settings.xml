@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<item value="958" key="org.eclipse.cdt.uiformatter_pagemodify_dialog.preferred_height"/>
+	<item value="1" key="org.eclipse.cdt.uiformatter_page.line_wrapping_tab_page.last_category_index"/>
+	<item value="0" key="org.eclipse.cdt.uiformatter_page.white_space_tab_page.node"/>
+	<item value="0" key="org.eclipse.cdt.uiformatter_pagemodify_dialog.preferred_x"/>
+	<item value="0" key="org.eclipse.cdt.uiformatter_pagemodify_dialog.preferred_y"/>
+	<item value="4" key="org.eclipse.cdt.uiformatter_pagemodify_dialog.last_focus"/>
+	<item value="1433" key="org.eclipse.cdt.uiformatter_pagemodify_dialog.preferred_width"/>
+	<item value="80" key="org.eclipse.cdt.ui.codeformatter.line_wrapping_tab_page.preview_line_width"/>
+	<item value="4" key="formatter_page.modify_dialog_tab_page.last_focus_index"/>
+	<item value="28" key="org.eclipse.cdt.uiformatter_page.white_space.c_view.inner"/>
 	<section name="completion_proposal_size">
 	</section>
 	<section name="org.eclipse.cdt.ui.text.hover.CMacroExpansionExploration">
