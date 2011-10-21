@@ -49,11 +49,12 @@ Static Variables
 ------------------------------------------------------------------------------*/
 static uint8_t adu[SIZE_MODBUS_ADU];
 static uint8_t connection_state[NUM_MODBUS_CONNECTIONS];
+static uint8_t have_stuff_to_send = 0u;
 
 /*------------------------------------------------------------------------------
 Prototypes
 ------------------------------------------------------------------------------*/
-static void mbtcp_send(chanend tcp_svr);
+static void mbtcp_send(chanend tcp_svr, unsigned event_type);
 static void mbtcp_new_connection(chanend tcp_svr, xtcp_connection_t *conn);
 static void mbtcp_recv(chanend tcp_svr, xtcp_connection_t *conn);
 static uint8_t mbtcp_check_illegal_data_address_and_value(uint16_t address,
@@ -281,6 +282,7 @@ static void mbtcp_recv(chanend tcp_svr, xtcp_connection_t *conn)
       mbtcp_set_exception(check_adu);
    }
 
+   have_stuff_to_send = 1u;
    xtcp_init_send(tcp_svr, conn);
 }
 
@@ -305,13 +307,25 @@ Input:
 Output:
 Notes: Send Modbus TCP data
 ------------------------------------------------------------------------------*/
-static void mbtcp_send(chanend tcp_svr)
+static void mbtcp_send(chanend tcp_svr, unsigned event_type)
 {
-   xtcp_send(tcp_svr, adu, 8u);
-   // Terminates the send process
-   xtcp_complete_send(tcp_svr);
-   // Close the connection
-   //xtcp_close(tcp_svr, conn);
+   // an error occurred in send so we should resend the existing data
+   if (event_type == XTCP_RESEND_DATA) 
+   {
+      xtcp_send(tcp_svr, adu, 8u);
+   } 
+   else 
+   {
+      if (have_stuff_to_send) 
+      {
+         xtcp_send(tcp_svr, adu, 8u);
+         have_stuff_to_send = 0;
+      } 
+      else 
+      {
+         xtcp_complete_send(tcp_svr);
+      }
+   }
 }
 
 /*------------------------------------------------------------------------------
@@ -418,7 +432,7 @@ void modbus_tcp_handle_event(chanend tcp_svr, xtcp_connection_t *conn)
       case XTCP_SENT_DATA:
       case XTCP_REQUEST_DATA:
       case XTCP_RESEND_DATA:
-         mbtcp_send(tcp_svr);
+         mbtcp_send(tcp_svr, conn->event);
          break;
       case XTCP_TIMED_OUT:
       case XTCP_ABORTED:
