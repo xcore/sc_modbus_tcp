@@ -10535,3 +10535,34 @@ org.eclipse.cdt.internal.formatter.AbortFormatting: [85/60] unexpected token typ
 	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:559)
 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:514)
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1311)
+!SESSION 2011-10-20 14:58:36.541 -----------------------------------------------
+eclipse.buildId=I20080702-1800
+java.version=1.6.0_26
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_IN
+Command-line arguments:  -os win32 -ws win32 -arch x86 -data C:\vinith\modbus\sc_modbus_tcp
+
+!ENTRY org.eclipse.cdt.launch 4 104 2011-10-20 15:39:11.630
+!MESSAGE Program file does not exist
+!STACK 0
+java.io.FileNotFoundException: C:\vinith\modbus\sc_modbus_tcp\app_modbus_tcp\bin\Release\app_modbus_tcp.xe not found
+	at org.eclipse.cdt.launch.AbstractCLaunchDelegate.verifyProgramPath(Unknown Source)
+	at com.xmos.cdt.launch.XCoreLaunch.runLocalApplication(Unknown Source)
+	at com.xmos.cdt.launch.XCoreLaunch.launch(Unknown Source)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:853)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:703)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:866)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1069)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SUBENTRY 1 org.eclipse.cdt.launch 4 104 2011-10-20 15:39:11.630
+!MESSAGE C:\vinith\modbus\sc_modbus_tcp\app_modbus_tcp\bin\Release\app_modbus_tcp.xe not found
+!STACK 0
+java.io.FileNotFoundException: C:\vinith\modbus\sc_modbus_tcp\app_modbus_tcp\bin\Release\app_modbus_tcp.xe not found
+	at org.eclipse.cdt.launch.AbstractCLaunchDelegate.verifyProgramPath(Unknown Source)
+	at com.xmos.cdt.launch.XCoreLaunch.runLocalApplication(Unknown Source)
+	at com.xmos.cdt.launch.XCoreLaunch.launch(Unknown Source)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:853)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:703)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:866)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1069)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)

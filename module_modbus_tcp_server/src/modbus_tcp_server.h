@@ -97,9 +97,9 @@ Manifest constants
 #define INDEX_PDU                               (SIZE_MODBUS_MBAP)
 
 // Big Endian format
-#define INDEX_HI_TRANSACTION_ID                 0u
-#define INDEX_HI_PROTOCOL_ID                    2u
-#define INDEX_HI_LENGTH_FIELD                   4u
+#define INDEX_TRANSACTION_ID                    0u
+#define INDEX_PROTOCOL_ID                       2u
+#define INDEX_LENGTH_FIELD                      4u
 #define INDEX_UNIT_ID                           6u
 #define INDEX_FUNCTION_CODE                     7u
 #define INDEX_START_DATA                        8u

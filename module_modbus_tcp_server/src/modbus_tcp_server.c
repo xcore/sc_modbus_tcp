@@ -53,15 +53,15 @@ static uint8_t connection_state[NUM_MODBUS_CONNECTIONS];
 /*------------------------------------------------------------------------------
 Prototypes
 ------------------------------------------------------------------------------*/
-static void mbtcp_tcp_send();
+static void mbtcp_send(chanend tcp_svr);
 static void mbtcp_new_connection(chanend tcp_svr, xtcp_connection_t *conn);
-static void mbtcp_send(chanend tcp_svr, xtcp_connection_t *conn);
 static void mbtcp_recv(chanend tcp_svr, xtcp_connection_t *conn);
 static uint8_t mbtcp_check_illegal_data_address_and_value(uint16_t address,
                                                           uint16_t size);
 static uint8_t mbtcp_check_illegal_function(uint8_t function_code);
 static uint8_t mbtcp_check_mbap();
 static uint8_t mbtcp_parse_adu();
+static void mbtcp_set_exception(uint8_t check_adu);
 
 /*------------------------------------------------------------------------------
 Implementation
@@ -146,11 +146,11 @@ static uint8_t mbtcp_check_mbap()
    //uint16_t tid = (uint16_t)((uint16_t)(adu[INDEX_HI_TRANSACTION_ID] << 8u) +
    //                          (uint16_t)(adu[INDEX_HI_TRANSACTION_ID + 1u]));
 
-   uint16_t pid = (uint16_t)((uint16_t)(adu[INDEX_HI_PROTOCOL_ID] << 8u) +
-                             (uint16_t)(adu[INDEX_HI_PROTOCOL_ID + 1u]));
+   uint16_t pid = (uint16_t)((uint16_t)(adu[INDEX_PROTOCOL_ID] << 8u) +
+                             (uint16_t)(adu[INDEX_PROTOCOL_ID + 1u]));
 
-   uint16_t len = (uint16_t)((uint16_t)(adu[INDEX_HI_LENGTH_FIELD] << 8u) +
-                             (uint16_t)(adu[INDEX_HI_LENGTH_FIELD + 1u]));
+   uint16_t len = (uint16_t)((uint16_t)(adu[INDEX_LENGTH_FIELD] << 8u) +
+                             (uint16_t)(adu[INDEX_LENGTH_FIELD + 1u]));
 
    if(1) // tid == mbtcp_get_transid())
    {
@@ -271,14 +271,31 @@ static void mbtcp_recv(chanend tcp_svr, xtcp_connection_t *conn)
    if(check_adu == ALL_OK)
    {
       // temporary
-      vin_led();
+      vin_led(adu);
+      adu[INDEX_LENGTH_FIELD] = 0u;
+      adu[INDEX_LENGTH_FIELD + 1u] = 2u;
    }
    else
    {
       // send level 1 exception
+      mbtcp_set_exception(check_adu);
    }
 
    xtcp_init_send(tcp_svr, conn);
+}
+
+/*------------------------------------------------------------------------------
+Name: mbtcp_set_exception
+Purpose:
+Input:
+Output:
+Notes: Setup Exception code and response length
+------------------------------------------------------------------------------*/
+static void mbtcp_set_exception(uint8_t check_adu)
+{
+   adu[INDEX_FUNCTION_CODE] += 0x80u;
+   adu[INDEX_LENGTH_FIELD] = 0u;
+   adu[INDEX_LENGTH_FIELD + 1u] = 2u;
 }
 
 /*------------------------------------------------------------------------------
@@ -286,12 +303,11 @@ Name: mbtcp_send
 Purpose:
 Input:
 Output:
-Notes: Setup a new connection
+Notes: Send Modbus TCP data
 ------------------------------------------------------------------------------*/
-static void mbtcp_send(chanend tcp_svr, xtcp_connection_t *conn)
+static void mbtcp_send(chanend tcp_svr)
 {
-//   xtcp_send(tcp_svr, hs->dptr, len);
-
+   xtcp_send(tcp_svr, adu, 8u);
    // Terminates the send process
    xtcp_complete_send(tcp_svr);
    // Close the connection
@@ -341,9 +357,6 @@ Input:
 Output:
 Notes: Send Modbus TCP data
 ------------------------------------------------------------------------------*/
-static void mbtcp_tcp_send()
-{
-}
 
 /*------------------------------------------------------------------------------
 Name: modbus_tcp_reset
@@ -405,7 +418,7 @@ void modbus_tcp_handle_event(chanend tcp_svr, xtcp_connection_t *conn)
       case XTCP_SENT_DATA:
       case XTCP_REQUEST_DATA:
       case XTCP_RESEND_DATA:
-         mbtcp_send(tcp_svr, conn);
+         mbtcp_send(tcp_svr);
          break;
       case XTCP_TIMED_OUT:
       case XTCP_ABORTED:
