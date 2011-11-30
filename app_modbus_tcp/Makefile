@@ -8,16 +8,15 @@ TARGET = XC-2
 # the project name
 APP_NAME =
 
+# The USED_MODULES variable lists other module used by the application.
+USED_MODULES = module_modbus_tcp_server module_xtcp module_ethernet module_locks
+
 # The flags passed to xcc when building the application
 # You can also set the following to override flags for a particular language:
 # XCC_XC_FLAGS, XCC_C_FLAGS, XCC_ASM_FLAGS, XCC_CPP_FLAGS
 # If the variable XCC_MAP_FLAGS is set it overrides the flags passed to
 # xcc for the final link (mapping) stage.
 XCC_FLAGS = -O3 -save-temps -g -report -Xmapper --map -Xmapper MAPFILE
-
-# The USED_MODULES variable lists other module used by the application.
-USED_MODULES = module_modbus_tcp_server module_xtcp module_ethernet module_locks
-# USED_MODULES = module_modbus module_xtcp.2v0 module_ethernet.1v4 module_locks.1v1
 
 # This uses the tcp mac filtering in module_xtcp
 USE_XTCP_MAC_CUSTOM_FILTER=1
