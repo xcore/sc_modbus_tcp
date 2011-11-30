@@ -67,10 +67,12 @@ implementation
 static void tcp_recv(chanend tcp_svr, xtcp_connection_t *conn)
 {
     int length;
+    int temp;
 
     // Receive the data from the TCP stack
     length = xtcp_recv(tcp_svr, tcp_data);
 
+    temp = modbus_tcp_process_frame(tcp_data, length);
     //
     //
     //
