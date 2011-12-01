@@ -46,6 +46,7 @@ static char tcp_data[SIZE_TCP_DATA];
 static char connection_state[NUM_CONNECTIONS];
 static char have_stuff_to_send = 0u;
 
+static int response_length;
 /*---------------------------------------------------------------------------
 prototypes
 ---------------------------------------------------------------------------*/
@@ -67,12 +68,11 @@ implementation
 static void tcp_recv(chanend tcp_svr, xtcp_connection_t *conn)
 {
     int length;
-    int temp;
 
     // Receive the data from the TCP stack
     length = xtcp_recv(tcp_svr, tcp_data);
 
-    temp = modbus_tcp_process_frame(tcp_data, length);
+    response_length = modbus_tcp_process_frame(tcp_data, length);
     //
     //
     //
@@ -85,7 +85,14 @@ static void tcp_recv(chanend tcp_svr, xtcp_connection_t *conn)
     //
     //
 
-    have_stuff_to_send = 0u; //1u;
+    if (response_length)
+    {
+        have_stuff_to_send = 1u;
+    }
+    else
+    {
+        have_stuff_to_send = 0u;
+    }
     xtcp_init_send(tcp_svr, conn);
 }
 
@@ -101,13 +108,13 @@ static void tcp_send(chanend tcp_svr, unsigned event_type)
     // an error occurred in send so we should resend the existing data
     if (event_type == XTCP_RESEND_DATA)
     {
-        xtcp_send(tcp_svr, tcp_data, 8u);
+        xtcp_send(tcp_svr, tcp_data, response_length);
     }
     else
     {
         if (have_stuff_to_send)
         {
-            xtcp_send(tcp_svr, tcp_data, 8u);
+            xtcp_send(tcp_svr, tcp_data, response_length);
             have_stuff_to_send = 0;
         }
         else
@@ -175,6 +182,8 @@ void tcp_reset(chanend tcp_svr)
     {
         connection_state[index] = 0u;
     }
+
+    response_length = 0u;
 
     xtcp_listen(tcp_svr, LISTEN_PORT, XTCP_PROTOCOL_TCP);
 }

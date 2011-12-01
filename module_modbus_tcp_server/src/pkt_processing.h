@@ -33,23 +33,23 @@ constants
 #define READ_DISCRETE_INPUTS                    0x02
 #define READ_COILS                              0x01
 #define WRITE_SINGLE_COIL                       0x05
-#define WRITE_MULTIPLE_COILS                    0x0F
+//#define WRITE_MULTIPLE_COILS                    0x0F
 #define READ_INPUT_REGISTER                     0x04
 #define READ_HOLDING_REGISTERS                  0x03
 #define WRITE_SINGLE_REGISTER                   0x06
-#define WRITE_MULTIPLE_REGISTERS                0x10
-#define READ_WRITE_MULTIPLE_REGISTERS           0x17
-#define MASK_WRITE_REGISTER                     0x16
-#define READ_FIFO_QUEUE                         0x18
-#define READ_FILE_RECORD                        0x14
-#define WRITE_FILE_RECORD                       0x15
-#define READ_EXCEPTION_STATUS                   0x07
-#define DIAGNOSTIC                              0x08
-#define GET_COM_EVENT_COUNTER                   0x0B
-#define GET_COM_EVENT_LOG                       0x0C
-#define REPORT_SLAVE_ID                         0x11
-#define READ_DEVICE_IDENTIFICATION              0x2B
-#define UMAS_FILE_TRANSFER                      0x5A
+//#define WRITE_MULTIPLE_REGISTERS                0x10
+//#define READ_WRITE_MULTIPLE_REGISTERS           0x17
+//#define MASK_WRITE_REGISTER                     0x16
+//#define READ_FIFO_QUEUE                         0x18
+//#define READ_FILE_RECORD                        0x14
+//#define WRITE_FILE_RECORD                       0x15
+//#define READ_EXCEPTION_STATUS                   0x07
+//#define DIAGNOSTIC                              0x08
+//#define GET_COM_EVENT_COUNTER                   0x0B
+//#define GET_COM_EVENT_LOG                       0x0C
+//#define REPORT_SLAVE_ID                         0x11
+//#define READ_DEVICE_IDENTIFICATION              0x2B
+//#define UMAS_FILE_TRANSFER                      0x5A
 
 // Diagnostic (0x08) Sub Function Code
 #define RETURN_QUERY_DATA                       0x00
@@ -79,11 +79,24 @@ constants
 #define GATEWAY_PATH_UNAVAILABLE                0x0A
 #define GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND 0x0B
 
-// User Defines
-#define NUM_MAX_REGISTERS                       0x007D
-#define NUM_MIN_REGISTERS                       0x0001
-#define NUM_MAX_ADDRESS                         0x0011
-#define NUM_MIN_ADDRESS                         0x7FFF
+// Public function code address and quantity limits
+#define ADDRESS_COIL_START                      0x0000
+#define ADDRESS_COIL_END                        0xFFFF
+#define ADDRESS_HOLDING_REGISTER_START          0x0000
+#define ADDRESS_HOLDING_REGISTER_END            0xFFFF
+#define ADDRESS_INPUT_REGISTER_START            0x0000
+#define ADDRESS_INPUT_REGISTER_END              0xFFFF
+#define ADDRESS_DISCRETE_INPUT_START            0x0000
+#define ADDRESS_DISCRETE_INPUT_END              0xFFFF
+
+#define QUANTITY_COIL_START                     0x0001
+#define QUANTITY_COIL_END                       0x07D0
+#define QUANTITY_HOLDING_REGISTER_START         0x0001
+#define QUANTITY_HOLDING_REGISTER_END           0x007D
+#define QUANTITY_INPUT_REGISTER_START           0x0001
+#define QUANTITY_INPUT_REGISTER_END             0x007D
+#define QUANTITY_DISCRETE_INPUT_START           0x0001
+#define QUANTITY_DISCRETE_INPUT_END             0x07D0
 
 /*---------------------------------------------------------------------------
 extern variables

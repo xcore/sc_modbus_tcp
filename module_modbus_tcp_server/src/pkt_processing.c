@@ -18,7 +18,7 @@
  include files
  ---------------------------------------------------------------------------*/
 #include "pkt_processing.h"
-
+#include <print.h>
 /*---------------------------------------------------------------------------
  constants
  ---------------------------------------------------------------------------*/
@@ -39,6 +39,12 @@
 /*---------------------------------------------------------------------------
  typedefs
  ---------------------------------------------------------------------------*/
+typedef unsigned char   uint8_t;
+typedef signed char     int8_t;
+typedef unsigned short  uint16_t;
+typedef signed short    int16_t;
+typedef unsigned int    uint32_t;
+typedef signed int      int32_t;
 
 /*---------------------------------------------------------------------------
  global variables
@@ -51,7 +57,10 @@
 /*---------------------------------------------------------------------------
  prototypes
  ---------------------------------------------------------------------------*/
+uint8_t check_range(uint16_t value, uint16_t limit_lo, uint16_t limit_hi);
+uint8_t get_byte_count(uint16_t qty);
 
+void updata_data(char *data);
 /*---------------------------------------------------------------------------
  implementation
  ---------------------------------------------------------------------------*/
@@ -75,11 +84,11 @@ int modbus_tcp_process_frame(char *data, int length)
 
     uint8_t function_code = data[INDEX_FUNCTION_CODE];
 
-    uint16_t d1 = (uint16_t)((uint16_t)(data[INDEX_START_DATA] << 8u) +
-                             (uint16_t)(data[INDEX_START_DATA + 1u]));
+    uint16_t address = (uint16_t)((uint16_t)(data[INDEX_START_DATA] << 8u) +
+                                  (uint16_t)(data[INDEX_START_DATA + 1u]));
 
-    uint16_t d2 = (uint16_t)((uint16_t)(data[INDEX_START_DATA + 2u] << 8u) +
-                             (uint16_t)(data[INDEX_START_DATA + 3u]));
+    uint16_t qty = (uint16_t)((uint16_t)(data[INDEX_START_DATA + 2u] << 8u) +
+                              (uint16_t)(data[INDEX_START_DATA + 3u]));
 
     // Check protocol ID
     if(pid != MODBUS_PROTOCOL_IDENTIFIER)
@@ -95,99 +104,103 @@ int modbus_tcp_process_frame(char *data, int length)
     #ifdef READ_COILS
         case READ_COILS:
         {
-            exception_code = check_1bit_read_range(d1, d2);
-
-            if(!exception_code)
+            // Modbus Application Protocol V1 1B - Section 6.1
+            // Check if quantity is within range
+            if(check_range(qty, QUANTITY_COIL_START, QUANTITY_COIL_END))
             {
-                // No exceptions till now; we can continue with memory access
-                uint16_t i;
-                for(i = starting_address; i <= end_address; i++)
+                uint16_t end_qty_address = address + qty;
+
+                // Check start and end address
+                if(check_range(address, ADDRESS_COIL_START, ADDRESS_COIL_END) &&
+                   check_range(end_qty_address, ADDRESS_COIL_START, ADDRESS_COIL_END))
                 {
-                    // read or write coils
-                    // any error here should be exception code 4u
+                    uint16_t i;
+                    uint16_t index_status = SIZE_MODBUS_MBAP + 2u;
+                    uint8_t index_byte, index_bit;
+
+                    // Get number of bytes = qty/8 (+1)**
+                    uint8_t byte_count = get_byte_count(qty);
+
+                    // Update response length
+                    response_length = 2u + byte_count;
+
+                    // Update data with Length field
+                    data[INDEX_LENGTH_FIELD] = (uint8_t)((uint16_t)(response_length + 1u) >> 8u);
+                    data[INDEX_LENGTH_FIELD + 1u] = response_length + 1u;
+
+                    // Unit identifier & Function code remains the same
+                    // Update number of bytes to read
+                    data[index_status - 1u] = byte_count;
+
+                    // Reset response data before reading
+                    for(i = 0u; i < byte_count; i++)
+                    {
+                        data[index_status + i] = 0u;
+                    }
+                    // Read
+                    for(i = 0; i <= qty; i++)
+                    {
+                        index_byte = (i + 7u) / 8u;
+
+                        if(i > 7u)
+                        {
+                            index_bit = i % 8u;
+                        }
+                        else
+                        {
+                            index_bit = i;
+                        }
+
+
+                        // any error here should be exception code 4u
+                        //if(read_coil(i + address) == 1u)
+                        {
+                            data[index_status + index_byte] |= (1u << index_bit);
+                            printintln(data[index_status + index_byte]);
+                        }
+                    } // for qty
+                } // if address range check
+                else
+                {
+                    exception_code = 2u;
                 }
+            }
+            else
+            {
+                exception_code = 3u;
             }
             break;
         }
-    #endif
-
+    #endif // READ_COILS
+/*
     #ifdef READ_DISCRETE_INPUTS
         case READ_DISCRETE_INPUTS:
         {
-            exception_code = check_1bit_read_range(d1, d2);
-
-            if(!exception_code)
-            {
-                // No exceptions till now; we can continue with memory access
-                uint16_t i;
-                for(i = starting_address; i <= end_address; i++)
-                {
-                    // read or write coils
-                    // any error here should be exception code 4u
-                }
-            }
             break;
         }
-    #endif
+    #endif // READ_DISCRETE_INPUTS
 
     #ifdef READ_HOLDING_REGISTERS
         case READ_HOLDING_REGISTERS:
         {
-            exception_code = check_register_read_range(d1, d2);
-
-            if(!exception_code)
-            {
-                // No exceptions till now; we can continue with memory access
-                uint16_t i;
-                for(i = starting_address; i <= end_address; i++)
-                {
-                    // read or write coils
-                    // any error here should be exception code 4u
-                }
-            }
             break;
         }
-    #endif
+    #endif // READ_HOLDING_REGISTERS
 
     #ifdef READ_INPUT_REGISTER
         case READ_INPUT_REGISTER:
         {
-            exception_code = check_register_read_range(d1, d2);
-
-            if(!exception_code)
-            {
-                // No exceptions till now; we can continue with memory access
-                uint16_t i;
-                for(i = starting_address; i <= end_address; i++)
-                {
-                    // read or write coils
-                    // any error here should be exception code 4u
-                }
-            }
             break;
         }
-    #endif
+    #endif // READ_INPUT_REGISTER
 
     #ifdef WRITE_SINGLE_COIL
         case WRITE_SINGLE_COIL:
         {
-            exception_code = check_read_range(d1, d2, 0x0001, 0x007D,
-                                              0x0000u, 0xFFFFu);
-
-            if(!exception_code)
-            {
-                // No exceptions till now; we can continue with memory access
-                uint16_t i;
-                for(i = starting_address; i <= end_address; i++)
-                {
-                    // read or write coils
-                    // any error here should be exception code 4u
-                }
-            }
             break;
         }
-    #endif
-
+    #endif // WRITE_SINGLE_COIL
+*/
         default:
         {
             // Any other function code is either not defined or a user defined
@@ -208,7 +221,7 @@ int modbus_tcp_process_frame(char *data, int length)
 
         // Set length field
         data[INDEX_LENGTH_FIELD] = 0u;
-        data[INDEX_LENGTH_FIELD] = 3u;
+        data[INDEX_LENGTH_FIELD + 1u] = 3u;
 
         // Set function code + 0x80
         data[INDEX_FUNCTION_CODE] = function_code + 0x80;
@@ -217,67 +230,52 @@ int modbus_tcp_process_frame(char *data, int length)
         data[INDEX_START_DATA] = exception_code;
 
         // Set response length
-        response_length = SIZE_MODBUS_MBAP + 1u;
+        response_length = 2u;
     }
     else
     {
 
     }
-    return response_length;
+    return (SIZE_MODBUS_MBAP + response_length);
 }
 
 /** =========================================================================
- *  check_read_range
+ *  check_range
  *
- *  \param start_address  start address
- *  \param quantity       quantity to read
+ *  \param value      value to check
+ *  \param limit_lo   bottom limit
+ *  \param limit_hi   top limit
  *
  **/
-uint8_t check_1bit_read_range(uint16_t start_address, uint16_t quantity)
+uint8_t check_range(uint16_t value, uint16_t limit_lo, uint16_t limit_hi)
 {
-    uint8_t exception_code = 0u;
+    uint8_t value_within_range = 0u; // false
 
-    if(quantity <= 0x0001 || quantity >= 0x07D0)
-    {
-        exception_code = 3u;
-    }
+    if(value < limit_lo || value > limit_hi)
+    {}
     else
     {
-        uint16_t end_address = start_address + quantity;
-
-        if(!((starting_address >= 0x0000) && (end_address <= 0xFFFF)))
-        {
-            exception_code = 2u;
-        }
+        value_within_range = 1u;
     }
-    return exception_code;
+    return value_within_range;
 }
 
 /** =========================================================================
- *  check_register_read_range
+ *  get_byte_count
  *
- *  \param start_address  start address
- *  \param quantity       quantity to read
+ *  \param value      value to check
+ *  \param limit_lo   bottom limit
+ *  \param limit_hi   top limit
  *
  **/
-uint8_t check_register_read_range(uint16_t start_address, uint16_t quantity)
+uint8_t get_byte_count(uint16_t qty)
 {
-    uint8_t exception_code = 0u;
-
-    if(quantity <= 0x0001 || quantity >= 0x007D)
-    {
-        exception_code = 3u;
-    }
-    else
-    {
-        uint16_t end_address = start_address + quantity;
-
-        if(!((starting_address >= 0x0000) && (end_address <= 0xFFFF)))
-        {
-            exception_code = 2u;
-        }
-    }
-    return exception_code;
+    uint8_t rtnval = (uint8_t)((qty + 7u) / 8u);
+    return rtnval;
 }
 
+void updata_data(char *data)
+{
+    data[0] = 1u;
+}
 /*=========================================================================*/
