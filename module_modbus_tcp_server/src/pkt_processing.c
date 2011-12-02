@@ -60,7 +60,6 @@ typedef signed int      int32_t;
 uint8_t check_range(uint16_t value, uint16_t limit_lo, uint16_t limit_hi);
 uint8_t get_byte_count(uint16_t qty);
 
-void updata_data(char *data);
 /*---------------------------------------------------------------------------
  implementation
  ---------------------------------------------------------------------------*/
@@ -138,25 +137,15 @@ int modbus_tcp_process_frame(char *data, int length)
                         data[index_status + i] = 0u;
                     }
                     // Read
-                    for(i = 0; i <= qty; i++)
+                    for(i = 0; i < qty; i++)
                     {
-                        index_byte = (i + 7u) / 8u;
-
-                        if(i > 7u)
-                        {
-                            index_bit = i % 8u;
-                        }
-                        else
-                        {
-                            index_bit = i;
-                        }
-
+                        index_byte = i / 8u;
+                        index_bit = i % 8u;
 
                         // any error here should be exception code 4u
                         //if(read_coil(i + address) == 1u)
                         {
                             data[index_status + index_byte] |= (1u << index_bit);
-                            printintln(data[index_status + index_byte]);
                         }
                     } // for qty
                 } // if address range check
@@ -249,23 +238,20 @@ int modbus_tcp_process_frame(char *data, int length)
  **/
 uint8_t check_range(uint16_t value, uint16_t limit_lo, uint16_t limit_hi)
 {
-    uint8_t value_within_range = 0u; // false
-
     if(value < limit_lo || value > limit_hi)
-    {}
+    {
+        return 0u;
+    }
     else
     {
-        value_within_range = 1u;
+        return 1u;
     }
-    return value_within_range;
 }
 
 /** =========================================================================
  *  get_byte_count
  *
- *  \param value      value to check
- *  \param limit_lo   bottom limit
- *  \param limit_hi   top limit
+ *  \param qty      quantity
  *
  **/
 uint8_t get_byte_count(uint16_t qty)
@@ -274,8 +260,4 @@ uint8_t get_byte_count(uint16_t qty)
     return rtnval;
 }
 
-void updata_data(char *data)
-{
-    data[0] = 1u;
-}
 /*=========================================================================*/
