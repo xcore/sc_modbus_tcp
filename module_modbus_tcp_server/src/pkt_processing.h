@@ -20,6 +20,7 @@ Purpose
 nested include files
 ---------------------------------------------------------------------------*/
 #include "xtcp_client.h"
+
 /*---------------------------------------------------------------------------
 constants
 ---------------------------------------------------------------------------*/
@@ -27,6 +28,14 @@ constants
 #define MODBUS_UNIT_IDENTIFIER                  0x01u
 #define SIZE_MODBUS_DATA                        253u
 #define SIZE_MODBUS_MBAP                        7u
+
+// Big Endian format in Modbus data
+#define INDEX_TRANSACTION_ID                    0u
+#define INDEX_PROTOCOL_ID                       2u
+#define INDEX_LENGTH_FIELD                      4u
+#define INDEX_UNIT_ID                           6u
+#define INDEX_FUNCTION_CODE                     7u
+#define INDEX_START_DATA                        8u
 
 // Public Function Code Definitions
 // Comment out functions that are not supported
@@ -113,7 +122,7 @@ global variables
 /*---------------------------------------------------------------------------
 prototypes
 ---------------------------------------------------------------------------*/
-int modbus_tcp_process_frame(REFERENCE_PARAM(char, data), int length);
+int modbus_tcp_process_frame(char data[], int length);
 char modbus_tcp_get_status(void);
 
 #endif // PKT_PROCESSING_H_

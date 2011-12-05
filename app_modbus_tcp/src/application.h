@@ -42,6 +42,12 @@ prototypes
 ---------------------------------------------------------------------------*/
 void application(chanend tcp_svr);
 
+char read_coil(unsigned short address);
+char read_discrete_input(unsigned short address);
+short read_holding_register(unsigned short address);
+short read_input_register(unsigned short address);
+
+
 #endif // APPLICATION_H_
 
 /*=========================================================================*/
