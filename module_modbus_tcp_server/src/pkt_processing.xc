@@ -49,7 +49,7 @@ static uint8_t exception_code;
 /*---------------------------------------------------------------------------
  prototypes
  ---------------------------------------------------------------------------*/
-static uint8_t check_range(uint16_t value, uint16_t limit_lo, uint16_t limit_hi);
+static uint8_t check_range(int value, uint16_t limit_lo, uint16_t limit_hi);
 static uint8_t get_byte_count(uint16_t qty);
 
 static int read_data(uint8_t  fn_code,
@@ -60,15 +60,6 @@ static int read_data(uint8_t  fn_code,
                      uint16_t qty_hi,
                      uint16_t qty_lo,
                      char data[]);
-
-static int write_data(uint8_t  fn_code,
-                      uint16_t val,
-                      uint16_t address,
-                      uint16_t address_hi,
-                      uint16_t address_lo,
-                      uint16_t val_hi,
-                      uint16_t val_lo,
-                      char data[]);
 
 /*---------------------------------------------------------------------------
  implementation
@@ -82,7 +73,7 @@ static int write_data(uint8_t  fn_code,
  *  \param limit_hi   top limit
  *
  **/
-static uint8_t check_range(uint16_t value, uint16_t limit_lo, uint16_t limit_hi)
+static uint8_t check_range(int value, uint16_t limit_lo, uint16_t limit_hi)
 {
     if(value < limit_lo || value > limit_hi)
     {
@@ -199,21 +190,107 @@ int modbus_tcp_process_frame(char data[], int length)
             break;
         }
     #endif // READ_INPUT_REGISTER
-/*
+
     #ifdef WRITE_SINGLE_COIL
         case WRITE_SINGLE_COIL:
         {
+            // Modbus Application Protocol V1 1B - Section 6.1
+            // Check if quantity is within range
+            if (qty == 0x0000 || qty == 0xFF00)
+            {
+                // Check address range
+                if (check_range(address, ADDRESS_COIL_START, ADDRESS_COIL_END))
+                {
+                    uint16_t i;
+                    uint16_t index_status = SIZE_MODBUS_MBAP + 1u;
+                    uint16_t read_value;
+
+                    // Get number of bytes
+                    uint8_t byte_count = 4u;
+
+                    // Update response length
+                    response_length = 1u + byte_count;
+
+                    // Unit identifier & Function code remains the same
+                    // Update data with Length field
+                    data[INDEX_LENGTH_FIELD] = (uint8_t) ((uint16_t)
+                                               (response_length + 1u) >> 8u);
+                    data[INDEX_LENGTH_FIELD + 1u] = response_length + 1u;
+
+                    // any error here should be exception code 4u
+                    read_value = write_single_coil((i + address), qty);
+
+                    if (read_value)
+                    {}
+                    else
+                    {
+                        exception_code = SLAVE_DEVICE_FAILURE;
+                    }
+
+                } // if address range check
+                else
+                {
+                    exception_code = ILLEGAL_DATA_ADDRESS;
+                }
+            } // if qty range check
+            else
+            {
+                exception_code = ILLEGAL_DATA_VALUE;
+            }
             break;
-        }
+        } // case WRITE_SINGLE_COIL
     #endif // WRITE_SINGLE_COIL
 
     #ifdef WRITE_SINGLE_REGISTER
         case WRITE_SINGLE_REGISTER:
         {
+            // Modbus Application Protocol V1 1B - Section 6.1
+            // Check if quantity is within range
+            if (check_range(qty, 0x0000, 0xFFFF))
+            {
+                // Check address range
+                if (check_range(address, ADDRESS_HOLDING_REGISTER_START, ADDRESS_HOLDING_REGISTER_END))
+                {
+                    uint16_t i;
+                    uint16_t index_status = SIZE_MODBUS_MBAP + 1u;
+                    uint16_t read_value;
+
+                    // Get number of bytes
+                    uint8_t byte_count = 4u;
+
+                    // Update response length
+                    response_length = 1u + byte_count;
+
+                    // Unit identifier & Function code remains the same
+                    // Update data with Length field
+                    data[INDEX_LENGTH_FIELD] = (uint8_t) ((uint16_t)
+                                               (response_length + 1u) >> 8u);
+                    data[INDEX_LENGTH_FIELD + 1u] = response_length + 1u;
+
+                    // any error here should be exception code 4u
+                    read_value = write_single_register((i + address), qty);
+
+                    if (read_value)
+                    {}
+                    else
+                    {
+                        exception_code = SLAVE_DEVICE_FAILURE;
+                    }
+
+                } // if address range check
+                else
+                {
+                    exception_code = ILLEGAL_DATA_ADDRESS;
+                }
+            } // if qty range check
+            else
+            {
+                exception_code = ILLEGAL_DATA_VALUE;
+            }
             break;
-        }
+        } // case WRITE_SINGLE_REGISTER
     #endif // WRITE_SINGLE_REGISTER
-*/
+
         default:
         {
             // Any other function code is either not defined or a user defined

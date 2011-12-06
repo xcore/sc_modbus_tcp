@@ -146,5 +146,37 @@ short read_input_register(unsigned short address)
     return 1;
 }
 
+/** =========================================================================
+*  Description
+*
+*  \param xxx    description of xxx
+*  \param yyy    description of yyy
+*
+**/
+short write_single_coil(unsigned short address, short value)
+{
+    if(value)
+    {
+        leda <: 1u;
+    }
+    else
+    {
+        leda <: 0u;
+    }
+    return 1;
+}
+
+/** =========================================================================
+*  Description
+*
+*  \param xxx    description of xxx
+*  \param yyy    description of yyy
+*
+**/
+short write_single_register(unsigned short address, short value)
+{
+    return 1;
+}
+
 // when pinsneq(0xf) :> void:
 /*=========================================================================*/
