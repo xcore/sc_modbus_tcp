@@ -157,11 +157,11 @@ short write_single_coil(unsigned short address, short value)
 {
     if(value)
     {
-        leda <: 1u;
+        ledb <: 1u;
     }
     else
     {
-        leda <: 0u;
+        ledb <: 0u;
     }
     return 1;
 }
