@@ -18,14 +18,16 @@ Purpose
 include files
 ---------------------------------------------------------------------------*/
 #include <string.h>
-#include <print.h>
-#include "tcpip_if.h"
+#include "modbus_pkt_processing.h"
+#include "modbus_tcpip_if.h"
 #include "xtcp_client.h"
-#include "pkt_processing.h"
 
 /*---------------------------------------------------------------------------
 constants
 ---------------------------------------------------------------------------*/
+#define MODBUS_SIZE_TCP_DATA               260
+#define MODBUS_LISTEN_PORT                 502
+#define MODBUS_NUM_CONNECTIONS             1
 
 /*---------------------------------------------------------------------------
 extern variables
@@ -42,17 +44,17 @@ global variables
 /*---------------------------------------------------------------------------
 static variables
 ---------------------------------------------------------------------------*/
-static char tcp_data[SIZE_TCP_DATA];
-static char connection_state[NUM_CONNECTIONS];
-static char have_stuff_to_send = 0u;
+static char modbus_data[MODBUS_SIZE_TCP_DATA];
+static char modbus_connection_state[MODBUS_NUM_CONNECTIONS];
+static char modbus_have_stuff_to_send = 0u;
+static int  modbus_response_length;
 
-static int response_length;
 /*---------------------------------------------------------------------------
 prototypes
 ---------------------------------------------------------------------------*/
-static void tcp_send(chanend tcp_svr, unsigned event_type);
-static void tcp_new_connection(chanend tcp_svr, xtcp_connection_t *conn);
-static void tcp_recv(chanend tcp_svr, xtcp_connection_t *conn);
+static void modbus_tcp_send(chanend c_modbus, unsigned event_type);
+static void modbus_tcp_new_connection(chanend c_modbus, xtcp_connection_t *conn);
+static void modbus_tcp_recv(chanend c_modbus, xtcp_connection_t *conn);
 
 /*---------------------------------------------------------------------------
 implementation
@@ -65,35 +67,24 @@ implementation
 *  \param yyy    description of yyy
 *
 **/
-static void tcp_recv(chanend tcp_svr, xtcp_connection_t *conn)
+static void modbus_tcp_recv(chanend c_modbus, xtcp_connection_t *conn)
 {
     int length;
 
     // Receive the data from the TCP stack
-    length = xtcp_recv(tcp_svr, tcp_data);
+    length = xtcp_recv(c_modbus, modbus_data);
 
-    response_length = modbus_tcp_process_frame(tcp_data, length);
-    //
-    //
-    //
-    //
-    //
-    //check_adu = mbtcp_parse_adu();
-    //
-    //
-    //
-    //
-    //
+    modbus_response_length = modbus_process_frame(modbus_data, length);
 
-    if (response_length)
+    if (modbus_response_length)
     {
-        have_stuff_to_send = 1u;
+        modbus_have_stuff_to_send = 1u;
     }
     else
     {
-        have_stuff_to_send = 0u;
+        modbus_have_stuff_to_send = 0u;
     }
-    xtcp_init_send(tcp_svr, conn);
+    xtcp_init_send(c_modbus, conn);
 }
 
 /** =========================================================================
@@ -103,23 +94,23 @@ static void tcp_recv(chanend tcp_svr, xtcp_connection_t *conn)
 *  \param yyy    description of yyy
 *
 **/
-static void tcp_send(chanend tcp_svr, unsigned event_type)
+static void modbus_tcp_send(chanend c_modbus, unsigned event_type)
 {
     // an error occurred in send so we should resend the existing data
     if (event_type == XTCP_RESEND_DATA)
     {
-        xtcp_send(tcp_svr, tcp_data, response_length);
+        xtcp_send(c_modbus, modbus_data, modbus_response_length);
     }
     else
     {
-        if (have_stuff_to_send)
+        if (modbus_have_stuff_to_send)
         {
-            xtcp_send(tcp_svr, tcp_data, response_length);
-            have_stuff_to_send = 0;
+            xtcp_send(c_modbus, modbus_data, modbus_response_length);
+            modbus_have_stuff_to_send = 0;
         }
         else
         {
-            xtcp_complete_send(tcp_svr);
+            xtcp_complete_send(c_modbus);
         }
     }
 }
@@ -131,14 +122,14 @@ static void tcp_send(chanend tcp_svr, unsigned event_type)
 *  \param yyy    description of yyy
 *
 **/
-static void tcp_new_connection(chanend tcp_svr, xtcp_connection_t *conn)
+static void modbus_tcp_new_connection(chanend c_modbus, xtcp_connection_t *conn)
 {
     int i;
 
     // Try and find an empty connection slot
-    for (i = 0u; i < NUM_CONNECTIONS; i++)
+    for (i = 0u; i < MODBUS_NUM_CONNECTIONS; i++)
     {
-        if (!connection_state[i])
+        if (!modbus_connection_state[i])
         {
             // found a free connection, exit this for loop
             break;
@@ -146,17 +137,17 @@ static void tcp_new_connection(chanend tcp_svr, xtcp_connection_t *conn)
     }
 
     // If no free connection slots were found, abort the connection
-    if ( i == NUM_CONNECTIONS )
+    if ( i == MODBUS_NUM_CONNECTIONS )
     {
-        xtcp_abort(tcp_svr, conn);
+        xtcp_abort(c_modbus, conn);
     }
     // Otherwise, assign the connection to a slot
     else
     {
-        connection_state[i] = 1u;
-        xtcp_set_connection_appstate(tcp_svr,
+        modbus_connection_state[i] = 1u;
+        xtcp_set_connection_appstate(c_modbus,
                                      conn,
-                                     (xtcp_appstate_t) &connection_state[i]);
+                                     (xtcp_appstate_t) &modbus_connection_state[i]);
     }
 }
 
@@ -167,25 +158,25 @@ static void tcp_new_connection(chanend tcp_svr, xtcp_connection_t *conn)
 *  \param yyy    description of yyy
 *
 **/
-void tcp_reset(chanend tcp_svr)
+void modbus_reset(chanend c_modbus)
 {
     unsigned int index;
 
     // flush modbus frame
-    for(index = 0u; index < SIZE_TCP_DATA; index++)
+    for(index = 0u; index < MODBUS_SIZE_TCP_DATA; index++)
     {
-        tcp_data[index] = 0u;
+        modbus_data[index] = 0u;
     }
 
     // flush all connections
-    for(index = 0u; index < NUM_CONNECTIONS; index++)
+    for(index = 0u; index < MODBUS_NUM_CONNECTIONS; index++)
     {
-        connection_state[index] = 0u;
+        modbus_connection_state[index] = 0u;
     }
 
-    response_length = 0u;
+    modbus_response_length = 0u;
 
-    xtcp_listen(tcp_svr, LISTEN_PORT, XTCP_PROTOCOL_TCP);
+    xtcp_listen(c_modbus, MODBUS_LISTEN_PORT, XTCP_PROTOCOL_TCP);
 }
 
 /** =========================================================================
@@ -195,7 +186,7 @@ void tcp_reset(chanend tcp_svr)
 *  \param yyy    description of yyy
 *
 **/
-void tcp_handle_event(chanend tcp_svr, xtcp_connection_t *conn)
+void modbus_handle_event(chanend c_modbus, xtcp_connection_t *conn)
 {
     // Ignore already handled events
     switch (conn->event)
@@ -208,24 +199,24 @@ void tcp_handle_event(chanend tcp_svr, xtcp_connection_t *conn)
         break;
     }
 
-    if (conn->local_port == LISTEN_PORT) {
+    if (conn->local_port == MODBUS_LISTEN_PORT) {
         switch (conn->event)
         {
         case XTCP_NEW_CONNECTION:
-            tcp_new_connection(tcp_svr, conn);
+            modbus_tcp_new_connection(c_modbus, conn);
             break;
         case XTCP_RECV_DATA:
-            tcp_recv(tcp_svr, conn);
+            modbus_tcp_recv(c_modbus, conn);
             break;
         case XTCP_SENT_DATA:
         case XTCP_REQUEST_DATA:
         case XTCP_RESEND_DATA:
-            tcp_send(tcp_svr, conn->event);
+            modbus_tcp_send(c_modbus, conn->event);
             break;
         case XTCP_TIMED_OUT:
         case XTCP_ABORTED:
         case XTCP_CLOSED:
-            tcp_reset(tcp_svr);
+            modbus_reset(c_modbus);
             break;
         default: break;
         }

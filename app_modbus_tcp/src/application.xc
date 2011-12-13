@@ -19,7 +19,7 @@ include files
 ---------------------------------------------------------------------------*/
 #include <platform.h>
 #include "application.h"
-#include "tcpip_if.h"
+#include "modbus_tcpip_if.h"
 
 /*---------------------------------------------------------------------------
 constants
@@ -62,10 +62,9 @@ implementation
 **/
 void application(chanend tcp_svr)
 {
-    int led_state = 0;
     xtcp_connection_t conn;
 
-    tcp_reset(tcp_svr);
+    modbus_reset(tcp_svr);
 
     // Loop forever processing TCP events
     while (1)
@@ -74,17 +73,17 @@ void application(chanend tcp_svr)
         {
             case xtcp_event(tcp_svr, conn):
             {
-                tcp_handle_event(tcp_svr, conn);
+                modbus_handle_event(tcp_svr, conn);
                 break;
             } // case xtcp_event
 
-            case buttona when pinseq(0xf) :> void:
+            /*case buttona when pinseq(0xf) :> void:
             {
                 leda :> led_state;
                 led_state = ~led_state;
                 leda <: led_state;
                 break;
-            } // case buttona
+            } // case buttona*/
             /*case buttonb :> void:
             {
                 ledb :> led_state;
@@ -97,24 +96,25 @@ void application(chanend tcp_svr)
 }
 
 /** =========================================================================
-*  Description
+*  read_coil
 *
-*  \param xxx    description of xxx
-*  \param yyy    description of yyy
+*  \param address    Address of data to read
+*  \return char      Read value
 *
 **/
 char read_coil(unsigned short address)
 {
     int led_state;
-    leda :> led_state;
+    ledb :> led_state;
+    ledb <: led_state;
     return (char)(led_state);
 }
 
 /** =========================================================================
-*  Description
+*  read_discrete_input
 *
-*  \param xxx    description of xxx
-*  \param yyy    description of yyy
+*  \param address    Address of data to read
+*  \return char      Read value
 *
 **/
 char read_discrete_input(unsigned short address)
@@ -123,10 +123,10 @@ char read_discrete_input(unsigned short address)
 }
 
 /** =========================================================================
-*  Description
+*  read_holding_register
 *
-*  \param xxx    description of xxx
-*  \param yyy    description of yyy
+*  \param address     Address of data to read
+*  \return short      Read value
 *
 **/
 short read_holding_register(unsigned short address)
@@ -135,10 +135,10 @@ short read_holding_register(unsigned short address)
 }
 
 /** =========================================================================
-*  Description
+*  read_input_register
 *
-*  \param xxx    description of xxx
-*  \param yyy    description of yyy
+*  \param address     Address of data to read
+*  \return short      Read value
 *
 **/
 short read_input_register(unsigned short address)
@@ -147,10 +147,10 @@ short read_input_register(unsigned short address)
 }
 
 /** =========================================================================
-*  Description
+*  write_single_coil
 *
-*  \param xxx    description of xxx
-*  \param yyy    description of yyy
+*  \param address     Address of location to write to
+*  \param short       Value
 *
 **/
 short write_single_coil(unsigned short address, short value)
@@ -167,10 +167,10 @@ short write_single_coil(unsigned short address, short value)
 }
 
 /** =========================================================================
-*  Description
+*  write_single_register
 *
-*  \param xxx    description of xxx
-*  \param yyy    description of yyy
+*  \param address     Address of location to write to
+*  \param short       Value
 *
 **/
 short write_single_register(unsigned short address, short value)
