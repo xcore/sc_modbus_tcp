@@ -1,5 +1,0 @@
-Performance
-===========
-
-To be found
-

@@ -1,5 +1,5 @@
-Introduction
-============
+Quick Start Guide
+=================
 
 This document is a Quickstart guide to help install and run the Modbus TCP Server component on an XC-2 board.
 
