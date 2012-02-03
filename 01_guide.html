@@ -1,0 +1,176 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Quick Start Guide &mdash; Modbus TCP Server v0v1 documentation</title>
+    <link rel="stylesheet" href="_static/xdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0v1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://mathjax.connectmv.com/MathJax.js"></script>
+    <script type="text/javascript" src="_static/xcomment.js"></script>
+    <link rel="top" title="Modbus TCP Server v0v1 documentation" href="index.html" />
+    <link rel="prev" title="Design" href="02_design.html" /> 
+
+<script>
+function setheight() {
+h1 = document.getElementById('d1').style.height;
+h2 = document.getElementById('d2').style.height;
+
+if (parseInt(h1) > parseInt(h2)) {
+document.getElementById('d2').style.height=h1 + "px";
+}
+else {
+document.getElementById('d1').style.height=h2 + "px";
+}
+
+}
+</script>
+</head>
+
+<body onload="setheight();">
+
+  
+
+    <div class="document" id='d1'>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+<div style="float: right">
+<a href="02_design.html"
+                        title="previous chapter"> &lt&lt </a>
+</div>
+
+            
+  <div class="section" id="quick-start-guide">
+<h1>Quick Start Guide<a class="headerlink" href="#quick-start-guide" title="Permalink to this headline">¶</a></h1>
+<p>This document is a Quickstart guide to help install and run the Modbus TCP Server component on an XC-2 board.</p>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Modbus TCP Server component. This can be downloaded from <a class="reference external" href="https://github.com/xcore/sc_modbus_tcp"><span>https://github.com/xcore/sc_modbus_tcp</span></a></li>
+<li>An XC-2 Ethernet Kit - <a class="reference external" href="http://www.xmos.com/products/development-kits/xc-2-ethernet-kit"><span>http://www.xmos.com/products/development-kits/xc-2-ethernet-kit</span></a></li>
+<li>A Modbus Client emulator to run on your PC. There is one available from SimplyModbus &#64; <a class="reference external" href="http://simplymodbus.ca/TCPclient.htm"><span>http://simplymodbus.ca/TCPclient.htm</span></a>. You can install the Version 7.0 on our Windows PC.</li>
+</ul>
+</div>
+<div class="section" id="demo">
+<h2>Demo<a class="headerlink" href="#demo" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Fix the XTAG into XC-2 Board. Connect the USB cable between XTAG and PC.</p>
+</li>
+<li><p class="first">Find an ehternet cable and connect one end to XC-2 board and the other end to your PC.</p>
+</li>
+<li><p class="first">Power up the XC-2 board with the adapter provided in the kit.</p>
+</li>
+<li><p class="first">Once you have downloaded the Modbus TCP Server component, open the &#8216;app_modbus_tcp&#8217; in XDE. You can indicate a static IP or a Dynamic IP configuration in main.xc file. Build and Run the project on XC-2 board.</p>
+</li>
+<li><p class="first">In this application you can read the status of LED B by read_coil command and SET / CLEAR LED B using write_coil command.</p>
+</li>
+<li><p class="first">Function codes can be found at Modbus Specification and Implementation Guide (<a class="reference external" href="http://www.modbus.org/specs.php"><span>http://www.modbus.org/specs.php</span></a>).</p>
+</li>
+<li><p class="first">Open the SimplyModbus from Start -&gt; Programs -&gt; SimplyModbus and adjust to following settings:</p>
+<blockquote>
+<div><p><strong>mode = TCP</strong>
+<strong>IP Address = user ip address provided in main.xc</strong>
+<strong>Port = 502 (Modbus Listening Port)</strong></p>
+</div></blockquote>
+</li>
+<li><p class="first">Alternatively, load the read_coil configuration file from $app_modbus_tcpsimplymodbus_configand click CONNECT.</p>
+</li>
+</ul>
+<div class="figure align-center">
+<img alt="_images/1.png" src="_images/1.png" />
+<p class="caption">SimplyModbus Configuration</p>
+</div>
+<ul class="simple">
+<li>Send a command as &#8216;Read Coil&#8217; (load read_coil config from $app_modbus_tcpsimplymodbus_config). This will read the status of LED B. The status can be seen as SET / CLEARED bits in results column. Please note that the status of one LED is copied to all other requested quantities.</li>
+</ul>
+<div class="figure align-center">
+<img alt="_images/2.png" src="_images/2.png" />
+<p class="caption">Read Coil</p>
+</div>
+<ul class="simple">
+<li>You can write using the WRITE interface. This can be brought up by clicking the WRITE button in simplyModbus.</li>
+</ul>
+<div class="figure align-center">
+<img alt="_images/3.png" src="_images/3.png" />
+<p class="caption">Write interface in SimplyModbus</p>
+</div>
+<ul class="simple">
+<li>Load the write_coil config in WRITE window. Sending the command will illuminate LED B.</li>
+</ul>
+<div class="figure align-center">
+<img alt="_images/4.png" src="_images/4.png" />
+<p class="caption">After &#8216;write&#8217;, read back the status of LED B</p>
+</div>
+<ul class="simple">
+<li>User can change appropriate values of address and data based on his application.</li>
+<li>Any unsupported Function code or data range will result in exception response.</li>
+</ul>
+<div class="figure align-center">
+<img alt="_images/7.png" src="_images/7.png" />
+<p class="caption">Illegal Function Code exception response example</p>
+</div>
+<div class="figure align-center">
+<img alt="_images/8.png" src="_images/8.png" />
+<p class="caption">Illegal Data Value exception response example</p>
+</div>
+</div>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" id='d2'>
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Modbus TCP Server (0v1)</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01_overview.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_design.html">Design</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#demo">Demo</a></li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none;margin-bottom: 10px;">
+  <h3>Search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+
+    <div class="footer">
+    </div>
+  </body>
+</html>
+
+
+

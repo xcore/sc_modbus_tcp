@@ -1,0 +1,182 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Design &mdash; Modbus TCP Server v0v1 documentation</title>
+    <link rel="stylesheet" href="_static/xdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0v1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://mathjax.connectmv.com/MathJax.js"></script>
+    <script type="text/javascript" src="_static/xcomment.js"></script>
+    <link rel="top" title="Modbus TCP Server v0v1 documentation" href="index.html" />
+    <link rel="next" title="Quick Start Guide" href="01_guide.html" />
+    <link rel="prev" title="Introduction" href="01_overview.html" /> 
+
+<script>
+function setheight() {
+h1 = document.getElementById('d1').style.height;
+h2 = document.getElementById('d2').style.height;
+
+if (parseInt(h1) > parseInt(h2)) {
+document.getElementById('d2').style.height=h1 + "px";
+}
+else {
+document.getElementById('d1').style.height=h2 + "px";
+}
+
+}
+</script>
+</head>
+
+<body onload="setheight();">
+
+  
+
+    <div class="document" id='d1'>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+<div style="float: right">
+<a href="01_overview.html"
+                        title="previous chapter"> &lt&lt </a>
+<a href="01_guide.html"
+                        title="next chapter"> &gt&gt </a></p>
+</div>
+
+            
+  <div class="section" id="design">
+<h1>Design<a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h1>
+<p>Modbus TCP library consists of 3 main components:</p>
+<ul class="simple">
+<li>The TCP/IP interface</li>
+<li>Modbus frame processing and</li>
+<li>Data interface</li>
+</ul>
+<p>The TCP/IP interface is an optional thread based service which uses the TCP module. This can be a part of the user application.</p>
+<p>Modbus frame processing unit checks if the incoming frame is valid and builds appropriate responses to send back to the client.</p>
+<p>Data interface is closely related to the application specific requirements. User must define the types of data that can be read/written to.</p>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<p>** modbus_tcp_get_status **</p>
+<p>Return type: char modbus_tcp_status - returns status of Modbus TCP frame processing.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>7  |  6  |  5  |  4  |  3  |  2  |  1  |  0</td>
+</tr>
+<tr><td>Res | Res | Res | Res | Res | Res <a href="#id9"><span class="problematic" id="id10">|VALID|</span></a> MB</td>
+</tr>
+</tbody>
+</table>
+<p>Param: -</p>
+<p>Description:</p>
+<p>Here is the bit field information about the status.</p>
+<p>Bit 0: A &#8216;zero&#8217; at this position indicates that the TCP data received is not a Modbus frame and hence cannot be processed further. A &#8216;one&#8217; indicates a valid Modbus frame.</p>
+<p>Bit 1: A &#8216;zero&#8217; indicates that the frame has error in Modbus request. A &#8216;one&#8217; indicates a valid Modbus frame. The value at this bit field is valid only if a &#8216;one&#8217; is read at Bit 0.</p>
+<p>Bit 2 - 7: Reserved.</p>
+<p>This function must be called from the user application space.</p>
+<p>** modbus_tcp_process_frame **</p>
+<p>Return type: int response_length - returns length of response frame.</p>
+<p>Param:</p>
+<ul class="simple">
+<li>char <a href="#id1"><span class="problematic" id="id2">*</span></a>data[] - Pointer to the TCP data received.</li>
+<li>int length - Length of data received.</li>
+</ul>
+<p>Description:</p>
+<p>The user must pass the address and length of data received from TCP layer. This function checks if the frame received is a valid Modbus TCP frame. It then calls the memory interface function and modifies the data with response information. It returns the response frame length of Modbus processing.</p>
+<p>** is_modbus_tcp_frame **</p>
+<p>Return type: boolean</p>
+<p>Param:</p>
+<ul class="simple">
+<li>char <a href="#id3"><span class="problematic" id="id4">*</span></a>data[] - Pointer to the TCP data received.</li>
+</ul>
+<p>Description:</p>
+<p>Checks if &#8216;protocol&#8217; field of the received TCP frame matches Modbus Protocol code (zero). Return &#8216;true&#8217; for a match or &#8216;false&#8217; for a mismatch. This is called internally in library. Status must be updated with the return value by this function.</p>
+<p>** is_valid_request **</p>
+<p>Return type: boolean</p>
+<p>Param:</p>
+<ul class="simple">
+<li>char <a href="#id5"><span class="problematic" id="id6">*</span></a>data[] - Pointer to the TCP data received.</li>
+</ul>
+<p>Description:</p>
+<p>This is called internally in library. Status must be updated with the return value by this function. Checks if other fields of the received Modbus TCP frame are valid. It checks the Function code, address and data renges, etc... Return &#8216;true&#8217; for a valid request or &#8216;false&#8217; for an invalid request.</p>
+<p>** memory_access **</p>
+<p>Return type: boolean - success / failure</p>
+<p>Param:</p>
+<ul class="simple">
+<li>int element_index - motor number.</li>
+<li>int function_code - the type of access to be performed.</li>
+<li>char <a href="#id7"><span class="problematic" id="id8">*</span></a>m_data[] - array where the memory functions would read from / write to, based on function requested.</li>
+<li>int start_address - starting address.</li>
+<li>int length - starting address + length = end address.</li>
+</ul>
+<p>Description:</p>
+<p>Memory access functions can be taken out of the library and suit the application needs. The function parameters have all the information required to access a particular memory type.</p>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="figure">
+<img alt="_images/example_app.png" src="_images/example_app.png" />
+</div>
+</div>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" id='d2'>
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Modbus TCP Server (0v1)</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01_overview.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="01_guide.html">Quick Start Guide</a></li>
+</ul>
+
+<div id="searchbox" style="display: none;margin-bottom: 10px;">
+  <h3>Search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+
+
+    <div class="footer">
+    </div>
+  </body>
+</html>
+
+
+
