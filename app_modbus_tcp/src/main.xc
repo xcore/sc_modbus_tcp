@@ -4,13 +4,8 @@
 // LICENSE.txt and at <http://github.xcore.com/>
 
 /*===========================================================================
- Filename: main.xc
- Project : app_modbus_tcp
- Author  : vm
- Version : 0.1
- Purpose
- -----------------------------------------------------------------------------
- Application for the Modbus TCP Server library.
+ Info
+ ----
 
  ===========================================================================*/
 
@@ -18,11 +13,10 @@
  include files
  ---------------------------------------------------------------------------*/
 #include <platform.h>
-#include <print.h>
-#include "uip_server.h"
-#include "getmac.h"
-#include "ethernet_server.h"
-#include "application.h"
+#include "xtcp.h"
+#include "ethernet_board_support.h"
+#include "modbus_tcp_server.h"
+#include "modbus_tcp_cmd.h"
 
 /*---------------------------------------------------------------------------
  constants
@@ -31,34 +25,16 @@
 /*---------------------------------------------------------------------------
  ports and clocks
  ---------------------------------------------------------------------------*/
-on stdcore[2]: port otp_data = XS1_PORT_32B; // OTP_DATA_PORT
-on stdcore[2]: out port otp_addr = XS1_PORT_16C; // OTP_ADDR_PORT
-on stdcore[2]: port otp_ctrl = XS1_PORT_16D; // OTP_CTRL_PORT
-on stdcore[2]: clock clk_smi = XS1_CLKBLK_5;
-on stdcore[2]: mii_interface_t mii = { XS1_CLKBLK_1,
-                                       XS1_CLKBLK_2,
-                                       PORT_ETH_RXCLK,
-                                       PORT_ETH_RXER,
-                                       PORT_ETH_RXD,
-                                       PORT_ETH_RXDV,
-                                       PORT_ETH_TXCLK,
-                                       PORT_ETH_TXEN,
-                                       PORT_ETH_TXD, };
-
-#ifdef PORT_ETH_RST_N
-    on stdcore[2]: out port p_mii_resetn = PORT_ETH_RST_N;
-    on stdcore[2]: smi_interface_t smi = { PORT_ETH_MDIO,
-                                           PORT_ETH_MDC,
-                                           0 };
-#else
-    on stdcore[2]: smi_interface_t smi = { PORT_ETH_RST_N_MDIO,
-                                           PORT_ETH_MDC,
-                                           1 };
-#endif
-
-/*---------------------------------------------------------------------------
- extern variables
- ---------------------------------------------------------------------------*/
+// These intializers are taken from the ethernet_board_support.h header for
+// XMOS dev boards. If you are using a different board you will need to
+// supply explicit port structure intializers for these values
+ethernet_xtcp_ports_t xtcp_ports =
+{
+  on ETHERNET_DEFAULT_TILE: OTP_PORTS_INITIALIZER,
+                            ETHERNET_DEFAULT_SMI_INIT,
+                            ETHERNET_DEFAULT_MII_INIT_lite,
+                            ETHERNET_DEFAULT_RESET_INTERFACE_INIT
+};
 
 /*---------------------------------------------------------------------------
  typedefs
@@ -69,70 +45,92 @@ on stdcore[2]: mii_interface_t mii = { XS1_CLKBLK_1,
  ---------------------------------------------------------------------------*/
 // IP Config - change this to suit your network.  Leave with all
 // 0 values to use DHCP
-xtcp_ipconfig_t ipconfig = { { 0, 0, 0, 0 }, // ip address (eg 192,168,0,2)
-                             { 0, 0, 0, 0 }, // netmask (eg 255,255,255,0)
-                             { 0, 0, 0, 0 }  // gateway (eg 192,168,0,1)
-                           };
+xtcp_ipconfig_t ipconfig = {
+  { 0, 0, 0, 0 }, // ip address (eg 192,168,0,2)
+  { 0, 0, 0, 0 }, // netmask (eg 255,255,255,0)
+  { 0, 0, 0, 0 }  // gateway (eg 192,168,0,1)
+};
+
 /*---------------------------------------------------------------------------
  static variables
  ---------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------
- prototypes
+ static prototypes
  ---------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------
- implementation
+ Application
  ---------------------------------------------------------------------------*/
-/** =========================================================================
- *  main. Instantiates the XTCP, Ethernet components. Has application thread
- *  and manages XTCP connections.
- *
- **/
-int main(void)
+void application(chanend c_modbus)
 {
-    chan mac_rx[1], mac_tx[1], xtcp[1], connect_status;
+  unsigned short mb_data, address, value;
+  unsigned short toggle = 0;
 
-    par
+  while(1)
+  {
+    select
     {
-        // The ethernet server
-        on stdcore[2]:
+      case c_modbus :> mb_data:
+      {
+        // Received a modbus command
+
+        // Get the address
+        c_modbus :> address;
+
+        // Get the value / quantity
+        c_modbus :> value;
+
+        switch(mb_data)
         {
-            int mac_address[2];
-            ethernet_getmac_otp(otp_data,
-                                otp_addr,
-                                otp_ctrl,
-                                (mac_address, char[]));
-            phy_init(clk_smi,
-                     #ifdef PORT_ETH_RST_N
-                         p_mii_resetn,
-                     #else
-                         null,
-                     #endif
-                     smi,
-                     mii);
+          case READ_DISCRETE_INPUTS:
+          case READ_INPUT_REGISTER:
+          case READ_HOLDING_REGISTERS:
+          case WRITE_SINGLE_REGISTER:
+          case READ_COILS:
+          case WRITE_SINGLE_COIL:
+          {
+            c_modbus <: toggle;
+            break;
+          }
+          default: break;
 
-            ethernet_server(mii,
-                            mac_address,
-                            mac_rx,
-                            1,
-                            mac_tx,
-                            1,
-                            smi,
-                            connect_status);
-        }
+        } // switch(mb_data)
 
-        // The TCP/IP server thread
-        on stdcore[3]: uip_server(mac_rx[0],
-                                  mac_tx[0],
-                                  xtcp,
-                                  1,
-                                  ipconfig,
-                                  connect_status);
+        toggle = !toggle;
 
-        on stdcore[0]: application(xtcp[0]);
-    } // par
-    return 0;
+        break;
+
+      } // case c_modbus :> mb_data:
+
+    } // select
+
+  } // while(1)
+
 }
 
-/*=========================================================================*/
+/*---------------------------------------------------------------------------
+ Main Entry Point
+ ---------------------------------------------------------------------------*/
+int main(void)
+{
+  chan c_xtcp[1];
+  chan c_modbus;
+
+  par
+  {
+    // The main ethernet/tcp server
+    on ETHERNET_DEFAULT_TILE: ethernet_xtcp_server(xtcp_ports,
+                                                   ipconfig,
+                                                   c_xtcp,
+                                                   1);
+
+    // The modbus TCP webserver
+    on tile[0]: modbus_tcp_server(c_xtcp[0], c_modbus);
+    // The Application
+    on tile[0]: application(c_modbus);
+  }
+  return 0;
+}
+
+/*==========================================================================*/

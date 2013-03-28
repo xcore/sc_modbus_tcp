@@ -2,51 +2,52 @@ Modbus TCP Component
 ....................
 
 :Stable release:  unreleased
+:Maintainer:  vinithmundhra
+:Description:  Modbus TCP Component - Server
 
 :Status:  example
 
-:Maintainer:  Vinith Mundhra (github: vinithmundhra)
+Key Features
+============
 
-:Description:  Modbus TCP Component - Server
+Implements following Modbus commands:
 
-
+  * Read Coils
+  * Write Single Coil
+  * Read Input Register
+  * Read Holding Registers
+  * Write Single Register
+  * Read Discrete Inputs
+  
 Firmware Overview
 =================
 
-This is a Modbus TCP Server library. Modbus protocol specification and messaging implementation guide can be found here:
+This is a Modbus TCP Server library. Modbus protocol specification and messaging
+implementation guide can be found here:
 
 http://www.modbus.org/specs.php
 
-A Modbus client (e.g. on a PC) can send 'requests' to the Modbus Server running in an Xcore via TCP. The TCP layer 
-accepts this data from the client and passes it over to the modbus_event_handler. 
+A Modbus client (e.g. on a PC - Simply Modbus) can send 'requests' to the Modbus
+Server running in an Xcore via TCP. The TCP layer accepts this data from the
+client and passes it over to the modbus_tcp_handle_event.
 
-This frame is then processed by modbus_pkt_processing and a response is generated which is carried back to the client 
+This frame is then processed and a response is requested from the application
+over the Modbus channel. The response generated is carried back to the client
 via TCP.
 
-Demo Application
-================
+Known Issues
+============
 
-A demo application using the SImplyModbus client side software and an XC-2 Ethernet development board is included.
-
-Documentation
-=============
-
-See http://github.xcore.com/sc_modbus_tcp/ for design documentation and demo quick start guide.
-
-To Do
-=====
-
-* A single thread variant that can process Modbus requests in parallel to TCP communications.
-
+none
 
 Required Repositories
-================
+=====================
 
 * sc_ethernet git://github.com/xcore/sc_ethernet.git
 * sc_xtcp git://github.com/xcore/sc_xtcp.git
-* xcommon git\@github.com:xcore/xcommon.git
 
 Support
 =======
 
-Issues may be submitted via the Issues tab in this github repo. Response to any issues submitted as at the discretion of the manitainer for this line.
+Issues may be submitted via the Issues tab in this github repo. Response to any 
+issues submitted as at the discretion of the manitainer for this line.

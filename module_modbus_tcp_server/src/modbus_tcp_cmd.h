@@ -3,31 +3,26 @@
 // University of Illinois/NCSA Open Source License posted in
 // LICENSE.txt and at <http://github.xcore.com/>
 
-#ifndef MODBUS_PKT_PROCESSING_H_
-#define MODBUS_PKT_PROCESSING_H_
 /*===========================================================================
-Filename:
-Project :
-Author  :
-Version :
-Purpose
------------------------------------------------------------------------------
+ Info
+ ----
+ 
+ ===========================================================================*/
 
-
-===========================================================================*/
+#ifndef _modbus_tcp_cmd_h_
+#define _modbus_tcp_cmd_h_
 
 /*---------------------------------------------------------------------------
-nested include files
----------------------------------------------------------------------------*/
-#include "xtcp_client.h"
-
+ nested include files
+ ---------------------------------------------------------------------------*/
 #ifdef __modbus_config_h_exists__
    #include <modbus_config.h>
 #endif
 
 /*---------------------------------------------------------------------------
-constants
----------------------------------------------------------------------------*/
+ constants
+ ---------------------------------------------------------------------------*/
+
 // User defines addresses and quantity limits
 #ifndef MODBUS_ADDRESS_COIL_START
     #define MODBUS_ADDRESS_COIL_START                      0x0000
@@ -85,7 +80,7 @@ constants
 #endif
 
 // Public Function Code Definitions
-// Comment out functions that are not supported
+// Comment out functions that are not supported yet
 #define READ_DISCRETE_INPUTS                    0x02
 #define READ_COILS                              0x01
 #define WRITE_SINGLE_COIL                       0x05
@@ -114,12 +109,12 @@ constants
 #define MODBUS_SIZE_MBAP                        7u
 
 // Big Endian format in Modbus data
-#define MODBUS_INDEX_TRANSACTION_ID                    0u
-#define MODBUS_INDEX_PROTOCOL_ID                       2u
-#define MODBUS_INDEX_LENGTH_FIELD                      4u
-#define MODBUS_INDEX_UNIT_ID                           6u
-#define MODBUS_INDEX_FUNCTION_CODE                     7u
-#define MODBUS_INDEX_START_DATA                        8u
+#define MODBUS_INDEX_TRANSACTION_ID             0u
+#define MODBUS_INDEX_PROTOCOL_ID                2u
+#define MODBUS_INDEX_LENGTH_FIELD               4u
+#define MODBUS_INDEX_UNIT_ID                    6u
+#define MODBUS_INDEX_FUNCTION_CODE              7u
+#define MODBUS_INDEX_START_DATA                 8u
 
 // Diagnostic (0x08) Sub Function Code
 #define RETURN_QUERY_DATA                       0x00
@@ -150,23 +145,20 @@ constants
 #define GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND 0x0B
 
 /*---------------------------------------------------------------------------
-extern variables
----------------------------------------------------------------------------*/
+ typedefs
+ ---------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------
-typedefs
----------------------------------------------------------------------------*/
+ global variables
+ ---------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------
-global variables
----------------------------------------------------------------------------*/
-
+ extern variables
+ ---------------------------------------------------------------------------*/
+ 
 /*---------------------------------------------------------------------------
-prototypes
----------------------------------------------------------------------------*/
-int modbus_process_frame(char data[], int length);
-char modbus_get_status(void);
+ prototypes
+ ---------------------------------------------------------------------------*/
 
-#endif // MODBUS_PKT_PROCESSING_H_
-/*=========================================================================*/
-
+#endif // _modbus_tcp_cmd_h_
+/*==========================================================================*/

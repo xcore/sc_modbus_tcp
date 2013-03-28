@@ -1,3 +1,6 @@
+DEPENDENT_MODULES = module_xtcp
+OPTIONAL_HEADERS += modbus_config.h
+
 # You can set flags specifically for your module by using the MODULE_XCC_FLAGS
 # variable. So the following
 #
@@ -9,5 +12,4 @@
 #
 # You can also set MODULE_XCC_C_FLAGS, MODULE_XCC_XC_FLAGS etc..
 
-OPTIONAL_HEADERS += modbus_config.h
-
+MODULE_XCC_XC_FLAGS = $(XCC_XC_FLAGS)

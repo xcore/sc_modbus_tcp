@@ -1,8 +1,10 @@
+REPO=../../../sc_modbus_tcp_server
 SPHINX_PROJECT_NAME=Modbus TCP Server
-VERSION=0.1
-DOXYGEN_DIRS= ../module_modbus_tcp_server/src
-SOURCE_INCLUDE_DIRS= ../module_modbus_tcp_server/src
-XDOC_DIR ?= ../../xdoc
+VERSION=0v1
+DOXYGEN_DIRS=$(REPO)/module_modbus_tcp_server \
+
+SOURCE_INCLUDE_DIRS=$(REPO)
+XDOC_DIR ?= ../../../xdoc
 include $(XDOC_DIR)/Makefile.inc
 
 all: html pdf

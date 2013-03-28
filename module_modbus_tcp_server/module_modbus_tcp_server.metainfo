@@ -1,0 +1,335 @@
+-------------------------------------------------------------------------------
+-- Descriptive metadata
+-------------------------------------------------------------------------------
+
+componentName = "Modbus TCP Server"
+componentFullName = ""
+alternativeNames = { }
+componentDescription = "Offers a Modbus TCP Server component"
+componentVersion = "0v1"
+
+-------------------------------------------------------------------------------
+-- Parameter descriptions.
+-------------------------------------------------------------------------------
+
+
+configPoints =
+{
+
+  address_coil_start =
+  {
+    short   = "Start address for Coil",
+    long    = "",
+    help    = "Start address for Coil",
+    units   = "",
+    define  = "MODBUS_ADDRESS_COIL_START",
+    type    = "unsigned short",
+    min     = 0,
+    max     = 65535,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=0
+  },
+
+  address_coil_end =
+  {
+    short   = "End address for Coil",
+    long    = "",
+    help    = "End address for Coil",
+    units   = "",
+    define  = "MODBUS_ADDRESS_COIL_END",
+    type    = "unsigned short",
+    min     = 0,
+    max     = 65535,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=65535
+  },
+
+  address_holding_register_start =
+  {
+    short   = "Start address for Holding Register",
+    long    = "",
+    help    = "Start address for Holding Register",
+    units   = "",
+    define  = "MODBUS_ADDRESS_HOLDING_REGISTER_START",
+    type    = "unsigned short",
+    min     = 0,
+    max     = 65535,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=0
+  },
+
+  address_holding_register_end =
+  {
+    short   = "End address for Holding Register",
+    long    = "",
+    help    = "End address for Holding Register",
+    units   = "",
+    define  = "MODBUS_ADDRESS_HOLDING_REGISTER_END",
+    type    = "unsigned short",
+    min     = 0,
+    max     = 65535,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=65535
+  },
+
+  address_input_register_start =
+  {
+    short   = "Start address for Input Register",
+    long    = "",
+    help    = "Start address for Input Register",
+    units   = "",
+    define  = "MODBUS_ADDRESS_INPUT_REGISTER_START",
+    type    = "unsigned short",
+    min     = 0,
+    max     = 65535,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=0
+  },
+
+  address_input_register_end =
+  {
+    short   = "End address for Input Register",
+    long    = "",
+    help    = "End address for Input Register",
+    units   = "",
+    define  = "MODBUS_ADDRESS_INPUT_REGISTER_END",
+    type    = "unsigned short",
+    min     = 0,
+    max     = 65535,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=65535
+  },
+
+  address_discrete_input_start =
+  {
+    short   = "Start address for Discrete Input",
+    long    = "",
+    help    = "Start address for Discrete Input",
+    units   = "",
+    define  = "MODBUS_ADDRESS_DISCRETE_INPUT_START",
+    type    = "unsigned short",
+    min     = 0,
+    max     = 65535,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=0
+  },
+
+  address_discrete_input_end =
+  {
+    short   = "End address for Discrete Input",
+    long    = "",
+    help    = "End address for Discrete Input",
+    units   = "",
+    define  = "MODBUS_ADDRESS_DISCRETE_INPUT_END",
+    type    = "unsigned short",
+    min     = 0,
+    max     = 65535,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=65535
+  },
+
+  quantity_coil_start =
+  {
+    short   = "Start quantity for Coil",
+    long    = "",
+    help    = "Start quantity for Coil",
+    units   = "",
+    define  = "MODBUS_QUANTITY_COIL_START",
+    type    = "unsigned short",
+    min     = 1,
+    max     = 2000,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=0
+  },
+
+  quantity_coil_end =
+  {
+    short   = "End quantity for Coil",
+    long    = "",
+    help    = "End quantity for Coil",
+    units   = "",
+    define  = "MODBUS_QUANTITY_COIL_END",
+    type    = "unsigned short",
+    min     = 1,
+    max     = 2000,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=2000
+  },
+
+  quantity_holding_register_start =
+  {
+    short   = "Start quantity for Holding Register",
+    long    = "",
+    help    = "Start quantity for Holding Register",
+    units   = "",
+    define  = "MODBUS_QUANTITY_HOLDING_REGISTER_START",
+    type    = "unsigned short",
+    min     = 1,
+    max     = 125,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=0
+  },
+
+  quantity_holding_register_end =
+  {
+    short   = "End quantity for Holding Register",
+    long    = "",
+    help    = "End quantity for Holding Register",
+    units   = "",
+    define  = "MODBUS_QUANTITY_HOLDING_REGISTER_END",
+    type    = "unsigned short",
+    min     = 1,
+    max     = 125,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=125
+  },
+
+  quantity_input_register_start =
+  {
+    short   = "Start quantity for Input Register",
+    long    = "",
+    help    = "Start quantity for Input Register",
+    units   = "",
+    define  = "MODBUS_QUANTITY_INPUT_REGISTER_START",
+    type    = "unsigned short",
+    min     = 1,
+    max     = 125,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=0
+  },
+
+  quantity_input_register_end =
+  {
+    short   = "End quantity for Input Register",
+    long    = "",
+    help    = "End quantity for Input Register",
+    units   = "",
+    define  = "MODBUS_QUANTITY_INPUT_REGISTER_END",
+    type    = "unsigned short",
+    min     = 1,
+    max     = 125,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=125
+  },
+
+  quantity_discrete_input_start =
+  {
+    short   = "Start quantity for Discrete Input",
+    long    = "",
+    help    = "Start quantity for Discrete Input",
+    units   = "",
+    define  = "MODBUS_QUANTITY_DISCRETE_INPUT_START",
+    type    = "unsigned short",
+    min     = 1,
+    max     = 2000,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=0
+  },
+
+  quantity_discrete_input_end =
+  {
+    short   = "End quantity for Discrete Input",
+    long    = "",
+    help    = "End quantity for Discrete Input",
+    units   = "",
+    define  = "MODBUS_QUANTITY_DISCRETE_INPUT_END",
+    type    = "unsigned short",
+    min     = 1,
+    max     = 2000,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=2000
+  },
+
+  quantity_write_single_coil_1 =
+  {
+    short   = "First quantity for Write Single Coil",
+    long    = "",
+    help    = "First quantity for Write Single Coil",
+    units   = "",
+    define  = "MODBUS_WRITE_QUANTITY_1",
+    type    = "unsigned short",
+    min     = 0,
+    max     = 0,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=0
+  },
+
+  quantity_write_single_coil_2 =
+  {
+    short   = "Second quantity for Write Single Coil",
+    long    = "",
+    help    = "Second quantity for Write Single Coil",
+    units   = "",
+    define  = "MODBUS_WRITE_QUANTITY_2",
+    type    = "unsigned short",
+    min     = 65280,
+    max     = 65280,
+    enabled = swblock.params.lcd_part == "Generic",
+    resourceUsageFlags = {"noeffect"},
+    default=65280
+  },
+  
+}
+
+derivedValues = {}
+
+ports = {}
+
+channels = {
+  c_tcp_svr = {
+    short = "TCP Server channel",
+    long = "The XTCP channel to exchange data with ethernet component",
+    help = "",
+  },
+  
+  c_modbus = {
+    short = "Modbus server channel",
+    long = "Channel to carry Modbus requests to application",
+    help = "",
+  },
+  
+}
+
+function getConfigStatus()
+  local status = "Trusted Configuration"
+  local issues = {}
+  return status, issues
+end
+
+-------------------------------------------------------------------------------
+-- Source generation functions
+-------------------------------------------------------------------------------
+
+generatedCode = {
+  includes = {"modbus_tcp_server.h"}, {"modbus_tcp_cmd.h"},
+  globals = [[
+  ]],
+  body = [[
+    modbus_tcp_server(${swblock.chanends.c_tcp_svr}, ${swblock.chanends.c_modbus});
+  ]]
+}
+
+files = {
+  ["module_modbus_tcp_server/modbus_config_example.h"] = "src/modbus_config.h",
+}
+
+api = {
+  'modbus_tcp_server',
+}

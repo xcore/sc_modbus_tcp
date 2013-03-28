@@ -1,8 +1,10 @@
-Modbus TCP Server
-=================
+Modbus TCP Server Component
+===========================
 
 .. toctree::
 
-   01_overview
-   02_design
-   01_guide.rst
+  Overview <overview>
+  Hardware Requirements <hw>
+  API <api>
+  Programming Guide <programming>
+  Example Applications <examples>

@@ -8,5 +8,11 @@
 *.i
 *.a
 *.metadata
-*.d
-*.*~
+
+doc/.doxygen/
+
+doc/.sources/
+
+doc/Doxyfile-e
+
+doc/_build/

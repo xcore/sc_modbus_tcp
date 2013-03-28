@@ -1,6 +1,13 @@
+
 Software License Agreement
 
 Copyright (c) 2011, XMOS, All rights reserved.
+
+Additional copyright holders (each contributor holds copyright
+over contribution as described in the git commit logs for the repository):
+
+        <list additional contributors and github usernames here>
+        Copyright (c) 2011
 
 The copyright holders hereby grant to any person obtaining a copy of this software (the "Software") and/or its associated 
 documentation files (the Documentation), the perpetual, irrevocable (except in the case of breach of this license) no-cost, 
@@ -17,7 +24,7 @@ the following disclaimers in the documentation and/or other materials provided w
 . Redistributions of the Documentation must retain the above copyright notice, this list of conditions and the following 
 disclaimers.
 
-Neither the name of XMOS, nor the names of its contributors may be used to endorse or promote products derived from this 
+Neither the name of XMOS, nor the names of its contributors may be used to endorse or promote products derived from this
 Software or the Documentation without specific prior written permission of the copyright holder.
 
 THE SOFTWARE AND DOCUMENTATION ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT 

@@ -4,14 +4,6 @@
         <githash>3ec1d14a67f29bc0d0389f57d6929f34663151de</githash>
         <uri>https://github.com/xcore/sc_xtcp.git</uri>
     </dependency>
-    <dependency repo = "xcommon">
-        <githash>7ee08c2272e28e9b12e756a8e1045ab783fe761a</githash>
-        <uri>git://github.com/xcore/xcommon.git</uri>
-    </dependency>
-    <dependency repo = "sc_ethernet">
-        <githash>ed87c837ccd6115daef7e4b184521bd66458ff8d</githash>
-        <uri>https://github.com/xcore/sc_ethernet.git</uri>
-    </dependency>
     <location>ssh://git@github.com:22/xcore/sc_modbus_tcp.git</location>
     <name>sc_modbus_tcp</name>
     <xpd_version>1.0</xpd_version>
