@@ -1,13 +1,13 @@
-.. _modbus_tcp_server_demo_Quickstart:
+.. _modbus_tcp_demo_Quickstart:
 
-Modbus TCP Server Demo Quickstart Guide
-=======================================
+Modbus TCP Demo Quickstart Guide
+================================
 
 sc_modbus_tcp demo : Quick Start Guide
 --------------------------------------
 
 This simple demonstration of xTIMEcomposer Studio functionality that uses the
-XA-SK-E100 Slice Card together with the xSOFTip ``module_modbus_tcp_server`` to
+XA-SK-E100 Slice Card together with the xSOFTip ``module_modbus_tcp`` to
 demonstrate how the module is used to service commands from Modbus TCP client.
 
 Hardware Setup
@@ -27,7 +27,7 @@ To setup up the system:
   #. Connect an Ethernet cable between the XA-SK-E100 Slice Card and host PC.
   #. Switch on the power supply to the Slicekit Core board.
 
-.. figure:: images/hardware_setup.png
+.. figure:: images/hardware_setup.jpg
     :align: center
 
     Hardware Setup for Modbus TCP Server Demo
@@ -37,11 +37,10 @@ Import and Build the Application
 
   #. Open xTIMEcomposer and check that it is operating in online mode. Open the
   edit perspective (Window->Open Perspective->XMOS Edit).
-  #. Locate the ``'Slicekit Modbus TCP Server Demo'`` item in the xSOFTip pane
+  #. Locate the ``'Slicekit Modbus TCP Demo'`` item in the xSOFTip pane
   on the bottom left of the window and drag it into the Project Explorer window
   in the xTIMEcomposer. This will also cause the modules on which this
-  application depends (in this case, module_xtcp, module_ethernet) to be
-  imported as well.
+  application depends to be imported as well.
   #. Click on the ``app_modbus_tcp`` item in the Project Explorer pane then
   click on the build icon (hammer) in xTIMEcomposer. Check the console window to
   verify that the application has built successfully.
@@ -51,7 +50,7 @@ find by selecting Help->Tutorials from the xTIMEcomposer menu.
 
 Note that the Developer Column in the xTIMEcomposer on the right hand side of
 your screen provides information on the xSOFTip components you are using. Select
-the module_lcd component in the Project Explorer, and you will see its
+the module_modbus_tcp component in the Project Explorer, and you will see its
 description together with API documentation. Having done this, click the `back`
 icon until you return to this quickstart guide within the Developer Column.
 
@@ -133,3 +132,4 @@ Next Steps
   directory under app_modbus_tcp and double click on the ``main.xc`` file within 
   it. The file will open in the central editor window.
   #. Try changing the modbus responses to commands.
+

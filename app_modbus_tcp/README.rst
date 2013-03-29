@@ -7,5 +7,5 @@ Modbus TCP Server Demo
 :boards: XA-SK-E100
 
 This simple demonstration of xTIMEcomposer Studio functionality that uses the 
-XA-SK-E100 Slice Card together with the xSOFTip module_modbus_tcp_server to 
+XA-SK-E100 Slice Card together with the xSOFTip module_modbus_tcp to 
 demonstrate how the module is used to service commands from Modbus TCP client.

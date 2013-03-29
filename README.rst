@@ -3,7 +3,7 @@ Modbus TCP Component
 
 :Stable release:  unreleased
 :Maintainer:  vinithmundhra
-:Description:  Modbus TCP Component - Server
+:Description:  Modbus TCP Component
 
 :Status:  example
 
@@ -22,13 +22,13 @@ Implements following Modbus commands:
 Firmware Overview
 =================
 
-This is a Modbus TCP Server library. Modbus protocol specification and messaging
+This is a Modbus TCP component. Modbus protocol specification and messaging
 implementation guide can be found here:
 
 http://www.modbus.org/specs.php
 
 A Modbus client (e.g. on a PC - Simply Modbus) can send 'requests' to the Modbus
-Server running in an Xcore via TCP. The TCP layer accepts this data from the
+Server running in an XCore via TCP. The TCP layer accepts this data from the
 client and passes it over to the modbus_tcp_handle_event.
 
 This frame is then processed and a response is requested from the application

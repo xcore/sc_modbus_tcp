@@ -19,6 +19,24 @@
 /*---------------------------------------------------------------------------
  constants
  ---------------------------------------------------------------------------*/
+//#define MODBUS_ADDRESS_COIL_START                      0x0000
+//#define MODBUS_ADDRESS_COIL_END                        0xFFFF
+//#define MODBUS_ADDRESS_HOLDING_REGISTER_START          0x0000
+//#define MODBUS_ADDRESS_HOLDING_REGISTER_END            0xFFFF
+//#define MODBUS_ADDRESS_INPUT_REGISTER_START            0x0000
+//#define MODBUS_ADDRESS_INPUT_REGISTER_END              0xFFFF
+//#define MODBUS_ADDRESS_DISCRETE_INPUT_START            0x0000
+//#define MODBUS_ADDRESS_DISCRETE_INPUT_END              0xFFFF
+//#define MODBUS_QUANTITY_COIL_START                     0x0001
+//#define MODBUS_QUANTITY_COIL_END                       0x07D0
+//#define MODBUS_QUANTITY_HOLDING_REGISTER_START         0x0001
+//#define MODBUS_QUANTITY_HOLDING_REGISTER_END           0x007D
+//#define MODBUS_QUANTITY_INPUT_REGISTER_START           0x0001
+//#define MODBUS_QUANTITY_INPUT_REGISTER_END             0x007D
+//#define MODBUS_QUANTITY_DISCRETE_INPUT_START           0x0001
+//#define MODBUS_QUANTITY_DISCRETE_INPUT_END             0x07D0
+//#define MODBUS_WRITE_QUANTITY_1                        0x0000
+//#define MODBUS_WRITE_QUANTITY_2                        0xFF00
 
 /*---------------------------------------------------------------------------
  typedefs

@@ -9,15 +9,15 @@ TARGET = SLICEKIT-L2
 APP_NAME = app_modbus_tcp
 
 # The USED_MODULES variable lists other module used by the application.
-USED_MODULES = module_ethernet_board_support module_modbus_tcp_server
+USED_MODULES = module_ethernet_board_support module_modbus_tcp
 
 # The flags passed to xcc when building the application
 # You can also set the following to override flags for a particular language:
 # XCC_XC_FLAGS, XCC_C_FLAGS, XCC_ASM_FLAGS, XCC_CPP_FLAGS
 # If the variable XCC_MAP_FLAGS is set it overrides the flags passed to
 # xcc for the final link (mapping) stage.
-XCC_FLAGS_Debug = -O0 -g -fxscope
-XCC_FLAGS_Release = -O2 -g -fxscope
+XCC_FLAGS_Debug = -O0 -g
+XCC_FLAGS_Release = -O2 -g
 
 # The VERBOSE variable, if set to 1, enables verbose output from the make system.
 VERBOSE = 0

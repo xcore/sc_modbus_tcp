@@ -15,7 +15,6 @@
 #include "modbus_tcp_server.h"
 
 #include <xs1.h>
-#include <xscope.h>
 #include "mbtcp.h"
 #include "xtcp_client.h"
 
@@ -49,9 +48,6 @@
 void modbus_tcp_server(chanend c_tcp_svr, chanend c_modbus)
 {
   xtcp_connection_t conn;
-
-  xscope_register(0, 0, "", 0, "");
-  xscope_config_io(XSCOPE_IO_BASIC);
 
   modbus_tcp_init(c_tcp_svr);
 

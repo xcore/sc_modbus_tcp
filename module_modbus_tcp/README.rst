@@ -1,8 +1,8 @@
-Modbus TCP Server
-=================
+Modbus TCP
+==========
 
 :scope: General Use
-:description: Modbus TCP Server component
+:description: Modbus TCP component
 :keywords: ModbusTCP
 :boards: XA-SK-E100
 

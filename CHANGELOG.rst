@@ -1,6 +1,6 @@
 Modbus TCP Components Change Log
 ================================
 
-0.1.0
+1.0.0
 -----
   * Pilot

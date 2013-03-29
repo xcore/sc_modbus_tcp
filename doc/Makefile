@@ -1,7 +1,7 @@
-SPHINX_PROJECT_NAME=Modbus TCP Server
-VERSION=0.1
-DOXYGEN_DIRS= ../module_modbus_tcp_server/src
-SOURCE_INCLUDE_DIRS= ../module_modbus_tcp_server/src
+SPHINX_PROJECT_NAME=Modbus TCP
+VERSION=1.0
+DOXYGEN_DIRS= ../module_modbus_tcp/src
+SOURCE_INCLUDE_DIRS= ../module_modbus_tcp/src
 XDOC_DIR ?= ../../xdoc
 include $(XDOC_DIR)/Makefile.inc
 
