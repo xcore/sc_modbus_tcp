@@ -11,9 +11,9 @@ Features
 
 Implements following Modbus commands received over TCP:
 
-  * Read Coils
-  * Write Single Coil
-  * Read Input Register
-  * Read Holding Registers
-  * Write Single Register
-  * Read Discrete Inputs
+- Read Coils
+- Write Single Coil
+- Read Input Register
+- Read Holding Registers
+- Write Single Register
+- Read Discrete Inputs

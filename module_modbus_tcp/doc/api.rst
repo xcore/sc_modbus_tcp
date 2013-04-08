@@ -65,15 +65,14 @@ The configuration defines are listed in ``modbus_config.h``.
 **MODBUS_WRITE_QUANTITY_2**
   Write quantity for coils 2
 
-
 API
 +++
 
 The Modbus TCP module functionality is defined in
 
-  * ``modbus_tcp_server.xc``
-  * ``modbus_tcp_server.h``
-  * ``modbus_tcp_cmd.h``
+  - ``modbus_tcp_server.xc``
+  - ``modbus_tcp_server.h``
+  - ``modbus_tcp_cmd.h``
   
 where the following functions can be found:
 

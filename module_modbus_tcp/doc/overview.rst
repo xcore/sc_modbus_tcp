@@ -4,21 +4,20 @@ Overview
 Modbus TCP component
 --------------------
 
-The Modbus TCP component is used to service Modbus TCP clients by implementing a
-TCP server. 
+The Modbus TCP component is used to service Modbus TCP clients by implementing a TCP server.
 
 Features
 ++++++++
 
 Implements following Modbus commands:
 
-  * Read Coils
-  * Write Single Coil
-  * Read Input Register
-  * Read Holding Registers
-  * Write Single Register
-  * Read Discrete Inputs
-  
+- Read Coils
+- Write Single Coil
+- Read Input Register
+- Read Holding Registers
+- Write Single Register
+- Read Discrete Inputs
+
 Memory requirements
 +++++++++++++++++++
 
@@ -49,4 +48,3 @@ Performance
 +++++++++++
 
 The achievable effective bandwidth varies according to the available XCore MIPS.
-

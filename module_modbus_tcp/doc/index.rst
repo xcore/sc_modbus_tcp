@@ -3,8 +3,8 @@ Modbus TCP Component
 
 .. toctree::
 
-  Overview <overview>
-  Hardware Requirements <hw>
-  API <api>
-  Programming Guide <programming>
-  Example Applications <examples>
+   Overview <overview>
+   Hardware Requirements <hw>
+   API <api>
+   Programming Guide <programming>
+   Example Applications <examples>
