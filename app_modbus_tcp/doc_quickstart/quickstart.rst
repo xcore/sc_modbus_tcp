@@ -1,5 +1,3 @@
-.. _modbus_tcp_demo_Quickstart:
-
 Modbus TCP Demo Quickstart Guide
 ================================
 
@@ -62,7 +60,7 @@ Now that the application has been compiled, the next step is to run it on the Sl
 
    SimplyModbus Configuration
 
-- Send a command as 'Read Coil' (load read_coil config from $\app_modbus_tcp\simplymodbus_config\). This will read the status of LED B. The status can be seen as SET / CLEARED bits in results column. Please note that the status of one LED is copied to all other requested quantities.
+- Send a command as 'Read Coil' (load read_coil config from $\app_modbus_tcp\simplymodbus_config\). This will read the status of a temporary variable ``toggle`` in the application. The status can be seen as SET / CLEARED bits in results column. Please note that the status is copied to all other requested quantities.
 
 .. figure:: images/2.png
    :align: center
@@ -76,12 +74,12 @@ Now that the application has been compiled, the next step is to run it on the Sl
 
    Write interface in SimplyModbus
 
-- Load the write_coil config in WRITE window. Sending the command will illuminate LED B.
+- Load the write_coil config in WRITE window. Sending the command will set the requested value to the temporary variable ``toggle``. 
 
 .. figure:: images/4.png
    :align: center
 
-   After 'write', read back the status of LED B
+   After 'write', read back the status of ``toggle``.
 
 
 User can change appropriate values of address and data based on his application. Any unsupported Function code or data range will result in exception response. For example:

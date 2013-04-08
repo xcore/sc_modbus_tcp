@@ -86,10 +86,15 @@ void application(chanend c_modbus)
           case READ_DISCRETE_INPUTS:
           case READ_INPUT_REGISTER:
           case READ_HOLDING_REGISTERS:
-          case WRITE_SINGLE_REGISTER:
           case READ_COILS:
+          {
+            c_modbus <: toggle;
+            break;
+          }
+          case WRITE_SINGLE_REGISTER:
           case WRITE_SINGLE_COIL:
           {
+            toggle = value;
             c_modbus <: toggle;
             break;
           }
