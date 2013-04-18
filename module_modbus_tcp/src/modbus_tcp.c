@@ -6,18 +6,166 @@
 /*===========================================================================
  Info
  ----
-
+ 1. ``modbus_tcp_parse_request()`` is called by the user application after
+ receiving data from the TCP layer.
+ 2. The data received is parsed for Modbus command.
+ 3. Appropriate call-backs to the user application is made based on the command
+ received.
+ 4. After getting the data from call-back functions, a Modbus TCP response
+ replaces the contents of ``data`` (the TCP data).
+ 5. ``modbus_tcp_parse_request()`` exits. The user application must now send
+ this response data over TCP to the host.
+ 
  ===========================================================================*/
 
 /*---------------------------------------------------------------------------
  include files
  ---------------------------------------------------------------------------*/
-#include "mb_parse.h"
-#include "modbus_tcp_cmd.h"
+#include "modbus_tcp.h"
+
+/*
+ * Include this file for call-back functions
+ */
+#ifdef __modbus_conf_h_exists__
+#include "modbus_conf.h"
+#endif
+
+#include <print.h>
 
 /*---------------------------------------------------------------------------
  constants
  ---------------------------------------------------------------------------*/
+
+// Default addresses and quantity limits
+
+/*
+ * Start address for coils
+ */
+#ifndef MODBUS_ADDRESS_COIL_START
+    #define MODBUS_ADDRESS_COIL_START                      0x0000
+#endif
+/*
+ * End address for coils
+ */
+#ifndef MODBUS_ADDRESS_COIL_END
+    #define MODBUS_ADDRESS_COIL_END                        0xFFFF
+#endif
+/*
+ * Start address for Holding Register
+ */
+#ifndef MODBUS_ADDRESS_HOLDING_REGISTER_START
+    #define MODBUS_ADDRESS_HOLDING_REGISTER_START          0x0000
+#endif
+/*
+ * End address for Holding Register
+ */
+#ifndef MODBUS_ADDRESS_HOLDING_REGISTER_END
+    #define MODBUS_ADDRESS_HOLDING_REGISTER_END            0xFFFF
+#endif
+/*
+ * Start address for Input Register
+ */
+#ifndef MODBUS_ADDRESS_INPUT_REGISTER_START
+    #define MODBUS_ADDRESS_INPUT_REGISTER_START            0x0000
+#endif
+/*
+ * End address for Input Register
+ */
+#ifndef MODBUS_ADDRESS_INPUT_REGISTER_END
+    #define MODBUS_ADDRESS_INPUT_REGISTER_END              0xFFFF
+#endif
+/*
+ * Start address for Discrete Input
+ */
+#ifndef MODBUS_ADDRESS_DISCRETE_INPUT_START
+    #define MODBUS_ADDRESS_DISCRETE_INPUT_START            0x0000
+#endif
+/*
+ * End address for Discrete Input
+ */
+#ifndef MODBUS_ADDRESS_DISCRETE_INPUT_END
+    #define MODBUS_ADDRESS_DISCRETE_INPUT_END              0xFFFF
+#endif
+/*
+ * Start quantity for coils
+ */
+#ifndef MODBUS_QUANTITY_COIL_START
+    #define MODBUS_QUANTITY_COIL_START                     0x0001
+#endif
+/*
+ * End quantity for coils
+ */
+#ifndef MODBUS_QUANTITY_COIL_END
+    #define MODBUS_QUANTITY_COIL_END                       0x07D0
+#endif
+/*
+ * Start quantity for Holding Register
+ */
+#ifndef MODBUS_QUANTITY_HOLDING_REGISTER_START
+    #define MODBUS_QUANTITY_HOLDING_REGISTER_START         0x0001
+#endif
+/*
+ * End quantity for Holding Register
+ */
+#ifndef MODBUS_QUANTITY_HOLDING_REGISTER_END
+    #define MODBUS_QUANTITY_HOLDING_REGISTER_END           0x007D
+#endif
+/*
+ * Start quantity for Input Register
+ */
+#ifndef MODBUS_QUANTITY_INPUT_REGISTER_START
+    #define MODBUS_QUANTITY_INPUT_REGISTER_START           0x0001
+#endif
+/*
+ * End quantity for Input Register
+ */
+#ifndef MODBUS_QUANTITY_INPUT_REGISTER_END
+    #define MODBUS_QUANTITY_INPUT_REGISTER_END             0x007D
+#endif
+/*
+ * Start quantity for Discrete Inputs
+ */
+#ifndef MODBUS_QUANTITY_DISCRETE_INPUT_START
+    #define MODBUS_QUANTITY_DISCRETE_INPUT_START           0x0001
+#endif
+/*
+ * End quantity for Discrete Inputs
+ */
+#ifndef MODBUS_QUANTITY_DISCRETE_INPUT_END
+    #define MODBUS_QUANTITY_DISCRETE_INPUT_END             0x07D0
+#endif
+/*
+ * Write quantity for coils 1
+ */
+#ifndef MODBUS_WRITE_QUANTITY_1
+   #define MODBUS_WRITE_QUANTITY_1                         0x0000
+#endif
+/*
+ * Write quantity for coils 2
+ */
+#ifndef MODBUS_WRITE_QUANTITY_2
+   #define MODBUS_WRITE_QUANTITY_2                         0xFF00
+#endif
+
+/*
+ * Currently supported Modbus TCP commands
+ */
+#define READ_COILS                              0x01
+#define READ_DISCRETE_INPUTS                    0x02
+#define READ_HOLDING_REGISTERS                  0x03
+#define READ_INPUT_REGISTER                     0x04
+#define WRITE_SINGLE_COIL                       0x05
+#define WRITE_SINGLE_REGISTER                   0x06
+
+// Modbus protocol ID and data sizes
+#define MODBUS_PROTOCOL_IDENTIFIER              0x0000u
+#define MODBUS_SIZE_MBAP                        7u
+
+// Big Endian format in Modbus data
+#define MODBUS_INDEX_PROTOCOL_ID                2u
+#define MODBUS_INDEX_LENGTH_FIELD               4u
+#define MODBUS_INDEX_FUNCTION_CODE              7u
+#define MODBUS_INDEX_START_DATA                 8u
 
 /*---------------------------------------------------------------------------
  ports and clocks
@@ -67,25 +215,9 @@ static uint8_t check_range(int value, uint16_t limit_lo, uint16_t limit_hi);
 static uint8_t get_byte_count(uint16_t qty);
 
 /** =========================================================================
- *  send_cmd
- *
- *  \param c_modbus     modbus channel
- *  \param cmd          command to send
- *  \param address      address
- *  \param val          value/quantity if any
- *  \return short       response from application
- *
- **/
-static uint16_t send_cmd(chanend c_modbus,
-                         uint16_t cmd,
-                         uint16_t address,
-                         uint16_t val);
-
-/** =========================================================================
  *  modbus_read_data
  *  Read data from user defined memory interface.
  *
- *  \param c_modbus   modbus channel
  *  \param fn_code    function code
  *  \param qty        quantity
  *  \param address    address
@@ -95,16 +227,16 @@ static uint16_t send_cmd(chanend c_modbus,
  *  \param qty_lo     qty lo limit
  *  \param data       data received from tcp
  *  \return int       modbus response length
+ *
  **/
-static int modbus_read_data(chanend c_modbus,
-                            uint8_t fn_code,
+static int modbus_read_data(uint8_t fn_code,
                             uint16_t qty,
                             uint16_t address,
                             uint16_t address_hi,
                             uint16_t address_lo,
                             uint16_t qty_hi,
                             uint16_t qty_lo,
-                            char data[]);
+                            char *data);
 
 /*---------------------------------------------------------------------------
  check range
@@ -123,33 +255,16 @@ static uint8_t modbus_get_byte_count(uint16_t qty)
 }
 
 /*---------------------------------------------------------------------------
- send command to application and get the response
- ---------------------------------------------------------------------------*/
-static uint16_t send_cmd(chanend c_modbus,
-                         uint16_t cmd,
-                         uint16_t address,
-                         uint16_t val)
-{
-  uint16_t rtnval;
-  c_modbus <: cmd;
-  c_modbus <: address;
-  c_modbus <: val;
-  c_modbus :> rtnval;
-  return rtnval;
-}
-
-/*---------------------------------------------------------------------------
  modbus read data
  ---------------------------------------------------------------------------*/
-static int modbus_read_data(chanend c_modbus,
-                            uint8_t fn_code,
+static int modbus_read_data(uint8_t fn_code,
                             uint16_t qty,
                             uint16_t address,
                             uint16_t address_hi,
                             uint16_t address_lo,
                             uint16_t qty_hi,
                             uint16_t qty_lo,
-                            char data[])
+                            char *data)
 {
   int response_length;
 
@@ -166,7 +281,7 @@ static int modbus_read_data(chanend c_modbus,
       uint16_t i;
       uint16_t index_status = MODBUS_SIZE_MBAP + 2u;
       uint8_t index_byte, index_bit;
-      uint16_t read_value;
+      uint16_t read_value = 0;
 
       // Get number of bytes = qty/8 (+1)**
       uint8_t byte_count = modbus_get_byte_count(qty);
@@ -200,7 +315,9 @@ static int modbus_read_data(chanend c_modbus,
             index_bit = i % 8u;
 
             // any error here should be exception code 4u
-            read_value = send_cmd(c_modbus, READ_COILS, (i + address), 0);
+#ifdef MB_READ_COILS
+            read_value = (uint16_t)(MB_READ_COILS((i + address)));
+#endif
 
             if (read_value == 1u)
             {
@@ -246,7 +363,9 @@ static int modbus_read_data(chanend c_modbus,
             index_bit = i % 8u;
 
             // any error here should be exception code 4u
-            read_value = send_cmd(c_modbus, READ_DISCRETE_INPUTS, (i + address), 0);
+#ifdef MB_READ_DISCRETE_INPUTS
+            read_value = (uint16_t)(MB_READ_DISCRETE_INPUTS((i + address)));
+#endif
 
             if (read_value == 1u)
             {
@@ -266,6 +385,7 @@ static int modbus_read_data(chanend c_modbus,
         } // case READ_DISCRETE_INPUTS
 #endif // READ_DISCRETE_INPUTS
 #ifdef READ_HOLDING_REGISTERS
+        case READ_HOLDING_REGISTERS:
         {
           byte_count = 2u * qty;
 
@@ -290,7 +410,9 @@ static int modbus_read_data(chanend c_modbus,
           for (i = 0; i < qty; i++)
           {
             // any error here should be exception code 4u
-            read_value = send_cmd(c_modbus, READ_HOLDING_REGISTERS, (i + address), 0);
+#ifdef MB_READ_HOLDING_REGISTERS
+            read_value = (uint16_t)(MB_READ_HOLDING_REGISTERS((i + address)));
+#endif
 
             if (read_value)
             {
@@ -308,6 +430,7 @@ static int modbus_read_data(chanend c_modbus,
         } // case READ_HOLDING_REGISTERS
 #endif // READ_HOLDING_REGISTERS
 #ifdef READ_INPUT_REGISTER
+        case READ_INPUT_REGISTER:
         {
           byte_count = 2u * qty;
 
@@ -332,7 +455,9 @@ static int modbus_read_data(chanend c_modbus,
           for (i = 0; i < qty; i++)
           {
             // any error here should be exception code 4u
-            read_value = send_cmd(c_modbus, READ_INPUT_REGISTER, (i + address), 0);
+#ifdef MB_READ_INPUT_REGISTERS
+            read_value = (uint16_t)(MB_READ_INPUT_REGISTERS((i + address)));
+#endif
 
             if (read_value)
             {
@@ -368,7 +493,7 @@ static int modbus_read_data(chanend c_modbus,
 /*---------------------------------------------------------------------------
  parse modbus request
  ---------------------------------------------------------------------------*/
-int parse_modbus_request(chanend c_modbus, int len, char data[])
+int modbus_tcp_parse_request(char *data, int len)
 {
   int response_length;
 
@@ -400,7 +525,6 @@ int parse_modbus_request(chanend c_modbus, int len, char data[])
     case READ_COILS:
     {
       response_length = modbus_read_data(
-          c_modbus,
           function_code,
           qty,
           address,
@@ -416,7 +540,6 @@ int parse_modbus_request(chanend c_modbus, int len, char data[])
     case READ_DISCRETE_INPUTS:
     {
       response_length = modbus_read_data(
-          c_modbus,
           function_code,
           qty,
           address,
@@ -429,9 +552,9 @@ int parse_modbus_request(chanend c_modbus, int len, char data[])
     }
 #endif // READ_DISCRETE_INPUTS
 #ifdef READ_HOLDING_REGISTERS
+    case READ_HOLDING_REGISTERS:
     {
       response_length = modbus_read_data(
-          c_modbus,
           function_code,
           qty,
           address,
@@ -444,9 +567,9 @@ int parse_modbus_request(chanend c_modbus, int len, char data[])
     }
 #endif // READ_HOLDING_REGISTERS
 #ifdef READ_INPUT_REGISTER
+    case READ_INPUT_REGISTER:
     {
       response_length = modbus_read_data(
-          c_modbus,
           function_code,
           qty,
           address,
@@ -470,9 +593,8 @@ int parse_modbus_request(chanend c_modbus, int len, char data[])
                 MODBUS_ADDRESS_COIL_START,
                 MODBUS_ADDRESS_COIL_END))
         {
-          uint16_t i;
           uint16_t index_status = MODBUS_SIZE_MBAP + 1u;
-          uint16_t read_value;
+          uint16_t read_value = 0;
 
           // Get number of bytes
           uint8_t byte_count = 4u;
@@ -487,7 +609,9 @@ int parse_modbus_request(chanend c_modbus, int len, char data[])
           data[MODBUS_INDEX_LENGTH_FIELD + 1u] = response_length + 1u;
 
           // any error here should be exception code 4u
-          read_value = send_cmd(c_modbus, WRITE_SINGLE_COIL, (i + address), qty);
+#ifdef MB_WRITE_SINGLE_COIL
+          read_value = (uint16_t)(MB_WRITE_SINGLE_COIL(address, qty));
+#endif
 
           if (read_value)
           {}
@@ -525,9 +649,8 @@ int parse_modbus_request(chanend c_modbus, int len, char data[])
                 MODBUS_ADDRESS_HOLDING_REGISTER_START,
                 MODBUS_ADDRESS_HOLDING_REGISTER_END))
         {
-          uint16_t i;
           uint16_t index_status = MODBUS_SIZE_MBAP + 1u;
-          uint16_t read_value;
+          uint16_t read_value = 0;
 
           // Get number of bytes
           uint8_t byte_count = 4u;
@@ -542,7 +665,9 @@ int parse_modbus_request(chanend c_modbus, int len, char data[])
           data[MODBUS_INDEX_LENGTH_FIELD + 1u] = response_length + 1u;
 
           // any error here should be exception code 4u
-          read_value = send_cmd(c_modbus, WRITE_SINGLE_REGISTER, (i + address), qty);
+#ifdef MB_WRITE_SINGLE_REGISTER
+          read_value = (uint16_t)(MB_WRITE_SINGLE_REGISTER(address, qty));
+#endif
 
           if (read_value)
           {}
@@ -568,12 +693,7 @@ int parse_modbus_request(chanend c_modbus, int len, char data[])
 #endif // WRITE_SINGLE_REGISTER
     default:
     {
-      // Any other function code is either not defined or a user defined
-#ifdef USER_DEFINED_FUNCTION_CODE_HOOK
-      user_defined_processing_hook();
-#else
       modbus_exception_code = ILLEGAL_FUNCTION;
-#endif
       break;
     } // default
   } // switch(function_code)

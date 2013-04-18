@@ -6,15 +6,16 @@
 /*===========================================================================
  Info
  ----
- 
+
  ===========================================================================*/
 
-#ifndef _modbus_tcp_server_h_
-#define _modbus_tcp_server_h_
+#ifndef _httpd_h_
+#define _httpd_h_
 
 /*---------------------------------------------------------------------------
  nested include files
  ---------------------------------------------------------------------------*/
+#include "xtcp_client.h"
 
 /*---------------------------------------------------------------------------
  constants
@@ -31,20 +32,30 @@
 /*---------------------------------------------------------------------------
  extern variables
  ---------------------------------------------------------------------------*/
- 
+
 /*---------------------------------------------------------------------------
  prototypes
  ---------------------------------------------------------------------------*/
 
 /*==========================================================================*/
 /**
- *  The Modbus TCP server
+ *  Initialize webserver
  *
- *  \param c_tcp_svr  server channel connecting to ethernet component
- *  \param c_modbus   modbus data/cmd channel connecting to application
- *  \return None
+ *  \param c_tcp_svr    Channel connecting to XTCP
+ *  \return             None
  **/
-void modbus_tcp_server(chanend c_tcp_svr, chanend c_modbus);
+void httpd_init(chanend c_tcp_svr);
 
-#endif // _modbus_tcp_server_h_
+/*==========================================================================*/
+/**
+ *  Handle Events
+ *
+ *  \param c_tcp_svr    Channel connecting to XTCP
+ *  \param conn         Connection
+ *  \return             None
+ **/
+void httpd_handle_event(chanend c_tcp_svr,
+                        REFERENCE_PARAM(xtcp_connection_t, conn));
+
+#endif // _httpd_h_
 /*==========================================================================*/

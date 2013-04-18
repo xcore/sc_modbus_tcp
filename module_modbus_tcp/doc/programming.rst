@@ -1,45 +1,49 @@
-Modbus TCP Programming Guide
-============================
+Programming Guide
+=================
 
-This section provides information on how to program applications using the Modbus TCP component.
+Using the Module
+----------------
 
-Source code structure
----------------------
+To use the module you need to add ``module_modbus_tcp`` to the ``USED_MODULES`` variable in your application Makefile.
 
-.. list-table:: Project structure
-  :header-rows: 1
-  
-  * - Project
-    - File
-    - Description
-  * - module_modbus_tcp
-    - ``modbus_tcp_server.h`` 
-    - Header file containing the APIs for the Modbus TCP component
-  * - 
-    - ``modbus_tcp_server.xc``
-    - File containing the implementation of the Modbus TCP component
-  * - 
-    - ``modbus_tcp_cmd.h``
-    - Header file containing the Modbus TCP commands
-  * - 
-    - ``mbparse.*``
-    - Parses Modbus commands received and generates response frames
-  * - 
-    - ``mbtcp.*``
-    - The TCP webserver
-    
-Executing The Project
----------------------
+``modbus_tcp.h``
+   Include this file in your application to call the Modbus TCP library function to parse Modbus TCP commands from a master.
+   
+Within your application you can also add the following files to process Modbus TCP commands:
 
-The module by itself cannot be build or executed separately. It must be linked to an application which needs Modbus TCP. Once the module is linked to the application, the application can be built and tested for servicing Modbus commands.
+``modbus_conf.h``
+   A configuration file to specify the address and quantity limits of Coils/Registers. It must also have the function call-backs point to the correct functions.
+   
+``modbus_cb_functions.h``
+   A header file that can be included in the ``modbus_conf.h`` for function call-back definitions. The Modbus call-back functions must be prototyped here as described in the API section. The implmentation of these functions can be in the user application space.
 
-The following should be done in order to link the component to the application project:
+Integrating the webserver into your code
+----------------------------------------
 
-#. The module name ``module_modbus_tcp`` (and ``module_ethernet_board_support``) should be added to the list of MODULES in the application project build options.
-#. Now the module is linked to the application and can be directly used
-  
-Software Requirements
----------------------
+To use the webserver you must have an instance of an XTCP server running on your system. You can then write a function that implements a task that handles tcp events. This may do other functions/handle other tcp traffic as well as implementing the webserver. Here is a rough template of how the code should look::
 
-The module is built on XDE Tool version 12.2. 
-The module can be used in version 12.2 or any higher version of xTIMEcomposer.
+   void xhttpd(chanend c_tcp_svr)
+   {
+     xtcp_connection_t conn;
+
+     // Initiate the HTTP state
+
+     while(1)
+     {
+       select
+       {
+         // Listen to XTCP events
+         case xtcp_event(c_tcp_svr, conn):
+         {
+           // Handle XTCP Events here
+           
+           // When some data is received over the TCP, call the Modbus library function to parse the command by passing the data as a parameter.
+           
+           // The library function will exit, returning the length of Modbus response. The response is in the same data which was passed as a parameter.
+           
+           break;
+         }
+       }
+     }
+   }
+

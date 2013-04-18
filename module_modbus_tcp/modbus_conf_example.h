@@ -9,12 +9,13 @@
  
  ===========================================================================*/
 
-#ifndef _modbus_config_h_
-#define _modbus_config_h_
+#ifndef _modbus_conf_h_
+#define _modbus_conf_h_
 
 /*---------------------------------------------------------------------------
  nested include files
  ---------------------------------------------------------------------------*/
+//#include "modbus_cb_functions.h"
 
 /*---------------------------------------------------------------------------
  constants
@@ -40,6 +41,16 @@
 //#define MODBUS_WRITE_QUANTITY_2                        0xFF00
 
 /*---------------------------------------------------------------------------
+ function callbacks
+ ---------------------------------------------------------------------------*/
+//#define MB_READ_COILS               read_coils
+//#define MB_READ_DISCRETE_INPUTS     read_discrete_inputs
+//#define MB_READ_HOLDING_REGISTERS   read_holding_registers
+//#define MB_READ_INPUT_REGISTERS     read_input_registers
+//#define MB_WRITE_SINGLE_COIL        write_single_coil
+//#define MB_WRITE_SINGLE_REGISTER    write_single_register
+
+/*---------------------------------------------------------------------------
  typedefs
  ---------------------------------------------------------------------------*/
 
@@ -55,5 +66,5 @@
  prototypes
  ---------------------------------------------------------------------------*/
 
-#endif // _modbus_config_h_
+#endif // _modbus_conf_h_
 /*==========================================================================*/

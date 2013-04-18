@@ -26,9 +26,7 @@ This is a Modbus TCP component. Modbus protocol specification and messaging impl
 
 http://www.modbus.org/specs.php
 
-A Modbus client (e.g. on a PC - Simply Modbus) can send 'requests' to the Modbus Server running in an XCore via TCP. The TCP layer accepts this data from the client and passes it over to the modbus_tcp_handle_event.
-
-This frame is then processed and a response is requested from the application over the Modbus channel. The response generated is carried back to the client via TCP.
+The Modbus TCP slave library accepts data (usually received by the host from TCP layers) and processes them for Modbus commands. If the received TCP data is a Modbus command, the library does a call-back to the user application. The call-back is usually to read/write values from/to registers, coils, etc... After the call-back, the library forms the required Modbus response and returns to user application.
 
 Known Issues
 ============
@@ -38,8 +36,6 @@ none
 Required Repositories
 =====================
 
-- sc_ethernet git://github.com/xcore/sc_ethernet.git
-- sc_xtcp git://github.com/xcore/sc_xtcp.git
 
 Support
 =======
