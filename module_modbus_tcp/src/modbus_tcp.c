@@ -35,121 +35,63 @@
 /*---------------------------------------------------------------------------
  constants
  ---------------------------------------------------------------------------*/
-
 // Default addresses and quantity limits
-
-/*
- * Start address for coils
- */
 #ifndef MODBUS_ADDRESS_COIL_START
     #define MODBUS_ADDRESS_COIL_START                      0x0000
 #endif
-/*
- * End address for coils
- */
 #ifndef MODBUS_ADDRESS_COIL_END
     #define MODBUS_ADDRESS_COIL_END                        0xFFFF
 #endif
-/*
- * Start address for Holding Register
- */
 #ifndef MODBUS_ADDRESS_HOLDING_REGISTER_START
     #define MODBUS_ADDRESS_HOLDING_REGISTER_START          0x0000
 #endif
-/*
- * End address for Holding Register
- */
 #ifndef MODBUS_ADDRESS_HOLDING_REGISTER_END
     #define MODBUS_ADDRESS_HOLDING_REGISTER_END            0xFFFF
 #endif
-/*
- * Start address for Input Register
- */
 #ifndef MODBUS_ADDRESS_INPUT_REGISTER_START
     #define MODBUS_ADDRESS_INPUT_REGISTER_START            0x0000
 #endif
-/*
- * End address for Input Register
- */
 #ifndef MODBUS_ADDRESS_INPUT_REGISTER_END
     #define MODBUS_ADDRESS_INPUT_REGISTER_END              0xFFFF
 #endif
-/*
- * Start address for Discrete Input
- */
 #ifndef MODBUS_ADDRESS_DISCRETE_INPUT_START
     #define MODBUS_ADDRESS_DISCRETE_INPUT_START            0x0000
 #endif
-/*
- * End address for Discrete Input
- */
 #ifndef MODBUS_ADDRESS_DISCRETE_INPUT_END
     #define MODBUS_ADDRESS_DISCRETE_INPUT_END              0xFFFF
 #endif
-/*
- * Start quantity for coils
- */
 #ifndef MODBUS_QUANTITY_COIL_START
     #define MODBUS_QUANTITY_COIL_START                     0x0001
 #endif
-/*
- * End quantity for coils
- */
 #ifndef MODBUS_QUANTITY_COIL_END
     #define MODBUS_QUANTITY_COIL_END                       0x07D0
 #endif
-/*
- * Start quantity for Holding Register
- */
 #ifndef MODBUS_QUANTITY_HOLDING_REGISTER_START
     #define MODBUS_QUANTITY_HOLDING_REGISTER_START         0x0001
 #endif
-/*
- * End quantity for Holding Register
- */
 #ifndef MODBUS_QUANTITY_HOLDING_REGISTER_END
     #define MODBUS_QUANTITY_HOLDING_REGISTER_END           0x007D
 #endif
-/*
- * Start quantity for Input Register
- */
 #ifndef MODBUS_QUANTITY_INPUT_REGISTER_START
     #define MODBUS_QUANTITY_INPUT_REGISTER_START           0x0001
 #endif
-/*
- * End quantity for Input Register
- */
 #ifndef MODBUS_QUANTITY_INPUT_REGISTER_END
     #define MODBUS_QUANTITY_INPUT_REGISTER_END             0x007D
 #endif
-/*
- * Start quantity for Discrete Inputs
- */
 #ifndef MODBUS_QUANTITY_DISCRETE_INPUT_START
     #define MODBUS_QUANTITY_DISCRETE_INPUT_START           0x0001
 #endif
-/*
- * End quantity for Discrete Inputs
- */
 #ifndef MODBUS_QUANTITY_DISCRETE_INPUT_END
     #define MODBUS_QUANTITY_DISCRETE_INPUT_END             0x07D0
 #endif
-/*
- * Write quantity for coils 1
- */
 #ifndef MODBUS_WRITE_QUANTITY_1
    #define MODBUS_WRITE_QUANTITY_1                         0x0000
 #endif
-/*
- * Write quantity for coils 2
- */
 #ifndef MODBUS_WRITE_QUANTITY_2
    #define MODBUS_WRITE_QUANTITY_2                         0xFF00
 #endif
 
-/*
- * Currently supported Modbus TCP commands
- */
+// Currently supported Modbus TCP commands
 #define READ_COILS                              0x01
 #define READ_DISCRETE_INPUTS                    0x02
 #define READ_HOLDING_REGISTERS                  0x03

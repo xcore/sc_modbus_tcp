@@ -6,25 +6,61 @@ Configuration Defines
 
 These defines can be set in a file called ``modbus_conf.h`` within your application source tree.
 
-.. doxygendefine:: MODBUS_ADDRESS_COIL_START
-.. doxygendefine:: MODBUS_ADDRESS_COIL_END
-.. doxygendefine:: MODBUS_ADDRESS_HOLDING_REGISTER_START
-.. doxygendefine:: MODBUS_ADDRESS_HOLDING_REGISTER_END
-.. doxygendefine:: MODBUS_ADDRESS_INPUT_REGISTER_START
-.. doxygendefine:: MODBUS_ADDRESS_INPUT_REGISTER_END
-.. doxygendefine:: MODBUS_ADDRESS_DISCRETE_INPUT_START
-.. doxygendefine:: MODBUS_ADDRESS_DISCRETE_INPUT_END
-.. doxygendefine:: MODBUS_QUANTITY_COIL_START
-.. doxygendefine:: MODBUS_QUANTITY_COIL_END
-.. doxygendefine:: MODBUS_QUANTITY_HOLDING_REGISTER_START
-.. doxygendefine:: MODBUS_QUANTITY_HOLDING_REGISTER_END
-.. doxygendefine:: MODBUS_QUANTITY_INPUT_REGISTER_START
-.. doxygendefine:: MODBUS_QUANTITY_INPUT_REGISTER_END
-.. doxygendefine:: MODBUS_QUANTITY_DISCRETE_INPUT_START
-.. doxygendefine:: MODBUS_QUANTITY_DISCRETE_INPUT_END
-.. doxygendefine:: MODBUS_WRITE_QUANTITY_1
-.. doxygendefine:: MODBUS_WRITE_QUANTITY_2
+*MODBUS_ADDRESS_COIL_START*
+   Start address for coils
+   
+*MODBUS_ADDRESS_COIL_END*
+   End address for coils
+   
+*MODBUS_ADDRESS_HOLDING_REGISTER_START*
+   Start address for Holding Register
 
+*MODBUS_ADDRESS_HOLDING_REGISTER_END*
+   End address for Holding Register
+   
+*MODBUS_ADDRESS_INPUT_REGISTER_START*
+   Start address for Input Register
+   
+*MODBUS_ADDRESS_INPUT_REGISTER_END*
+   End address for Input Register
+   
+*MODBUS_ADDRESS_DISCRETE_INPUT_START*
+   Start address for Discrete Input
+   
+*MODBUS_ADDRESS_DISCRETE_INPUT_END*
+   End address for Discrete Input
+   
+*MODBUS_QUANTITY_COIL_START*
+   Start quantity for coils
+   
+*MODBUS_QUANTITY_COIL_END*
+   End quantity for coils
+   
+*MODBUS_QUANTITY_HOLDING_REGISTER_START*
+   Start quantity for Holding Register
+   
+*MODBUS_QUANTITY_HOLDING_REGISTER_END*
+   End quantity for Holding Register
+   
+*MODBUS_QUANTITY_INPUT_REGISTER_START*
+   Start quantity for Input Register
+   
+*MODBUS_QUANTITY_INPUT_REGISTER_END*
+   End quantity for Input Register
+   
+*MODBUS_QUANTITY_DISCRETE_INPUT_START*
+   Start quantity for Discrete Inputs
+   
+*MODBUS_QUANTITY_DISCRETE_INPUT_END*
+   End quantity for Discrete Inputs
+   
+*MODBUS_WRITE_QUANTITY_1*
+   Write quantity for coils 1
+   
+*MODBUS_WRITE_QUANTITY_2*
+   Write quantity for coils 2
+
+   
 Call-back function defines
 --------------------------
 
