@@ -15,7 +15,7 @@ Within your application you can also add the following files to process Modbus T
    A configuration file to specify the address and quantity limits of Coils/Registers. It must also have the function call-backs point to the correct functions.
    
 ``modbus_cb_functions.h``
-   A header file that can be included in the ``modbus_conf.h`` for function call-back definitions. The Modbus call-back functions must be prototyped here as described in the API section. The implmentation of these functions can be in the user application space.
+   A header file to be included in the ``modbus_conf.h`` for function call-backs. The Modbus call-back functions must be prototyped here as described in the API section. The implmentation of these functions can be in the user application space.
 
 Integrating the webserver into your code
 ----------------------------------------
@@ -37,7 +37,7 @@ To use the webserver you must have an instance of an XTCP server running on your
          {
            // Handle XTCP Events here
            
-           // When some data is received over the TCP, call the Modbus library function to parse the command by passing the data as a parameter.
+           // When some data is received over the TCP, invoke the Modbus TCP slave component by passing the data as a parameter.
            
            // The library function will exit, returning the length of Modbus response. The response is in the same data which was passed as a parameter.
            

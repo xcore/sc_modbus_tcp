@@ -51,14 +51,14 @@ Now that the application has been compiled, the next step is to run it on the Sl
    - IP Address = user ip address provided in main.xc
    - Port = 502 (Modbus Listening Port)
 
-- Alternatively, load the read_coil configuration file from $\app_modbus_tcp\simplymodbus_config\ and click CONNECT.
+- Alternatively, load the read_coil configuration file from $\\app_modbus_tcp\\simplymodbus_config\\ and click CONNECT.
 
 .. figure:: images/init.png
    :align: center
 
    SimplyModbus Configuration
 
-- Send a command as 'Read Coil' (load read_coil config from $\app_modbus_tcp\simplymodbus_config\). This will read the status of GPIO LED on XA-SK-GPIO slice card. To read the status of the other three LEDs, change the ``First Coil`` value in the SimplyModbus application.
+- Send a command as 'Read Coil' (load read_coil config from $\\app_modbus_tcp\\simplymodbus_config\\). This will read the status of GPIO LED on XA-SK-GPIO slice card. To read the status of the other three LEDs, change the ``First Coil`` value in the SimplyModbus application.
 
    ============ ===================
    First coil    LED on Slice card
@@ -74,14 +74,14 @@ Now that the application has been compiled, the next step is to run it on the Sl
 
    Read Coil
 
-- Send a 'Read Input Register' (load config from $\app_modbus_tcp\simplymodbus_config\) command to read the current room temperature as recorded by the sensor present on the XA-SK-GPIO slice card.
+- Send a 'Read Input Register' (load config from $\\app_modbus_tcp\\simplymodbus_config\\) command to read the current room temperature as recorded by the sensor present on the XA-SK-GPIO slice card.
 
 .. figure:: images/read_ip_reg.png
    :align: center
    
    Read Input Register
 
-- Send a 'Read Discrete Input' (load config from $\app_modbus_tcp\simplymodbus_config\) command to read button status on the XA-SK-GPIO slice card.
+- Send a 'Read Discrete Input' (load config from $\\app_modbus_tcp\\simplymodbus_config\\) command to read button status on the XA-SK-GPIO slice card.
 
 .. figure:: images/read_dis_ip.png
    :align: center

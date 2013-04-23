@@ -148,7 +148,7 @@ configPoints =
     max     = 2000,
     enabled = swblock.params.lcd_part == "Generic",
     resourceUsageFlags = {"noeffect"},
-    default=0
+    default=1
   },
 
   quantity_coil_end =
@@ -178,7 +178,7 @@ configPoints =
     max     = 125,
     enabled = swblock.params.lcd_part == "Generic",
     resourceUsageFlags = {"noeffect"},
-    default=0
+    default=1
   },
 
   quantity_holding_register_end =
@@ -208,7 +208,7 @@ configPoints =
     max     = 125,
     enabled = swblock.params.lcd_part == "Generic",
     resourceUsageFlags = {"noeffect"},
-    default=0
+    default=1
   },
 
   quantity_input_register_end =
@@ -238,7 +238,7 @@ configPoints =
     max     = 2000,
     enabled = swblock.params.lcd_part == "Generic",
     resourceUsageFlags = {"noeffect"},
-    default=0
+    default=1
   },
 
   quantity_discrete_input_end =
