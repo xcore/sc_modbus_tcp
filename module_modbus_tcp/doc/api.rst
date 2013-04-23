@@ -4,63 +4,110 @@ Modbus TCP API
 Configuration Defines
 ---------------------
 
-These defines can be set in a file called ``modbus_conf.h`` within your application source tree.
+These defines may be set in a file called ``modbus_conf.h`` within your application source tree. If nothing is set, then the module assumes some default values.
 
-*MODBUS_ADDRESS_COIL_START*
-   Start address for coils
-   
-*MODBUS_ADDRESS_COIL_END*
-   End address for coils
-   
-*MODBUS_ADDRESS_HOLDING_REGISTER_START*
-   Start address for Holding Register
 
-*MODBUS_ADDRESS_HOLDING_REGISTER_END*
-   End address for Holding Register
-   
-*MODBUS_ADDRESS_INPUT_REGISTER_START*
-   Start address for Input Register
-   
-*MODBUS_ADDRESS_INPUT_REGISTER_END*
-   End address for Input Register
-   
-*MODBUS_ADDRESS_DISCRETE_INPUT_START*
-   Start address for Discrete Input
-   
-*MODBUS_ADDRESS_DISCRETE_INPUT_END*
-   End address for Discrete Input
-   
-*MODBUS_QUANTITY_COIL_START*
-   Start quantity for coils
-   
-*MODBUS_QUANTITY_COIL_END*
-   End quantity for coils
-   
-*MODBUS_QUANTITY_HOLDING_REGISTER_START*
-   Start quantity for Holding Register
-   
-*MODBUS_QUANTITY_HOLDING_REGISTER_END*
-   End quantity for Holding Register
-   
-*MODBUS_QUANTITY_INPUT_REGISTER_START*
-   Start quantity for Input Register
-   
-*MODBUS_QUANTITY_INPUT_REGISTER_END*
-   End quantity for Input Register
-   
-*MODBUS_QUANTITY_DISCRETE_INPUT_START*
-   Start quantity for Discrete Inputs
-   
-*MODBUS_QUANTITY_DISCRETE_INPUT_END*
-   End quantity for Discrete Inputs
-   
-*MODBUS_WRITE_QUANTITY_1*
-   Write quantity for coils 1
-   
-*MODBUS_WRITE_QUANTITY_2*
-   Write quantity for coils 2
+.. list-table:: Defines for Addresses and Quantities
+  :header-rows: 1
+  
+  * - Define
+    - Description
+    - Min
+    - Max
+    - Default
+  * - MODBUS_ADDRESS_COIL_START
+    - Start address for coils
+    - 0
+    - 65535
+    - 0
+  * - MODBUS_ADDRESS_COIL_END
+    - End address for coils
+    - 0
+    - 65535
+    - 65535
+  * - MODBUS_ADDRESS_HOLDING_REGISTER_START
+    - Start address for Holding Register
+    - 0
+    - 65535
+    - 0
+  * - MODBUS_ADDRESS_HOLDING_REGISTER_END
+    - End address for Holding Register
+    - 0
+    - 65535
+    - 65535
+  * - MODBUS_ADDRESS_INPUT_REGISTER_START
+    - Start address for Input Register
+    - 0
+    - 65535
+    - 0
+  * - MODBUS_ADDRESS_INPUT_REGISTER_END
+    - End address for Input Register
+    - 0
+    - 65535
+    - 65535
+  * - MODBUS_ADDRESS_DISCRETE_INPUT_START
+    - Start address for Discrete Input
+    - 0
+    - 65535
+    - 0
+  * - MODBUS_ADDRESS_DISCRETE_INPUT_END
+    - End address for Discrete Input
+    - 0
+    - 65535
+    - 65535
+  * - MODBUS_QUANTITY_COIL_START
+    - Start quantity for coils
+    - 1
+    - 2000
+    - 1
+  * - MODBUS_QUANTITY_COIL_END
+    - End quantity for coils
+    - 1
+    - 2000
+    - 2000
+  * - MODBUS_QUANTITY_HOLDING_REGISTER_START
+    - Start quantity for Holding Register
+    - 1
+    - 125
+    - 1
+  * - MODBUS_QUANTITY_HOLDING_REGISTER_END
+    - End quantity for Holding Register
+    - 1
+    - 125
+    - 125
+  * - MODBUS_QUANTITY_INPUT_REGISTER_START
+    - Start quantity for Input Register
+    - 1
+    - 125
+    - 1
+  * - MODBUS_QUANTITY_INPUT_REGISTER_END
+    - End quantity for Input Register
+    - 1
+    - 125
+    - 125
+  * - MODBUS_QUANTITY_DISCRETE_INPUT_START
+    - Start quantity for Discrete Inputs
+    - 1
+    - 2000
+    - 1
+  * - MODBUS_QUANTITY_DISCRETE_INPUT_END
+    - End quantity for Discrete Inputs
+    - 1
+    - 2000
+    - 2000
+  * - MODBUS_WRITE_QUANTITY_1
+    - Write quantity for coils 1
+    - 0
+    - 0
+    - 0
+  * - MODBUS_WRITE_QUANTITY_2
+    - Write quantity for coils 2
+    - 65280
+    - 65280
+    - 65280
 
-   
+
+    
 Call-back function defines
 --------------------------
 
