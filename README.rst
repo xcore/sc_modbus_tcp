@@ -36,6 +36,8 @@ none
 Required Repositories
 =====================
 
+- sc_ethernet git://github.com/xcore/sc_ethernet.git
+- sc_xtcp git://github.com/xcore/sc_xtcp.git
 
 Support
 =======

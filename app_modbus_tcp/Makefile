@@ -16,8 +16,8 @@ USED_MODULES = module_ethernet_board_support module_i2c_master module_modbus_tcp
 # XCC_XC_FLAGS, XCC_C_FLAGS, XCC_ASM_FLAGS, XCC_CPP_FLAGS
 # If the variable XCC_MAP_FLAGS is set it overrides the flags passed to
 # xcc for the final link (mapping) stage.
-XCC_FLAGS_Debug = -O0 -g -fxscope
-XCC_FLAGS_Release = -O2 -g -fxscope
+XCC_FLAGS_Debug = -O0 -g
+XCC_FLAGS_Release = -O2 -g
 
 # The VERBOSE variable, if set to 1, enables verbose output from the make system.
 VERBOSE = 0

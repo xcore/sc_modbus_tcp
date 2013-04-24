@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<xpd>
+    <components></components>
+    <dependency repo = "sc_xtcp">
+        <githash>8ce08457bcd2d0cdeb7c629dd737be8a4073b144</githash>
+        <uri>https://github.com/xcore/sc_xtcp.git</uri>
+    </dependency>
+    <dependency repo = "sc_ethernet">
+        <githash>e4a8c37fa9e30120a0e3751036c5ec18e89aeed1</githash>
+        <uri>https://github.com/xcore/sc_ethernet.git</uri>
+    </dependency>
+    <description>Modbus TCP component</description>
+    <location>https://github.com/xcore/sc_modbus_tcp.git</location>
+    <name>sc_modbus_tcp</name>
+    <maintainer>vinithmundhra</maintainer>
+    <vendor>XMOS</vendor>
+    <xcore_repo>sc_modbus_tcp.git</xcore_repo>
+    <xpd_version>1.0</xpd_version>
+</xpd>

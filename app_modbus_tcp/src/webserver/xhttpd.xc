@@ -17,8 +17,6 @@
 #include "httpd.h"
 #include "xtcp_client.h"
 
-#include <print.h>
-#include <xscope.h>
 /*---------------------------------------------------------------------------
  constants
  ---------------------------------------------------------------------------*/
@@ -58,9 +56,6 @@ void xhttpd(chanend c_tcp_svr, port p_button)
   timer t_scan_button_flag;
   unsigned time;
   xtcp_connection_t conn;
-
-  xscope_register(0, 0, "", 0, "");
-  xscope_config_io(XSCOPE_IO_BASIC);
 
   // Initiate the HTTP state
   httpd_init(c_tcp_svr);
