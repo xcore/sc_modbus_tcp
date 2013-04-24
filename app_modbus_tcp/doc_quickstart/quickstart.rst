@@ -1,7 +1,11 @@
 Modbus TCP Demo Quick start Guide
 =================================
 
-This simple demonstration of xTIMEcomposer Studio functionality that uses the ``XA-SK-E100`` and ``XA-SK-GPIO`` Slice Cards together with the xSOFTip ``module_modbus_tcp``, ``module_xtcp`` and ``module_ethernet`` to demonstrate how the module is used to receive commands from a Modbus Master over TCP and service them to modify/read GPIO states on the GPIO slice card.
+This simple demonstration of xTIMEcomposer Studio functionality that uses the ``XA-SK-E100`` and ``XA-SK-GPIO`` Slice Cards together with the xSOFTip ``module_modbus_tcp``, ``module_xtcp`` and ``module_ethernet`` to demonstrate how the module is used to receive commands from a Modbus Master over TCP and service them to:
+
+- Turn GPIO Slice Card LEDS on and off
+- Read the room temperature via the on-board ADC
+- Display GPIO Slice Card button presses
 
 Hardware Setup
 ++++++++++++++
@@ -20,7 +24,7 @@ To setup up the system:
 .. figure:: images/hardware_setup.jpg
    :align: center
 
-   Hardware Setup for Modbus TCP Demo
+   Hardware Setup for a Modbus TCP Demo
 
 Import and Build the Application
 ++++++++++++++++++++++++++++++++
@@ -48,7 +52,7 @@ Now that the application has been compiled, the next step is to run it on the Sl
 - On your PC, open the SimplyModbus Client from Programs -> SimplyModbus and adjust to following settings:
 
    - mode = TCP
-   - IP Address = user ip address provided in main.xc
+   - IP Address = user ip address provided in app_modbus_tcp.xc
    - Port = 502 (Modbus Listening Port)
 
 - Alternatively, load the read_coil configuration file from $\\app_modbus_tcp\\simplymodbus_config\\ and click CONNECT.
@@ -56,12 +60,11 @@ Now that the application has been compiled, the next step is to run it on the Sl
 .. figure:: images/init.png
    :align: center
 
-   SimplyModbus Configuration
 
-- Send a command as 'Read Coil' (load read_coil config from $\\app_modbus_tcp\\simplymodbus_config\\). This will read the status of GPIO LED on XA-SK-GPIO slice card. To read the status of the other three LEDs, change the ``First Coil`` value in the SimplyModbus application.
+- Send a command as 'Read Coil' (load read_coil config from $\\app_modbus_tcp\\simplymodbus_config\\). This will read the status of GPIO LED on XA-SK-GPIO slice card. To read the status of the other three LEDs, change the ``First Coil`` value in the SimplyModbus application to one of the values as mentioned below. The result is a byte containing the status of LEDs arranged as bit positions. For example, Bit0 represents status of LED0, and so on... A value of '1' in the bit field represents 'LED is OFF' and '0' represents 'LED is ON'.
 
    ============ ===================
-   First coil    LED on Slice card
+   First coil    LED on Slice card 
    ============ ===================
    1             0
    2             1
@@ -72,40 +75,37 @@ Now that the application has been compiled, the next step is to run it on the Sl
 .. figure:: images/read_coil.png
    :align: center
 
-   Read Coil
 
-- Send a 'Read Input Register' (load config from $\\app_modbus_tcp\\simplymodbus_config\\) command to read the current room temperature as recorded by the sensor present on the XA-SK-GPIO slice card.
+- Send a 'Read Input Register' (load config from $\\app_modbus_tcp\\simplymodbus_config\\) command to read the current room temperature as recorded by the sensor present on the XA-SK-GPIO slice card. The result is a short integer representing the room temperature as responded by the Modbus slave.
 
 .. figure:: images/read_ip_reg.png
    :align: center
    
-   Read Input Register
 
-- Send a 'Read Discrete Input' (load config from $\\app_modbus_tcp\\simplymodbus_config\\) command to read button status on the XA-SK-GPIO slice card.
+- Send a 'Read Discrete Input' (load config from $\\app_modbus_tcp\\simplymodbus_config\\) command to read button status on the XA-SK-GPIO slice card. The result is a byte in which Bit0 represents Button0 and Bit1 represents Button1. A value of '1' in these fields indicate that a button was pressed (and released) since the last 'Read Discrete Input' command.
 
 .. figure:: images/read_dis_ip.png
    :align: center
    
-   Read Discrete Input
       
-- You can write using the WRITE interface. This can be brought up by clicking the WRITE button in simplyModbus. Load the write_coil config in WRITE window. Sending the command will toggle the requested LED.
+- You can write using the WRITE interface. This can be brought up by clicking the WRITE button in simplyModbus. Load the write_coil config in WRITE window. Sending the command will toggle the requested LED. The position of LED is similar to 'Read Coil' command. To toggle other LEDs, change the 'First Register' value in the WRITE interface window.
 
 .. figure:: images/write_coil.png
    :align: center
 
-   Write coil in SimplyModbus
 
-User can change appropriate values of address and data based on your application. Any unsupported Function code or data range will result in exception response. For example:
+User can change appropriate values of address and data based on your application. Any unsupported Function code or data range will result in exception response. 
 
-.. figure:: images/7.png
+For example, when a Function code '7' (Read Exception Status) is sent to the slave, the slave returns an 'Illegal Function Code' error response as the slave does not support this command.
+
+.. figure:: images/ill_fn.png
    :align: center
 
-   Illegal Function Code exception response example
+Another example where the number of coils in 'Read Coil' (function code '1') command is set to 80000 and is sent to Modbus slave. The slave returns an 'Illegal Data Value' error response as that number of coils is not supported by the slave.
 
-.. figure:: images/8.png
+.. figure:: images/ill_data.png
    :align: center
 
-   Illegal Data Value exception response example
 
 Examine the application code
 ++++++++++++++++++++++++++++

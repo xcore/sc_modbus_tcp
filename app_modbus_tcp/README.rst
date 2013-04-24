@@ -9,12 +9,16 @@ Modbus TCP Demo
 Demo Overview
 =============
 
-This simple demonstration of xTIMEcomposer Studio functionality that uses the XA-SK-E100 and XA-SK-GPIO Slice Cards together with the xSOFTip module_modbus_tcp to demonstrate how the module is used to receive commands from a Modbus Master over TCP and service them to modify/read GPIO states on the GPIO slice card.
+This simple demonstration of xTIMEcomposer Studio functionality that uses the XA-SK-E100 and XA-SK-GPIO Slice Cards together with the xSOFTip module_modbus_tcp to demonstrate how the module is used to receive commands from a Modbus Master over TCP and service them to:
+
+- Turn GPIO Slice Card LEDS on and off
+- Read the room temperature via the on-board ADC
+- Display GPIO Slice Card button presses
 
 Software Requirements
 =====================
 
-A Modbus Master application running on the host. For example, SimplyModbus on a PC.
+A Modbus Master application running on the host. For example, SimplyModbus on a PC (http://www.simplymodbus.ca/TCPclient.htm).
 
 Required Repositories
 =====================
