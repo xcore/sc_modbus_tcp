@@ -257,6 +257,8 @@ static int modbus_read_data(uint8_t fn_code,
             // any error here should be exception code 4u
 #ifdef MB_READ_COILS
             read_value = (uint16_t)(MB_READ_COILS((i + address)));
+#else
+            read_value = 2; // slave device failure            
 #endif
 
             if (read_value == 1u)
@@ -305,6 +307,8 @@ static int modbus_read_data(uint8_t fn_code,
             // any error here should be exception code 4u
 #ifdef MB_READ_DISCRETE_INPUTS
             read_value = (uint16_t)(MB_READ_DISCRETE_INPUTS((i + address)));
+#else
+            read_value = 2; // slave device failure            
 #endif
 
             if (read_value == 1u)
@@ -352,6 +356,8 @@ static int modbus_read_data(uint8_t fn_code,
             // any error here should be exception code 4u
 #ifdef MB_READ_HOLDING_REGISTERS
             read_value = (uint16_t)(MB_READ_HOLDING_REGISTERS((i + address)));
+#else
+            read_value = 0; // slave device failure            
 #endif
 
             if (read_value)
@@ -397,6 +403,8 @@ static int modbus_read_data(uint8_t fn_code,
             // any error here should be exception code 4u
 #ifdef MB_READ_INPUT_REGISTERS
             read_value = (uint16_t)(MB_READ_INPUT_REGISTERS((i + address)));
+#else
+            read_value = 0; // slave device failure            
 #endif
 
             if (read_value)
