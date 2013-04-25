@@ -12,286 +12,9 @@ componentVersion = "1v0"
 -- Parameter descriptions.
 -------------------------------------------------------------------------------
 
-
-configPoints =
-{
-
-  address_coil_start =
-  {
-    short   = "Start address for Coil",
-    long    = "",
-    help    = "Start address for Coil",
-    units   = "",
-    define  = "MODBUS_ADDRESS_COIL_START",
-    type    = "int",
-    min     = 0,
-    max     = 65535,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=0
-  },
-
-  address_coil_end =
-  {
-    short   = "End address for Coil",
-    long    = "",
-    help    = "End address for Coil",
-    units   = "",
-    define  = "MODBUS_ADDRESS_COIL_END",
-    type    = "int",
-    min     = 0,
-    max     = 65535,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=65535
-  },
-
-  address_holding_register_start =
-  {
-    short   = "Start address for Holding Register",
-    long    = "",
-    help    = "Start address for Holding Register",
-    units   = "",
-    define  = "MODBUS_ADDRESS_HOLDING_REGISTER_START",
-    type    = "int",
-    min     = 0,
-    max     = 65535,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=0
-  },
-
-  address_holding_register_end =
-  {
-    short   = "End address for Holding Register",
-    long    = "",
-    help    = "End address for Holding Register",
-    units   = "",
-    define  = "MODBUS_ADDRESS_HOLDING_REGISTER_END",
-    type    = "int",
-    min     = 0,
-    max     = 65535,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=65535
-  },
-
-  address_input_register_start =
-  {
-    short   = "Start address for Input Register",
-    long    = "",
-    help    = "Start address for Input Register",
-    units   = "",
-    define  = "MODBUS_ADDRESS_INPUT_REGISTER_START",
-    type    = "int",
-    min     = 0,
-    max     = 65535,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=0
-  },
-
-  address_input_register_end =
-  {
-    short   = "End address for Input Register",
-    long    = "",
-    help    = "End address for Input Register",
-    units   = "",
-    define  = "MODBUS_ADDRESS_INPUT_REGISTER_END",
-    type    = "int",
-    min     = 0,
-    max     = 65535,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=65535
-  },
-
-  address_discrete_input_start =
-  {
-    short   = "Start address for Discrete Input",
-    long    = "",
-    help    = "Start address for Discrete Input",
-    units   = "",
-    define  = "MODBUS_ADDRESS_DISCRETE_INPUT_START",
-    type    = "int",
-    min     = 0,
-    max     = 65535,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=0
-  },
-
-  address_discrete_input_end =
-  {
-    short   = "End address for Discrete Input",
-    long    = "",
-    help    = "End address for Discrete Input",
-    units   = "",
-    define  = "MODBUS_ADDRESS_DISCRETE_INPUT_END",
-    type    = "int",
-    min     = 0,
-    max     = 65535,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=65535
-  },
-
-  quantity_coil_start =
-  {
-    short   = "Start quantity for Coil",
-    long    = "",
-    help    = "Start quantity for Coil",
-    units   = "",
-    define  = "MODBUS_QUANTITY_COIL_START",
-    type    = "int",
-    min     = 1,
-    max     = 2000,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=1
-  },
-
-  quantity_coil_end =
-  {
-    short   = "End quantity for Coil",
-    long    = "",
-    help    = "End quantity for Coil",
-    units   = "",
-    define  = "MODBUS_QUANTITY_COIL_END",
-    type    = "int",
-    min     = 1,
-    max     = 2000,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=2000
-  },
-
-  quantity_holding_register_start =
-  {
-    short   = "Start quantity for Holding Register",
-    long    = "",
-    help    = "Start quantity for Holding Register",
-    units   = "",
-    define  = "MODBUS_QUANTITY_HOLDING_REGISTER_START",
-    type    = "int",
-    min     = 1,
-    max     = 125,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=1
-  },
-
-  quantity_holding_register_end =
-  {
-    short   = "End quantity for Holding Register",
-    long    = "",
-    help    = "End quantity for Holding Register",
-    units   = "",
-    define  = "MODBUS_QUANTITY_HOLDING_REGISTER_END",
-    type    = "int",
-    min     = 1,
-    max     = 125,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=125
-  },
-
-  quantity_input_register_start =
-  {
-    short   = "Start quantity for Input Register",
-    long    = "",
-    help    = "Start quantity for Input Register",
-    units   = "",
-    define  = "MODBUS_QUANTITY_INPUT_REGISTER_START",
-    type    = "int",
-    min     = 1,
-    max     = 125,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=1
-  },
-
-  quantity_input_register_end =
-  {
-    short   = "End quantity for Input Register",
-    long    = "",
-    help    = "End quantity for Input Register",
-    units   = "",
-    define  = "MODBUS_QUANTITY_INPUT_REGISTER_END",
-    type    = "int",
-    min     = 1,
-    max     = 125,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=125
-  },
-
-  quantity_discrete_input_start =
-  {
-    short   = "Start quantity for Discrete Input",
-    long    = "",
-    help    = "Start quantity for Discrete Input",
-    units   = "",
-    define  = "MODBUS_QUANTITY_DISCRETE_INPUT_START",
-    type    = "int",
-    min     = 1,
-    max     = 2000,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=1
-  },
-
-  quantity_discrete_input_end =
-  {
-    short   = "End quantity for Discrete Input",
-    long    = "",
-    help    = "End quantity for Discrete Input",
-    units   = "",
-    define  = "MODBUS_QUANTITY_DISCRETE_INPUT_END",
-    type    = "int",
-    min     = 1,
-    max     = 2000,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=2000
-  },
-
-  quantity_write_single_coil_1 =
-  {
-    short   = "First quantity for Write Single Coil",
-    long    = "",
-    help    = "First quantity for Write Single Coil",
-    units   = "",
-    define  = "MODBUS_WRITE_QUANTITY_1",
-    type    = "int",
-    min     = 0,
-    max     = 0,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=0
-  },
-
-  quantity_write_single_coil_2 =
-  {
-    short   = "Second quantity for Write Single Coil",
-    long    = "",
-    help    = "Second quantity for Write Single Coil",
-    units   = "",
-    define  = "MODBUS_WRITE_QUANTITY_2",
-    type    = "int",
-    min     = 65280,
-    max     = 65280,
-    enabled = swblock.params.lcd_part == "Generic",
-    resourceUsageFlags = {"noeffect"},
-    default=65280
-  },
-  
-}
-
+configPoints = {}
 derivedValues = {}
-
 ports = {}
-
 channels = {}
 
 function getConfigStatus()
@@ -310,22 +33,49 @@ var_globals = [[
 ]]
 
 demo_task = [[
-   int send_to_modbus_library(char data[], int len) {
-      int rtnval = modbus_tcp_parse_request(&data[0], len);
+   unsigned short read_coils(unsigned short address)
+   {
+     return 0;
+   }
+
+   unsigned short read_discrete_inputs(unsigned short address)
+   {
+     return 0;
+   }
+
+   unsigned short read_holding_registers(unsigned short address)
+   {
+     return 0;
+   }
+
+   unsigned short read_input_registers(unsigned short address)
+   {
+     return 0;
+   }
+
+   unsigned short write_single_coil(unsigned short address, unsigned short value)
+   {
+     return 0;
+   }
+
+   unsigned short write_single_register(unsigned short address, unsigned short value)
+   {
+     return 0;
    }
 ]]
 
 generatedCode = {
   includes = {"modbus_tcp.h","modbus_cb_functions.h"},
   globals = var_globals .. demo_task,
-  body = ""
+  body = [[
+    int resp_length = modbus_tcp_parse_request(&data[0], len); 
+  ]]
 }
 
-api = {
-  'modbus_tcp_parse_request',
-}
+api = {}
 
 files = {
   ["module_modbus_tcp/modbus_conf_example.h"] = "src/modbus_conf.h",
+  ["module_modbus_tcp/modbus_cb_functions_example.h"] = "src/modbus_cb_functions.h",
 }
 

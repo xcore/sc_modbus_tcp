@@ -15,40 +15,40 @@
 /*---------------------------------------------------------------------------
  nested include files
  ---------------------------------------------------------------------------*/
-//#include "modbus_cb_functions.h"
+#include "modbus_cb_functions.h"
 
 /*---------------------------------------------------------------------------
  constants
  ---------------------------------------------------------------------------*/
 
-//#define MODBUS_ADDRESS_COIL_START                      0x0000
-//#define MODBUS_ADDRESS_COIL_END                        0xFFFF
-//#define MODBUS_ADDRESS_HOLDING_REGISTER_START          0x0000
-//#define MODBUS_ADDRESS_HOLDING_REGISTER_END            0xFFFF
-//#define MODBUS_ADDRESS_INPUT_REGISTER_START            0x0000
-//#define MODBUS_ADDRESS_INPUT_REGISTER_END              0xFFFF
-//#define MODBUS_ADDRESS_DISCRETE_INPUT_START            0x0000
-//#define MODBUS_ADDRESS_DISCRETE_INPUT_END              0xFFFF
-//#define MODBUS_QUANTITY_COIL_START                     0x0001
-//#define MODBUS_QUANTITY_COIL_END                       0x07D0
-//#define MODBUS_QUANTITY_HOLDING_REGISTER_START         0x0001
-//#define MODBUS_QUANTITY_HOLDING_REGISTER_END           0x007D
-//#define MODBUS_QUANTITY_INPUT_REGISTER_START           0x0001
-//#define MODBUS_QUANTITY_INPUT_REGISTER_END             0x007D
-//#define MODBUS_QUANTITY_DISCRETE_INPUT_START           0x0001
-//#define MODBUS_QUANTITY_DISCRETE_INPUT_END             0x07D0
-//#define MODBUS_WRITE_QUANTITY_1                        0x0000
-//#define MODBUS_WRITE_QUANTITY_2                        0xFF00
+#define MODBUS_ADDRESS_COIL_START                      0x0000
+#define MODBUS_ADDRESS_COIL_END                        0xFFFF
+#define MODBUS_ADDRESS_HOLDING_REGISTER_START          0x0000
+#define MODBUS_ADDRESS_HOLDING_REGISTER_END            0xFFFF
+#define MODBUS_ADDRESS_INPUT_REGISTER_START            0x0000
+#define MODBUS_ADDRESS_INPUT_REGISTER_END              0xFFFF
+#define MODBUS_ADDRESS_DISCRETE_INPUT_START            0x0000
+#define MODBUS_ADDRESS_DISCRETE_INPUT_END              0xFFFF
+#define MODBUS_QUANTITY_COIL_START                     0x0001
+#define MODBUS_QUANTITY_COIL_END                       0x07D0
+#define MODBUS_QUANTITY_HOLDING_REGISTER_START         0x0001
+#define MODBUS_QUANTITY_HOLDING_REGISTER_END           0x007D
+#define MODBUS_QUANTITY_INPUT_REGISTER_START           0x0001
+#define MODBUS_QUANTITY_INPUT_REGISTER_END             0x007D
+#define MODBUS_QUANTITY_DISCRETE_INPUT_START           0x0001
+#define MODBUS_QUANTITY_DISCRETE_INPUT_END             0x07D0
+#define MODBUS_WRITE_QUANTITY_1                        0x0000
+#define MODBUS_WRITE_QUANTITY_2                        0xFF00
 
 /*---------------------------------------------------------------------------
  function callbacks
  ---------------------------------------------------------------------------*/
-//#define MB_READ_COILS               read_coils
-//#define MB_READ_DISCRETE_INPUTS     read_discrete_inputs
-//#define MB_READ_HOLDING_REGISTERS   read_holding_registers
-//#define MB_READ_INPUT_REGISTERS     read_input_registers
-//#define MB_WRITE_SINGLE_COIL        write_single_coil
-//#define MB_WRITE_SINGLE_REGISTER    write_single_register
+#define MB_READ_COILS               read_coils
+#define MB_READ_DISCRETE_INPUTS     read_discrete_inputs
+#define MB_READ_HOLDING_REGISTERS   read_holding_registers
+#define MB_READ_INPUT_REGISTERS     read_input_registers
+#define MB_WRITE_SINGLE_COIL        write_single_coil
+#define MB_WRITE_SINGLE_REGISTER    write_single_register
 
 /*---------------------------------------------------------------------------
  typedefs
