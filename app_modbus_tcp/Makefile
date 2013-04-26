@@ -9,7 +9,7 @@ TARGET = SLICEKIT-L16
 APP_NAME = app_modbus_tcp
 
 # The USED_MODULES variable lists other module used by the application.
-USED_MODULES = module_ethernet_board_support module_i2c_master module_modbus_tcp module_xtcp
+USED_MODULES = module_i2c_master module_modbus_tcp
 
 # The flags passed to xcc when building the application
 # You can also set the following to override flags for a particular language:

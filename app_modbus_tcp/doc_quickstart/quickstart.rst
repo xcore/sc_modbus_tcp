@@ -124,16 +124,4 @@ Examine the application code
   * - app_modbus_tcp
     - ``app_modbus_tcp.xc``
     - File containing main() function for the application. Also contains Modbus call-back functions implementation.
-  * - 
-    - ``modbus_cb_functions.h``
-    - Header file containing prototypes for Modbus call-back functions.
-  * - 
-    - ``modbus_conf.h``
-    - Modbus configuration file. Defines addresses and quantities for coils / registers and function call-backs.
-  * - 
-    - ``webserver\xhttpd.h``
-    - The TCP webserver and Button listener.
-  * - 
-    - ``webserver\httpd.h``
-    - The TCP event handler. Calls Modbus library function when a TCP frame is received and sends responses.
 

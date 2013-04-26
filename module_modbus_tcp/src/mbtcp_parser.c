@@ -21,91 +21,29 @@
 /*---------------------------------------------------------------------------
  include files
  ---------------------------------------------------------------------------*/
-#include "modbus_tcp.h"
-
-/*
- * Include this file for call-back functions
- */
-#ifdef __modbus_conf_h_exists__
-#include "modbus_conf.h"
-#endif
+#include "mbtcp_parser.h"
+#include "mb_codes.h"
+#include "mb_util.h"
 
 /*---------------------------------------------------------------------------
  constants
  ---------------------------------------------------------------------------*/
-// Default addresses and quantity limits
-#ifndef MODBUS_ADDRESS_COIL_START
-    #define MODBUS_ADDRESS_COIL_START                      0x0000
-#endif
-#ifndef MODBUS_ADDRESS_COIL_END
-    #define MODBUS_ADDRESS_COIL_END                        0xFFFF
-#endif
-#ifndef MODBUS_ADDRESS_HOLDING_REGISTER_START
-    #define MODBUS_ADDRESS_HOLDING_REGISTER_START          0x0000
-#endif
-#ifndef MODBUS_ADDRESS_HOLDING_REGISTER_END
-    #define MODBUS_ADDRESS_HOLDING_REGISTER_END            0xFFFF
-#endif
-#ifndef MODBUS_ADDRESS_INPUT_REGISTER_START
-    #define MODBUS_ADDRESS_INPUT_REGISTER_START            0x0000
-#endif
-#ifndef MODBUS_ADDRESS_INPUT_REGISTER_END
-    #define MODBUS_ADDRESS_INPUT_REGISTER_END              0xFFFF
-#endif
-#ifndef MODBUS_ADDRESS_DISCRETE_INPUT_START
-    #define MODBUS_ADDRESS_DISCRETE_INPUT_START            0x0000
-#endif
-#ifndef MODBUS_ADDRESS_DISCRETE_INPUT_END
-    #define MODBUS_ADDRESS_DISCRETE_INPUT_END              0xFFFF
-#endif
-#ifndef MODBUS_QUANTITY_COIL_START
-    #define MODBUS_QUANTITY_COIL_START                     0x0001
-#endif
-#ifndef MODBUS_QUANTITY_COIL_END
-    #define MODBUS_QUANTITY_COIL_END                       0x07D0
-#endif
-#ifndef MODBUS_QUANTITY_HOLDING_REGISTER_START
-    #define MODBUS_QUANTITY_HOLDING_REGISTER_START         0x0001
-#endif
-#ifndef MODBUS_QUANTITY_HOLDING_REGISTER_END
-    #define MODBUS_QUANTITY_HOLDING_REGISTER_END           0x007D
-#endif
-#ifndef MODBUS_QUANTITY_INPUT_REGISTER_START
-    #define MODBUS_QUANTITY_INPUT_REGISTER_START           0x0001
-#endif
-#ifndef MODBUS_QUANTITY_INPUT_REGISTER_END
-    #define MODBUS_QUANTITY_INPUT_REGISTER_END             0x007D
-#endif
-#ifndef MODBUS_QUANTITY_DISCRETE_INPUT_START
-    #define MODBUS_QUANTITY_DISCRETE_INPUT_START           0x0001
-#endif
-#ifndef MODBUS_QUANTITY_DISCRETE_INPUT_END
-    #define MODBUS_QUANTITY_DISCRETE_INPUT_END             0x07D0
-#endif
-#ifndef MODBUS_WRITE_QUANTITY_1
-   #define MODBUS_WRITE_QUANTITY_1                         0x0000
-#endif
-#ifndef MODBUS_WRITE_QUANTITY_2
-   #define MODBUS_WRITE_QUANTITY_2                         0xFF00
-#endif
-
-// Currently supported Modbus TCP commands
-#define READ_COILS                              0x01
-#define READ_DISCRETE_INPUTS                    0x02
-#define READ_HOLDING_REGISTERS                  0x03
-#define READ_INPUT_REGISTER                     0x04
-#define WRITE_SINGLE_COIL                       0x05
-#define WRITE_SINGLE_REGISTER                   0x06
+// Default quantity limits
+#define MODBUS_ADDRESS_START        0x0000
+#define MODBUS_ADDRESS_END          0xFFFF
+#define MODBUS_QUANTITY_START       0x0001
+#define MODBUS_QUANTITY_1BIT_END    0x07D0
+#define MODBUS_QUANTITY_16BIT_END   0x007D
 
 // Modbus protocol ID and data sizes
-#define MODBUS_PROTOCOL_IDENTIFIER              0x0000u
-#define MODBUS_SIZE_MBAP                        7u
+#define MODBUS_PROTOCOL_IDENTIFIER  0x0000u
+#define MODBUS_SIZE_MBAP            7u
 
 // Big Endian format in Modbus data
-#define MODBUS_INDEX_PROTOCOL_ID                2u
-#define MODBUS_INDEX_LENGTH_FIELD               4u
-#define MODBUS_INDEX_FUNCTION_CODE              7u
-#define MODBUS_INDEX_START_DATA                 8u
+#define MODBUS_INDEX_PROTOCOL_ID    2u
+#define MODBUS_INDEX_LENGTH_FIELD   4u
+#define MODBUS_INDEX_FUNCTION_CODE  7u
+#define MODBUS_INDEX_START_DATA     8u
 
 /*---------------------------------------------------------------------------
  ports and clocks
@@ -120,6 +58,14 @@ typedef unsigned short  uint16_t;
 typedef signed short    int16_t;
 typedef unsigned int    uint32_t;
 typedef signed int      int32_t;
+
+enum modbus_exception
+{
+  ILLEGAL_FUNCTION     = 0x01,
+  ILLEGAL_DATA_ADDRESS = 0x02,
+  ILLEGAL_DATA_VALUE   = 0x03,
+  SLAVE_DEVICE_FAILURE = 0x04,
+};
 
 /*---------------------------------------------------------------------------
  global variables
@@ -161,19 +107,16 @@ static uint8_t get_byte_count(uint16_t qty);
  *  \param fn_code    function code
  *  \param qty        quantity
  *  \param address    address
- *  \param address_hi address hi limit
- *  \param address_lo address lo limit
  *  \param qty_hi     qty hi limit
  *  \param qty_lo     qty lo limit
  *  \param data       data received from tcp
  *  \return int       modbus response length
  *
  **/
-static int modbus_read_data(uint8_t fn_code,
+static int modbus_read_data(chanend c_modbus,
+                            uint8_t fn_code,
                             uint16_t qty,
                             uint16_t address,
-                            uint16_t address_hi,
-                            uint16_t address_lo,
                             uint16_t qty_hi,
                             uint16_t qty_lo,
                             char *data);
@@ -183,7 +126,7 @@ static int modbus_read_data(uint8_t fn_code,
  ---------------------------------------------------------------------------*/
 static uint8_t check_range(int value, uint16_t limit_lo, uint16_t limit_hi)
 {
-  return (!(value < limit_lo || value > limit_hi));
+  return (!((value < limit_lo) || (value > limit_hi)));
 }
 
 /*---------------------------------------------------------------------------
@@ -197,11 +140,10 @@ static uint8_t modbus_get_byte_count(uint16_t qty)
 /*---------------------------------------------------------------------------
  modbus read data
  ---------------------------------------------------------------------------*/
-static int modbus_read_data(uint8_t fn_code,
+static int modbus_read_data(chanend c_modbus,
+                            uint8_t fn_code,
                             uint16_t qty,
                             uint16_t address,
-                            uint16_t address_hi,
-                            uint16_t address_lo,
                             uint16_t qty_hi,
                             uint16_t qty_lo,
                             char *data)
@@ -210,13 +152,12 @@ static int modbus_read_data(uint8_t fn_code,
 
   // Modbus Application Protocol V1 1B - Section 6.1
   // Check if quantity is within range
-  if (check_range(qty, qty_lo, qty_hi))
+  if(check_range(qty, qty_lo, qty_hi))
   {
     uint16_t end_qty_address = address + qty;
 
-    // Check start and end address
-    if (check_range(address, address_lo, address_hi)
-        && check_range(end_qty_address, address_lo, address_hi))
+    // Check End address
+    if(check_range(end_qty_address, MODBUS_ADDRESS_START, MODBUS_ADDRESS_END))
     {
       uint16_t i;
       uint16_t index_status = MODBUS_SIZE_MBAP + 2u;
@@ -228,8 +169,7 @@ static int modbus_read_data(uint8_t fn_code,
 
       switch(fn_code)
       {
-#ifdef READ_COILS
-        case READ_COILS:
+        case MODBUS_READ_COIL:
         {
           // Update response length
           response_length = 2u + byte_count;
@@ -255,11 +195,10 @@ static int modbus_read_data(uint8_t fn_code,
             index_bit = i % 8u;
 
             // any error here should be exception code 4u
-#ifdef MB_READ_COILS
-            read_value = (uint16_t)(MB_READ_COILS((i + address)));
-#else
-            read_value = 2; // slave device failure            
-#endif
+            read_value = access_external_device(c_modbus,
+                                                MODBUS_READ_COIL,
+                                                (i+address),
+                                                0);
 
             if (read_value == 1u)
             {
@@ -277,9 +216,8 @@ static int modbus_read_data(uint8_t fn_code,
           } // for qty
           break;
         } // case READ_COILS
-#endif // READ_COILS
-#ifdef READ_DISCRETE_INPUTS
-        case READ_DISCRETE_INPUTS:
+
+        case MODBUS_READ_DISCRETE_INPUT:
         {
           // Update response length
           response_length = 2u + byte_count;
@@ -305,11 +243,10 @@ static int modbus_read_data(uint8_t fn_code,
             index_bit = i % 8u;
 
             // any error here should be exception code 4u
-#ifdef MB_READ_DISCRETE_INPUTS
-            read_value = (uint16_t)(MB_READ_DISCRETE_INPUTS((i + address)));
-#else
-            read_value = 2; // slave device failure            
-#endif
+            read_value = access_external_device(c_modbus,
+                                                MODBUS_READ_DISCRETE_INPUT,
+                                                (i+address),
+                                                0);
 
             if (read_value == 1u)
             {
@@ -327,9 +264,8 @@ static int modbus_read_data(uint8_t fn_code,
           } // for qty
           break;
         } // case READ_DISCRETE_INPUTS
-#endif // READ_DISCRETE_INPUTS
-#ifdef READ_HOLDING_REGISTERS
-        case READ_HOLDING_REGISTERS:
+
+        case MODBUS_READ_HOLDING_REGISTER:
         {
           byte_count = 2u * qty;
 
@@ -354,11 +290,10 @@ static int modbus_read_data(uint8_t fn_code,
           for (i = 0; i < qty; i++)
           {
             // any error here should be exception code 4u
-#ifdef MB_READ_HOLDING_REGISTERS
-            read_value = (uint16_t)(MB_READ_HOLDING_REGISTERS((i + address)));
-#else
-            read_value = 0; // slave device failure            
-#endif
+            read_value = access_external_device(c_modbus,
+                                                MODBUS_READ_HOLDING_REGISTER,
+                                                (i+address),
+                                                0);
 
             if (read_value)
             {
@@ -374,9 +309,8 @@ static int modbus_read_data(uint8_t fn_code,
           } // for qty
           break;
         } // case READ_HOLDING_REGISTERS
-#endif // READ_HOLDING_REGISTERS
-#ifdef READ_INPUT_REGISTER
-        case READ_INPUT_REGISTER:
+
+        case MODBUS_READ_INPUT_REGISTER:
         {
           byte_count = 2u * qty;
 
@@ -401,11 +335,10 @@ static int modbus_read_data(uint8_t fn_code,
           for (i = 0; i < qty; i++)
           {
             // any error here should be exception code 4u
-#ifdef MB_READ_INPUT_REGISTERS
-            read_value = (uint16_t)(MB_READ_INPUT_REGISTERS((i + address)));
-#else
-            read_value = 0; // slave device failure            
-#endif
+            read_value = access_external_device(c_modbus,
+                                                MODBUS_READ_INPUT_REGISTER,
+                                                (i+address),
+                                                0);
 
             if (read_value)
             {
@@ -421,7 +354,7 @@ static int modbus_read_data(uint8_t fn_code,
           } // for qty
           break;
         } // case READ_INPUT_REGISTER
-#endif // READ_INPUT_REGISTER
+
       }
     } // if address range check
 
@@ -441,7 +374,7 @@ static int modbus_read_data(uint8_t fn_code,
 /*---------------------------------------------------------------------------
  parse modbus request
  ---------------------------------------------------------------------------*/
-int modbus_tcp_parse_request(char *data, int len)
+int modbus_tcp_parse_request(chanend c_modbus, char *data, int len)
 {
   int response_length;
 
@@ -468,111 +401,87 @@ int modbus_tcp_parse_request(char *data, int len)
   // Check Function code support
   switch(function_code)
   {
+    case MODBUS_READ_COIL:
+    {
+      response_length = modbus_read_data(c_modbus,
+                                         function_code,
+                                         qty,
+                                         address,
+                                         MODBUS_QUANTITY_1BIT_END,
+                                         MODBUS_QUANTITY_START,
+                                         data);
+      break;
+    }
 
-#ifdef READ_COILS
-    case READ_COILS:
+    case MODBUS_READ_DISCRETE_INPUT:
     {
-      response_length = modbus_read_data(
-          function_code,
-          qty,
-          address,
-          MODBUS_ADDRESS_COIL_END,
-          MODBUS_ADDRESS_COIL_START,
-          MODBUS_QUANTITY_COIL_END,
-          MODBUS_QUANTITY_COIL_START,
-          data);
+      response_length = modbus_read_data(c_modbus,
+                                         function_code,
+                                         qty,
+                                         address,
+                                         MODBUS_QUANTITY_1BIT_END,
+                                         MODBUS_QUANTITY_START,
+                                         data);
       break;
     }
-#endif // READ_COILS
-#ifdef READ_DISCRETE_INPUTS
-    case READ_DISCRETE_INPUTS:
+
+    case MODBUS_READ_HOLDING_REGISTER:
     {
-      response_length = modbus_read_data(
-          function_code,
-          qty,
-          address,
-          MODBUS_ADDRESS_DISCRETE_INPUT_END,
-          MODBUS_ADDRESS_DISCRETE_INPUT_START,
-          MODBUS_QUANTITY_DISCRETE_INPUT_END,
-          MODBUS_QUANTITY_DISCRETE_INPUT_START,
-          data);
+      response_length = modbus_read_data(c_modbus,
+                                         function_code,
+                                         qty,
+                                         address,
+                                         MODBUS_QUANTITY_16BIT_END,
+                                         MODBUS_QUANTITY_START,
+                                         data);
       break;
     }
-#endif // READ_DISCRETE_INPUTS
-#ifdef READ_HOLDING_REGISTERS
-    case READ_HOLDING_REGISTERS:
+
+    case MODBUS_READ_INPUT_REGISTER:
     {
-      response_length = modbus_read_data(
-          function_code,
-          qty,
-          address,
-          MODBUS_ADDRESS_HOLDING_REGISTER_END,
-          MODBUS_ADDRESS_HOLDING_REGISTER_START,
-          MODBUS_QUANTITY_HOLDING_REGISTER_END,
-          MODBUS_QUANTITY_HOLDING_REGISTER_START,
-          data);
+      response_length = modbus_read_data(c_modbus,
+                                         function_code,
+                                         qty,
+                                         address,
+                                         MODBUS_QUANTITY_16BIT_END,
+                                         MODBUS_QUANTITY_START,
+                                         data);
       break;
     }
-#endif // READ_HOLDING_REGISTERS
-#ifdef READ_INPUT_REGISTER
-    case READ_INPUT_REGISTER:
-    {
-      response_length = modbus_read_data(
-          function_code,
-          qty,
-          address,
-          MODBUS_ADDRESS_INPUT_REGISTER_END,
-          MODBUS_ADDRESS_INPUT_REGISTER_START,
-          MODBUS_QUANTITY_INPUT_REGISTER_END,
-          MODBUS_QUANTITY_INPUT_REGISTER_START,
-          data);
-      break;
-    }
-#endif // READ_INPUT_REGISTER
-#ifdef WRITE_SINGLE_COIL
-    case WRITE_SINGLE_COIL:
+
+    case MODBUS_WRITE_SINGLE_COIL:
     {
       // Modbus Application Protocol V1 1B - Section 6.1
       // Check if quantity is within range
-      if (qty == MODBUS_WRITE_QUANTITY_1 || qty == MODBUS_WRITE_QUANTITY_2)
+      if (qty == 0x0000 || qty == 0xFF00)
       {
-        // Check address range
-        if (check_range(address,
-                MODBUS_ADDRESS_COIL_START,
-                MODBUS_ADDRESS_COIL_END))
+        uint16_t index_status = MODBUS_SIZE_MBAP + 1u;
+        uint16_t read_value = 0;
+
+        // Get number of bytes
+        uint8_t byte_count = 4u;
+
+        // Update response length
+        response_length = 1u + byte_count;
+
+        // Unit identifier & Function code remains the same
+        // Update data with Length field
+        data[MODBUS_INDEX_LENGTH_FIELD]
+            = (uint8_t) ((uint16_t) (response_length + 1u) >> 8u);
+        data[MODBUS_INDEX_LENGTH_FIELD + 1u] = response_length + 1u;
+
+        // any error here should be exception code 4u
+        read_value = access_external_device(c_modbus,
+                                            MODBUS_WRITE_SINGLE_COIL,
+                                            address,
+                                            qty);
+
+        if (read_value)
         {
-          uint16_t index_status = MODBUS_SIZE_MBAP + 1u;
-          uint16_t read_value = 0;
-
-          // Get number of bytes
-          uint8_t byte_count = 4u;
-
-          // Update response length
-          response_length = 1u + byte_count;
-
-          // Unit identifier & Function code remains the same
-          // Update data with Length field
-          data[MODBUS_INDEX_LENGTH_FIELD] = (uint8_t) ((uint16_t)
-              (response_length + 1u) >> 8u);
-          data[MODBUS_INDEX_LENGTH_FIELD + 1u] = response_length + 1u;
-
-          // any error here should be exception code 4u
-#ifdef MB_WRITE_SINGLE_COIL
-          read_value = (uint16_t)(MB_WRITE_SINGLE_COIL(address, qty));
-#endif
-
-          if (read_value)
-          {}
-          else
-          {
-            modbus_exception_code = SLAVE_DEVICE_FAILURE;
-          }
-
-        } // if address range check
-
+        }
         else
         {
-          modbus_exception_code = ILLEGAL_DATA_ADDRESS;
+          modbus_exception_code = SLAVE_DEVICE_FAILURE;
         }
       } // if qty range check
 
@@ -582,54 +491,42 @@ int modbus_tcp_parse_request(char *data, int len)
       }
       break;
     } // case WRITE_SINGLE_COIL
-#endif // WRITE_SINGLE_COIL
-#ifdef WRITE_SINGLE_REGISTER
-    case WRITE_SINGLE_REGISTER:
+
+    case MODBUS_WRITE_SINGLE_REGISTER:
     {
       // Modbus Application Protocol V1 1B - Section 6.1
       // Check if quantity is within range
-      if (check_range(qty,
-              MODBUS_QUANTITY_HOLDING_REGISTER_START,
-              MODBUS_QUANTITY_HOLDING_REGISTER_END))
+      if (check_range(qty, MODBUS_QUANTITY_START, MODBUS_QUANTITY_16BIT_END))
       {
-        // Check address range
-        if (check_range(address,
-                MODBUS_ADDRESS_HOLDING_REGISTER_START,
-                MODBUS_ADDRESS_HOLDING_REGISTER_END))
+        uint16_t index_status = MODBUS_SIZE_MBAP + 1u;
+        uint16_t read_value = 0;
+
+        // Get number of bytes
+        uint8_t byte_count = 4u;
+
+        // Update response length
+        response_length = 1u + byte_count;
+
+        // Unit identifier & Function code remains the same
+        // Update data with Length field
+        data[MODBUS_INDEX_LENGTH_FIELD]
+            = (uint8_t) ((uint16_t) (response_length + 1u) >> 8u);
+        data[MODBUS_INDEX_LENGTH_FIELD + 1u] = response_length + 1u;
+
+        // any error here should be exception code 4u
+        read_value = access_external_device(c_modbus,
+                                            MODBUS_WRITE_SINGLE_REGISTER,
+                                            address,
+                                            qty);
+
+        if (read_value)
         {
-          uint16_t index_status = MODBUS_SIZE_MBAP + 1u;
-          uint16_t read_value = 0;
-
-          // Get number of bytes
-          uint8_t byte_count = 4u;
-
-          // Update response length
-          response_length = 1u + byte_count;
-
-          // Unit identifier & Function code remains the same
-          // Update data with Length field
-          data[MODBUS_INDEX_LENGTH_FIELD] = (uint8_t) ((uint16_t)
-              (response_length + 1u) >> 8u);
-          data[MODBUS_INDEX_LENGTH_FIELD + 1u] = response_length + 1u;
-
-          // any error here should be exception code 4u
-#ifdef MB_WRITE_SINGLE_REGISTER
-          read_value = (uint16_t)(MB_WRITE_SINGLE_REGISTER(address, qty));
-#endif
-
-          if (read_value)
-          {}
-          else
-          {
-            modbus_exception_code = SLAVE_DEVICE_FAILURE;
-          }
-
-        } // if address range check
-
+        }
         else
         {
-          modbus_exception_code = ILLEGAL_DATA_ADDRESS;
+          modbus_exception_code = SLAVE_DEVICE_FAILURE;
         }
+
       } // if qty range check
 
       else
@@ -638,7 +535,7 @@ int modbus_tcp_parse_request(char *data, int len)
       }
       break;
     } // case WRITE_SINGLE_REGISTER
-#endif // WRITE_SINGLE_REGISTER
+
     default:
     {
       modbus_exception_code = ILLEGAL_FUNCTION;
@@ -647,7 +544,7 @@ int modbus_tcp_parse_request(char *data, int len)
   } // switch(function_code)
 
 
-  if(modbus_exception_code)
+  if (modbus_exception_code)
   {
     // Build exception response
 

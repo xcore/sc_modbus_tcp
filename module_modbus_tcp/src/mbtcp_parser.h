@@ -6,16 +6,16 @@
 /*===========================================================================
  Info
  ----
-
+ 
  ===========================================================================*/
 
-#ifndef _httpd_h_
-#define _httpd_h_
+#ifndef __mbtcp_parser_h__
+#define __mbtcp_parser_h__
 
 /*---------------------------------------------------------------------------
  nested include files
  ---------------------------------------------------------------------------*/
-#include "xtcp_client.h"
+#include <xccompat.h>
 
 /*---------------------------------------------------------------------------
  constants
@@ -32,30 +32,24 @@
 /*---------------------------------------------------------------------------
  extern variables
  ---------------------------------------------------------------------------*/
-
+ 
 /*---------------------------------------------------------------------------
  prototypes
  ---------------------------------------------------------------------------*/
 
 /*==========================================================================*/
 /**
- *  Initialize webserver
+ *  Parses Modbus commands, does a call-back to user application for values
+ *  and forms Modbus TCP response. The call-back functions are defined in
+ *  ``modbus_conf.h`` file.
  *
- *  \param c_tcp_svr    Channel connecting to XTCP
- *  \return             None
+ *  \param data   data received from the TCP layer
+ *  \param len    length of data received
+ *  \return length of Modbus TCP response
  **/
-void httpd_init(chanend c_tcp_svr);
+int modbus_tcp_parse_request(chanend c_modbus,
+                             REFERENCE_PARAM(char, data),
+                             int len);
 
-/*==========================================================================*/
-/**
- *  Handle Events
- *
- *  \param c_tcp_svr    Channel connecting to XTCP
- *  \param conn         Connection
- *  \return             None
- **/
-void httpd_handle_event(chanend c_tcp_svr,
-                        REFERENCE_PARAM(xtcp_connection_t, conn));
-
-#endif // _httpd_h_
+#endif // __mbtcp_parser_h__
 /*==========================================================================*/

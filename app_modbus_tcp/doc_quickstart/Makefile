@@ -1,6 +1,6 @@
 all: html
 
-SPHINX_PROJECT_NAME = Modbus TCP Application Quickstart Guide
+SPHINX_PROJECT_NAME = Modbus TCP Demo Quickstart Guide
 VERSION = 1.0
 SOURCE_INCLUDE_DIRS = ../../app_modbus_tcp
 XDOC_DIR ?= ../../../xdoc

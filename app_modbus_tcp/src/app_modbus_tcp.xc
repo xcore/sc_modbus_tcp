@@ -13,15 +13,15 @@
  include files
  ---------------------------------------------------------------------------*/
 #include <platform.h>
-#include "xtcp.h"
+#include "modbus_tcp.h"
 #include "i2c.h"
-#include "ethernet_board_support.h"
-#include "xhttpd.h"
-#include "modbus_cb_functions.h"
 
 /*---------------------------------------------------------------------------
  constants
  ---------------------------------------------------------------------------*/
+// Timer interval to scan button events
+#define DEBOUNCE_INTERVAL     XS1_TIMER_HZ/50
+#define BUTTON_1_PRESS_VALUE  0x2
 
 /*---------------------------------------------------------------------------
  ports and clocks
@@ -102,38 +102,7 @@ static int read_temperature(r_i2c &p_i2c)
   return temperature;
 }
 
-/*---------------------------------------------------------------------------
- Main Entry Point
- ---------------------------------------------------------------------------*/
-int main(void)
-{
-  chan c_xtcp[1];
-
-  par
-  {
-    // The main ethernet/tcp server
-    on tile[1]: ethernet_xtcp_server(xtcp_ports, ipconfig, c_xtcp, 1);
-
-    // The webserver, GPIO handler
-    on tile[1]:
-    {
-      // Initialize temperature sensor
-      unsigned char i2c_register[1] = {0x13};
-      i2c_master_write_reg(0x28, 0x00, i2c_register, 1, p_i2c);
-
-      // Start the Webserver and Button listener
-      xhttpd(c_xtcp[0], p_button);
-    }
-
-  } // par
-  return 0;
-}
-
-/*---------------------------------------------------------------------------
- Modbus function callbacks
- ---------------------------------------------------------------------------*/
-
-unsigned short read_coils(unsigned short address)
+static unsigned short read_coil(unsigned short address)
 {
   /**
    * In Modbus Conf file: Coil start is 0 and End is 3
@@ -151,7 +120,7 @@ unsigned short read_coils(unsigned short address)
   return 0;
 }
 
-unsigned short read_discrete_inputs(unsigned short address)
+static unsigned short read_discrete_input(unsigned short address)
 {
   /*
    * Button SW1 is at address 0
@@ -163,18 +132,17 @@ unsigned short read_discrete_inputs(unsigned short address)
   return 0;
 }
 
-unsigned short read_holding_registers(unsigned short address)
+static unsigned short read_holding_register(unsigned short address)
 {
-  // Not implemented, return 0
-  return 0;
+  return MODBUS_READ_16BIT_ERROR;
 }
 
-unsigned short read_input_registers(unsigned short address)
+static unsigned short read_input_register(unsigned short address)
 {
   return (unsigned short)(read_temperature(p_i2c));
 }
 
-unsigned short write_single_coil(unsigned short address, unsigned short value)
+static unsigned short write_single_coil(unsigned short address, unsigned short value)
 {
   /**
    * Write Single coil actually toggles the state of LED (imitated as coils).
@@ -201,9 +169,145 @@ unsigned short write_single_coil(unsigned short address, unsigned short value)
   return 1;
 }
 
-unsigned short write_single_register(unsigned short address, unsigned short value)
+static unsigned short write_single_register(unsigned short address, unsigned short value)
 {
   // Not implemented, return 0
+  return MODBUS_WRITE_ERROR;
+}
+
+/*---------------------------------------------------------------------------
+ Device Application
+ ---------------------------------------------------------------------------*/
+static void device_application(chanend c_modbus)
+{
+  int scan_button_flag = 1;
+  unsigned button_state_1 = 0;
+  unsigned button_state_2 = 0;
+  timer t_scan_button_flag;
+  unsigned time;
+
+  unsigned char i2c_register[1] = {0x13};
+  i2c_master_write_reg(0x28, 0x00, i2c_register, 1, p_i2c);
+
+  set_port_drive_low(p_button);
+  t_scan_button_flag :> time;
+  p_button :> button_state_1;
+
+  while(1)
+  {
+    select
+    {
+      // Listen to XTCP events
+      case c_modbus :> unsigned char cmd:
+      {
+        switch(cmd)
+        {
+          case MODBUS_READ_COIL:
+          {
+            unsigned short address, rtnval;
+            c_modbus :> address;
+            rtnval = read_coil(address);
+            c_modbus <: rtnval;
+            break;
+          }
+
+          case MODBUS_READ_DISCRETE_INPUT:
+          {
+            unsigned short address, rtnval;
+            c_modbus :> address;
+            rtnval = read_discrete_input(address);
+            c_modbus <: rtnval;
+            break;
+          }
+
+          case MODBUS_READ_HOLDING_REGISTER:
+          {
+            unsigned short address, rtnval;
+            c_modbus :> address;
+            rtnval = read_holding_register(address);
+            c_modbus <: rtnval;
+            break;
+          }
+
+          case MODBUS_READ_INPUT_REGISTER:
+          {
+            unsigned short address, rtnval;
+            c_modbus :> address;
+            rtnval = read_input_register(address);
+            c_modbus <: rtnval;
+            break;
+          }
+
+          case MODBUS_WRITE_SINGLE_COIL:
+          {
+            unsigned short address, rtnval, value;
+            c_modbus :> address;
+            c_modbus :> value;
+            rtnval = write_single_coil(address, value);
+            c_modbus <: rtnval;
+            break;
+          }
+
+          case MODBUS_WRITE_SINGLE_REGISTER:
+          {
+            unsigned short address, rtnval, value;
+            c_modbus :> address;
+            c_modbus :> value;
+            rtnval = write_single_register(address, value);
+            c_modbus <: rtnval;
+            break;
+          }
+
+          default: break;
+        } // switch(cmd)
+
+        break;
+
+      } // case c_modbus
+
+      case scan_button_flag=> p_button when pinsneq(button_state_1) :> button_state_1 :
+      {
+        t_scan_button_flag :> time;
+        scan_button_flag = 0;
+        break;
+      }
+
+      case !scan_button_flag => t_scan_button_flag when timerafter(time + DEBOUNCE_INTERVAL) :> void:
+      {
+        p_button :> button_state_2;
+        if(button_state_1 == button_state_2)
+        {
+          if(button_state_1 == BUTTON_1_PRESS_VALUE)
+          {
+            button_status |= 0x01;
+          }
+          if(button_state_2 == BUTTON_1_PRESS_VALUE-1)
+          {
+            button_status |= 0x02;
+          }
+        }
+        scan_button_flag = 1;
+        break;
+      }
+    }
+  }
+}
+
+/*---------------------------------------------------------------------------
+ Main Entry Point
+ ---------------------------------------------------------------------------*/
+int main(void)
+{
+  chan c_modbus;
+
+  par
+  {
+    // The Modbus server
+    on tile[1]: modbus_server(c_modbus, xtcp_ports, ipconfig);
+    // The webserver, GPIO handler
+    on tile[1]: device_application(c_modbus);
+  } // par
+
   return 0;
 }
 

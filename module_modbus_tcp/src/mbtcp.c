@@ -12,17 +12,17 @@
 /*---------------------------------------------------------------------------
  include files
  ---------------------------------------------------------------------------*/
+#include "mbtcp.h"
+#include "xtcp_client.h"
+#include "mbtcp_parser.h"
 #include <string.h>
 #include <print.h>
-#include "xtcp_client.h"
-#include "httpd.h"
-#include "modbus_tcp.h"
 
 /*---------------------------------------------------------------------------
  constants
  ---------------------------------------------------------------------------*/
 // Maximum number of concurrent connections
-#define NUM_HTTPD_CONNECTIONS       10
+#define NUM_TCP_CONNECTIONS         10
 #define MODBUS_TCP_LISTEN_PORT      502
 #define MODBUS_TCP_DATA_SIZE        260
 
@@ -33,20 +33,20 @@
 /*---------------------------------------------------------------------------
  typedefs
  ---------------------------------------------------------------------------*/
-// Structure to hold HTTP state
-typedef struct httpd_state_t
+// Structure to hold TCP state
+typedef struct tcp_state_t
 {
   int active; //< Whether this state structure is being used for a connection
   int conn_id; //< The connection id
   char *dptr; //< Pointer to the remaining data to send
   int dlen; //< The length of remaining data to send
   char *prev_dptr; //< Pointer to the previously sent item of data
-} httpd_state_t;
+} tcp_state_t;
 
 /*---------------------------------------------------------------------------
  global variables
  ---------------------------------------------------------------------------*/
-httpd_state_t connection_states[NUM_HTTPD_CONNECTIONS];
+tcp_state_t connection_states[NUM_TCP_CONNECTIONS];
 
 /*---------------------------------------------------------------------------
  static variables
@@ -57,27 +57,11 @@ httpd_state_t connection_states[NUM_HTTPD_CONNECTIONS];
  ---------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------
- Initialize
- ---------------------------------------------------------------------------*/
-void httpd_init(chanend c_tcp_svr)
-{
-  int i;
-  // Listen on the http port
-  xtcp_listen(c_tcp_svr, MODBUS_TCP_LISTEN_PORT, XTCP_PROTOCOL_TCP);
-
-  for(i = 0; i < NUM_HTTPD_CONNECTIONS; i++)
-  {
-    connection_states[i].active = 0;
-    connection_states[i].dptr = NULL;
-  }
-}
-
-/*---------------------------------------------------------------------------
  receive http data
  ---------------------------------------------------------------------------*/
-void httpd_recv(chanend c_tcp_svr, xtcp_connection_t *conn)
+static void tcp_recv(chanend c_tcp_svr, chanend c_modbus, xtcp_connection_t *conn)
 {
-  struct httpd_state_t *hs = (struct httpd_state_t *) conn->appstate;
+  struct tcp_state_t *hs = (struct tcp_state_t *) conn->appstate;
   char data[MODBUS_TCP_DATA_SIZE];
   int len;
 
@@ -92,7 +76,7 @@ void httpd_recv(chanend c_tcp_svr, xtcp_connection_t *conn)
   }
 
   // Otherwise we have data, so parse it
-  hs->dlen = modbus_tcp_parse_request(&data[0], len);
+  hs->dlen = modbus_tcp_parse_request(c_modbus, &data[0], len);
 
   if(hs->dlen)
   {
@@ -112,9 +96,9 @@ void httpd_recv(chanend c_tcp_svr, xtcp_connection_t *conn)
 /*---------------------------------------------------------------------------
  send http data
  ---------------------------------------------------------------------------*/
-void httpd_send(chanend c_tcp_svr, xtcp_connection_t *conn)
+static void tcp_send(chanend c_tcp_svr, xtcp_connection_t *conn)
 {
-  struct httpd_state_t *hs = (struct httpd_state_t *) conn->appstate;
+  struct tcp_state_t *hs = (struct tcp_state_t *) conn->appstate;
 
   // Check if we need to resend previous data
   if (conn->event == XTCP_RESEND_DATA)
@@ -128,7 +112,7 @@ void httpd_send(chanend c_tcp_svr, xtcp_connection_t *conn)
   {
     // Terminates the send process
     xtcp_complete_send(c_tcp_svr);
-    // Close the connection
+
     //xtcp_close(c_tcp_svr, conn);
   }
   // We need to send some new data
@@ -152,19 +136,19 @@ void httpd_send(chanend c_tcp_svr, xtcp_connection_t *conn)
 /*---------------------------------------------------------------------------
  Initialize state
  ---------------------------------------------------------------------------*/
-void httpd_init_state(chanend c_tcp_svr, xtcp_connection_t *conn)
+static void tcp_init_state(chanend c_tcp_svr, xtcp_connection_t *conn)
 {
   int i;
 
   // Try and find an empty connection slot
-  for(i = 0; i < NUM_HTTPD_CONNECTIONS; i++)
+  for(i = 0; i < NUM_TCP_CONNECTIONS; i++)
   {
     if (!connection_states[i].active)
       break;
   }
 
   // If no free connection slots were found, abort the connection
-  if (i == NUM_HTTPD_CONNECTIONS)
+  if (i == NUM_TCP_CONNECTIONS)
   {
     xtcp_abort(c_tcp_svr, conn);
   }
@@ -179,14 +163,15 @@ void httpd_init_state(chanend c_tcp_svr, xtcp_connection_t *conn)
                                  (xtcp_appstate_t) & connection_states[i]);
   }
 }
+
 /*---------------------------------------------------------------------------
  Free state
  ---------------------------------------------------------------------------*/
-void httpd_free_state(xtcp_connection_t *conn)
+static void tcp_free_state(xtcp_connection_t *conn)
 {
   int i;
 
-  for(i = 0; i < NUM_HTTPD_CONNECTIONS; i++)
+  for(i = 0; i < NUM_TCP_CONNECTIONS; i++)
   {
     if (connection_states[i].conn_id == conn->id)
     {
@@ -194,10 +179,11 @@ void httpd_free_state(xtcp_connection_t *conn)
     }
   }
 }
+
 /*---------------------------------------------------------------------------
  Handle HTTP events
  ---------------------------------------------------------------------------*/
-void httpd_handle_event(chanend c_tcp_svr, xtcp_connection_t *conn)
+void mbtcp_handle_event(chanend c_tcp_svr, chanend c_modbus, xtcp_connection_t *conn)
 {
   // We have received an event from the TCP stack, so respond
   // appropriately
@@ -231,26 +217,26 @@ void httpd_handle_event(chanend c_tcp_svr, xtcp_connection_t *conn)
     {
       case XTCP_NEW_CONNECTION:
       {
-        httpd_init_state(c_tcp_svr, conn);
+        tcp_init_state(c_tcp_svr, conn);
         break;
       }
       case XTCP_RECV_DATA:
       {
-        httpd_recv(c_tcp_svr, conn);
+        tcp_recv(c_tcp_svr, c_modbus, conn);
         break;
       }
       case XTCP_SENT_DATA:
       case XTCP_REQUEST_DATA:
       case XTCP_RESEND_DATA:
       {
-        httpd_send(c_tcp_svr, conn);
+        tcp_send(c_tcp_svr, conn);
         break;
       }
       case XTCP_TIMED_OUT:
       case XTCP_ABORTED:
       case XTCP_CLOSED:
       {
-        httpd_free_state(conn);
+        tcp_free_state(conn);
         break;
       }
 
@@ -261,6 +247,22 @@ void httpd_handle_event(chanend c_tcp_svr, xtcp_connection_t *conn)
     conn->event = XTCP_ALREADY_HANDLED;
 
   } // if (conn->local_port == MODBUS_TCP_LISTEN_PORT)
+}
+
+/*---------------------------------------------------------------------------
+ Initialize
+ ---------------------------------------------------------------------------*/
+void mbtcp_init(chanend c_tcp_svr)
+{
+  int i;
+  // Listen on the http port
+  xtcp_listen(c_tcp_svr, MODBUS_TCP_LISTEN_PORT, XTCP_PROTOCOL_TCP);
+
+  for(i = 0; i < NUM_TCP_CONNECTIONS; i++)
+  {
+    connection_states[i].active = 0;
+    connection_states[i].dptr = NULL;
+  }
 }
 
 /*==========================================================================*/

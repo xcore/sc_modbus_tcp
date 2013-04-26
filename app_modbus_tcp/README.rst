@@ -23,11 +23,8 @@ A Modbus Master application running on the host. For example, SimplyModbus on a 
 Required Repositories
 =====================
 
-- sc_ethernet git://github.com/xcore/sc_ethernet.git
+- sc_modbus_tcp git://github.com/xcore/sc_modbus_tcp.git
 - sc_i2c git://github.com/xcore/sc_i2c.git
-- sc_otp git://github.com/xcore/sc_otp.git
-- sc_util git://github.com/xcore/sc_util.git
-- sc_xtcp git://github.com/xcore/sc_xtcp.git
 - xcommon git://github.com/xcore/xcommon.git
 
 Support

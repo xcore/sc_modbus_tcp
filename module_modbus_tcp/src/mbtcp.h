@@ -6,15 +6,16 @@
 /*===========================================================================
  Info
  ----
- Modbus call-back functions
+ 
  ===========================================================================*/
 
-#ifndef _modbus_cb_functions_h_
-#define _modbus_cb_functions_h_
+#ifndef __mbtcp_h__
+#define __mbtcp_h__
 
 /*---------------------------------------------------------------------------
  nested include files
  ---------------------------------------------------------------------------*/
+#include "xtcp_client.h"
 
 /*---------------------------------------------------------------------------
  constants
@@ -31,61 +32,31 @@
 /*---------------------------------------------------------------------------
  extern variables
  ---------------------------------------------------------------------------*/
-
+ 
 /*---------------------------------------------------------------------------
  prototypes
  ---------------------------------------------------------------------------*/
 
 /*==========================================================================*/
 /**
- *  read coil
+ *  Initialize TCP server
  *
- *  \param address  address of the coil
- *  \return         coil value
+ *  \param c_tcp_svr    Channel connecting to XTCP
+ *  \return             None
  **/
-unsigned short read_coils(unsigned short address);
-/*==========================================================================*/
-/**
- *  read discrete input
- *
- *  \param address  address of the discrete input
- *  \return         discrete input value
- **/
-unsigned short read_discrete_inputs(unsigned short address);
-/*==========================================================================*/
-/**
- *  read holding register
- *
- *  \param address  address of the holding register
- *  \return         holding register value
- **/
-unsigned short read_holding_registers(unsigned short address);
-/*==========================================================================*/
-/**
- *  read input register
- *
- *  \param address  address of the input register
- *  \return         input register value
- **/
-unsigned short read_input_registers(unsigned short address);
-/*==========================================================================*/
-/**
- *  write single coil
- *
- *  \param address  address of the coil
- *  \param value    value to write
- *  \return         0 is failure, 1 is ok
- **/
-unsigned short write_single_coil(unsigned short address, unsigned short value);
-/*==========================================================================*/
-/**
- *  write single register
- *
- *  \param address  address of the register
- *  \param value    value to write
- *  \return         0 is failure, 1 is ok
- **/
-unsigned short write_single_register(unsigned short address, unsigned short value);
+void mbtcp_init(chanend c_tcp_svr);
 
-#endif // _modbus_cb_functions_h_
+/*==========================================================================*/
+/**
+ *  Handle Events
+ *
+ *  \param c_tcp_svr    Channel connecting to XTCP
+ *  \param conn         Connection
+ *  \return             None
+ **/
+void mbtcp_handle_event(chanend c_tcp_svr,
+                        chanend c_modbus,
+                        REFERENCE_PARAM(xtcp_connection_t, conn));
+
+#endif // __mbtcp_h__
 /*==========================================================================*/

@@ -6,23 +6,20 @@
 /*===========================================================================
  Info
  ----
- The main webserver thread.
 
  ===========================================================================*/
 
 /*---------------------------------------------------------------------------
  include files
  ---------------------------------------------------------------------------*/
-#include <xs1.h>
-#include "httpd.h"
+#include "modbus_tcp.h"
+#include <platform.h>
 #include "xtcp_client.h"
+#include "mbtcp.h"
 
 /*---------------------------------------------------------------------------
  constants
  ---------------------------------------------------------------------------*/
-// Timer interval to scan button events
-#define DEBOUNCE_INTERVAL     XS1_TIMER_HZ/50
-#define BUTTON_1_PRESS_VALUE  0x2
 
 /*---------------------------------------------------------------------------
  ports and clocks
@@ -35,7 +32,6 @@
 /*---------------------------------------------------------------------------
  global variables
  ---------------------------------------------------------------------------*/
-extern unsigned short button_status;
 
 /*---------------------------------------------------------------------------
  static variables
@@ -46,23 +42,14 @@ extern unsigned short button_status;
  ---------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------
- xhttpd
+ Modbus TCP Server
  ---------------------------------------------------------------------------*/
-void xhttpd(chanend c_tcp_svr, port p_button)
+static void modbus_tcp_server(chanend c_tcp_svr, chanend c_modbus)
 {
-  int scan_button_flag = 1;
-  unsigned button_state_1 = 0;
-  unsigned button_state_2 = 0;
-  timer t_scan_button_flag;
-  unsigned time;
   xtcp_connection_t conn;
 
   // Initiate the HTTP state
-  httpd_init(c_tcp_svr);
-
-  set_port_drive_low(p_button);
-  t_scan_button_flag :> time;
-  p_button :> button_state_1;
+  mbtcp_init(c_tcp_svr);
 
   while(1)
   {
@@ -71,38 +58,25 @@ void xhttpd(chanend c_tcp_svr, port p_button)
       // Listen to XTCP events
       case xtcp_event(c_tcp_svr, conn):
       {
-        httpd_handle_event(c_tcp_svr, conn);
+        mbtcp_handle_event(c_tcp_svr, c_modbus, conn);
         break;
       }
-
-      //::Button Scan Start
-      case scan_button_flag=> p_button when pinsneq(button_state_1) :> button_state_1 :
-      {
-        t_scan_button_flag :> time;
-        scan_button_flag = 0;
-        break;
-      }
-
-      case !scan_button_flag => t_scan_button_flag when timerafter(time + DEBOUNCE_INTERVAL) :> void:
-      {
-        p_button :> button_state_2;
-        if(button_state_1 == button_state_2)
-        {
-          if(button_state_1 == BUTTON_1_PRESS_VALUE)
-          {
-            button_status |= 0x01;
-          }
-          if(button_state_2 == BUTTON_1_PRESS_VALUE-1)
-          {
-            button_status |= 0x02;
-          }
-        }
-        scan_button_flag = 1;
-        break;
-      }
-      //::Button Scan End
-
     }
+  }
+}
+
+/*---------------------------------------------------------------------------
+ Modbus Server
+ ---------------------------------------------------------------------------*/
+void modbus_server(chanend c_modbus,
+                   ethernet_xtcp_ports_t &xtcp_ports,
+                   xtcp_ipconfig_t &ipconfig)
+{
+  chan c_xtcp[1];
+  par
+  {
+    ethernet_xtcp_server(xtcp_ports, ipconfig, c_xtcp, 1);
+    modbus_tcp_server(c_xtcp[0], c_modbus);
   }
 }
 

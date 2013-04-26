@@ -1,7 +1,7 @@
 Modbus TCP Library Programming Guide
 ====================================
 
-``module_modbus_tcp`` software block parses Modbus TCP commands from a Modbus master. It calls-back appropriate application functions to process Modbus TCP commands. Finally, it generates Modbus TCP responses that can be sent to the Modbus master by the application over TCP.
+``module_modbus_tcp`` software block parses Modbus TCP commands from a Modbus master. It requests appropriate device data from the application. Finally, it generates Modbus TCP responses that can be sent to the Modbus master over TCP.
 
 The following Modbus TCP commands are supported:
 

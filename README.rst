@@ -26,7 +26,7 @@ This is a Modbus TCP component. Modbus protocol specification and messaging impl
 
 http://www.modbus.org/specs.php
 
-The Modbus TCP slave library accepts data (usually received by the host from TCP layers) and processes them for Modbus commands. If the received TCP data is a Modbus command, the library does a call-back to the user application. The call-back is usually to read/write values from/to registers, coils, etc... After the call-back, the library forms the required Modbus response and returns to user application.
+The Modbus TCP slave component accepts data (usually received by the host from TCP layers) and processes them for Modbus commands. If the received TCP data is a Modbus command, the component requests data from/to the user application. The request (Modbus Command) is usually to read/write values from/to registers, coils, etc... After this, the component forms the required Modbus response and waits for next Modbus command.
 
 Known Issues
 ============
