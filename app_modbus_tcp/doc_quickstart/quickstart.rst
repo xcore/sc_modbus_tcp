@@ -26,6 +26,11 @@ To setup up the system:
 
    Hardware Setup for a Modbus TCP Demo
 
+Software Setup
+++++++++++++++
+
+A Modbus Master application running on the host. For example, SimplyModbus on a PC (http://www.simplymodbus.ca/TCPclient.htm). Download the installer and install the application on your PC by running it. Open the Modbus master emulator using Start -> All Programs -> Simply Modbus -> Simply Modbus TCP.
+   
 Import and Build the Application
 ++++++++++++++++++++++++++++++++
 

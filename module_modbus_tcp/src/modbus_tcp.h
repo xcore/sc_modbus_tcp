@@ -20,10 +20,6 @@
 #include "mb_codes.h"
 #include <xccompat.h>
 
-#ifdef __modbus_conf_h_exists__
-#include "modbus_conf.h"
-#endif
-
 /*---------------------------------------------------------------------------
  constants
  ---------------------------------------------------------------------------*/
@@ -52,9 +48,9 @@
  *  \param yyy    description of yyy
  *  \return None
  **/
-void modbus_server(chanend c_modbus,
-                   REFERENCE_PARAM(ethernet_xtcp_ports_t, xtcp_ports),
-                   REFERENCE_PARAM(xtcp_ipconfig_t, ipconfig));
+void modbus_tcp_server(chanend c_modbus,
+                       REFERENCE_PARAM(ethernet_xtcp_ports_t, xtcp_ports),
+                       REFERENCE_PARAM(xtcp_ipconfig_t, ipconfig));
 
 #endif // __modbus_h__
 /*==========================================================================*/

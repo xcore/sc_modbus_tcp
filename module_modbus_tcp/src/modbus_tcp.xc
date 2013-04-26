@@ -44,7 +44,7 @@
 /*---------------------------------------------------------------------------
  Modbus TCP Server
  ---------------------------------------------------------------------------*/
-static void modbus_tcp_server(chanend c_tcp_svr, chanend c_modbus)
+static void mbtcp_server(chanend c_tcp_svr, chanend c_modbus)
 {
   xtcp_connection_t conn;
 
@@ -68,7 +68,7 @@ static void modbus_tcp_server(chanend c_tcp_svr, chanend c_modbus)
 /*---------------------------------------------------------------------------
  Modbus Server
  ---------------------------------------------------------------------------*/
-void modbus_server(chanend c_modbus,
+void modbus_tcp_server(chanend c_modbus,
                    ethernet_xtcp_ports_t &xtcp_ports,
                    xtcp_ipconfig_t &ipconfig)
 {
@@ -76,7 +76,7 @@ void modbus_server(chanend c_modbus,
   par
   {
     ethernet_xtcp_server(xtcp_ports, ipconfig, c_xtcp, 1);
-    modbus_tcp_server(c_xtcp[0], c_modbus);
+    mbtcp_server(c_xtcp[0], c_modbus);
   }
 }
 

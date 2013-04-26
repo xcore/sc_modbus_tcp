@@ -4,7 +4,7 @@
 
 componentName = "Modbus TCP"
 componentFullName = ""
-alternativeNames = { }
+alternativeNames = {}
 componentDescription = "Offers a Modbus TCP component"
 componentVersion = "1v0"
 
@@ -14,68 +14,175 @@ componentVersion = "1v0"
 
 configPoints = {}
 derivedValues = {}
-ports = {}
-channels = {}
+
+
+
+
+ports = {
+   p_eth_rxclk = {
+      short   = "MII RX Clock",
+      long    = "Clock signal for MII RX",
+      help    = "",
+      width   = 1,
+      value   = "XS1_PORT_1A",
+      enabled = not swblock.params.separate_mac
+   },
+   p_eth_txclk = {
+      short   = "MII TX Clock",
+      long    = "Clock signal for MII TX",
+      help    = "",
+      width   = 1,
+      value   = "XS1_PORT_1C",
+      enabled = not swblock.params.separate_mac
+   },
+   p_eth_rxer = {
+      short   = "MII RX Error",
+      long    = "Error signal for MII RX",
+      help    = "",
+      width   = 1,
+      value   = "XS1_PORT_1B",
+      enabled = not swblock.params.separate_mac
+   },
+   p_eth_txd = {
+      short   = "MII TX Data",
+      long    = "Data line for transmit (mac to phy)",
+      help    = "",
+      width   = 4,
+      value   = "XS1_PORT_4D",
+      enabled = not swblock.params.separate_mac
+   },
+   p_eth_rxd = {
+      short   = "MII RX Data",
+      long    = "Data line for receive (phy to mac)",
+      help    = "",
+      width   = 4,
+      value   = "XS1_PORT_4C",
+      enabled = not swblock.params.separate_mac
+   },
+   p_eth_rstn = {
+      short   = "MII Reset",
+      long    = "MII Reset",
+      help    = "",
+      width   = 1,
+      value   = "XS1_PORT_1H",
+      enabled = not swblock.params.separate_mac and swblock.params.use_reset
+   },
+   p_eth_txen = {
+      short   = "MII TX enable",
+      long    = "Enable line for MII TX",
+      help    = "",
+      width   = 1,
+      value   = "XS1_PORT_1E",
+      enabled = not swblock.params.separate_mac
+   },
+   p_eth_rxdv = {
+      short   = "MII RX Data Valid",
+      long    = "Valid line for MII RX",
+      help    = "",
+      width   = 1,
+      value   = "XS1_PORT_1D",
+      enabled = not swblock.params.separate_mac
+   },
+   p_eth_fake = {
+      short   = "MII fake port",
+      long    = "MII lite fake port",
+      help    = "This port does not connect to any outside stimulus (hence is a 'fake'). However it is used internally by the implementation.",
+      width   = 8,
+      value   = "XS1_PORT_8A",
+      enabled = not swblock.params.separate_mac
+   },
+   p_eth_mdc = {
+      short   = "SMI MDC",
+      long    = "MDC clock signal for SMI phy configuration interface",
+      help    = "",
+      width   = 1,
+      value   = "XS1_PORT_1I",
+      enabled = not swblock.params.separate_mac and not swblock.params.combine_smi_ports
+   },
+   p_eth_mdio = {
+      short   = "SMI MDIO",
+      long    = "MDIO I/O signal for SMI phy configuration interface",
+      help    = "",
+      width   = 1,
+      value   = "XS1_PORT_1G",
+      enabled = not swblock.params.separate_mac and not swblock.params.combine_smi_ports
+   },
+   p_eth_mdc_mdio = {
+      short   = "SMI Combined MDC/MDIO",
+      long    = "Combined MDC/MDIO signal for SMI phy configuration",
+      help    = "This port combines the MDC/MDIO signals with the MDC signal being the top bit of the 4-bit port",
+      width   = 4,
+      value   = "XS1_PORT_4C",
+      enabled = not swblock.params.separate_mac and swblock.params.combine_smi_ports,
+   }
+}
+
+
+
+
+
+channels = {
+   c_modbus = {
+      short = "Modbus TCP server channel",
+      long = "Channels between Modbus TCP server and application",
+      help = "",
+   }
+}
+
+
+
 
 function getConfigStatus()
-  local status = "Trusted Configuration"
-  local issues = {}
-  return status, issues
+   local status = "Trusted Configuration"
+   local issues = {}
+   return status, issues
 end
 
 -------------------------------------------------------------------------------
 -- Source generation functions
 -------------------------------------------------------------------------------
 
-var_globals = [[
-   char data[256];
-   int len = 200;
-]]
-
-demo_task = [[
-   unsigned short read_coils(unsigned short address)
-   {
-     return 0;
-   }
-
-   unsigned short read_discrete_inputs(unsigned short address)
-   {
-     return 0;
-   }
-
-   unsigned short read_holding_registers(unsigned short address)
-   {
-     return 0;
-   }
-
-   unsigned short read_input_registers(unsigned short address)
-   {
-     return 0;
-   }
-
-   unsigned short write_single_coil(unsigned short address, unsigned short value)
-   {
-     return 0;
-   }
-
-   unsigned short write_single_register(unsigned short address, unsigned short value)
-   {
-     return 0;
-   }
-]]
-
 generatedCode = {
-  includes = {"modbus_tcp.h","modbus_cb_functions.h"},
-  globals = var_globals .. demo_task,
-  body = [[
-    int resp_length = modbus_tcp_parse_request(&data[0], len); 
-  ]]
+   includes = {"modbus_tcp.h"},
+
+   globals = [[
+      ethernet_xtcp_ports_t xtcp_ports = {
+         OTP_PORTS_INITIALIZER,
+         // SMI ports
+         {${swblock.params.phy_id},
+         ${swblock.ports.p_eth_mdio},
+         ${swblock.ports.p_eth_mdc}},
+         // MII ports
+         {${swblock.clocks[0]},
+         ${swblock.clocks[1]},
+         ${swblock.ports.p_eth_rxclk},
+         ${swblock.ports.p_eth_rxer},
+         ${swblock.ports.p_eth_rxd},
+         ${swblock.ports.p_eth_rxdv},
+         ${swblock.ports.p_eth_txclk},
+         ${swblock.ports.p_eth_txen},
+         ${swblock.ports.p_eth_txd},
+         ${swblock.ports.p_eth_fake}}
+      };
+
+      xtcp_ipconfig_t ipconfig = {
+         { 0, 0, 0, 0 }, // ip address (eg 192,168,0,2)
+         { 0, 0, 0, 0 }, // netmask (eg 255,255,255,0)
+         { 0, 0, 0, 0 }  // gateway (eg 192,168,0,1)
+      };
+    
+   ]],
+
+   body = [[
+
+      modbus_tcp_server(${swblock.chanends.c_modbus}, xtcp_ports, ipconfig);
+    
+   ]]
 }
 
-api = {}
-
-files = {
-  ["module_modbus_tcp/modbus_conf_example.h"] = "src/modbus_conf.h",
-  ["module_modbus_tcp/modbus_cb_functions_example.h"] = "src/modbus_cb_functions.h",
+api = {
+   'modbus_tcp_server',
 }
+
+files = {}
 

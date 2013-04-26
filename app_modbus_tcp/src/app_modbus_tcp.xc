@@ -197,15 +197,18 @@ static void device_application(chanend c_modbus)
   {
     select
     {
-      // Listen to XTCP events
+      // Listen to Modbus TCP events
       case c_modbus :> unsigned char cmd:
       {
+        unsigned short address, value, rtnval;
+
+        c_modbus :> address;
+        c_modbus :> value;
+
         switch(cmd)
         {
           case MODBUS_READ_COIL:
           {
-            unsigned short address, rtnval;
-            c_modbus :> address;
             rtnval = read_coil(address);
             c_modbus <: rtnval;
             break;
@@ -213,8 +216,6 @@ static void device_application(chanend c_modbus)
 
           case MODBUS_READ_DISCRETE_INPUT:
           {
-            unsigned short address, rtnval;
-            c_modbus :> address;
             rtnval = read_discrete_input(address);
             c_modbus <: rtnval;
             break;
@@ -222,8 +223,6 @@ static void device_application(chanend c_modbus)
 
           case MODBUS_READ_HOLDING_REGISTER:
           {
-            unsigned short address, rtnval;
-            c_modbus :> address;
             rtnval = read_holding_register(address);
             c_modbus <: rtnval;
             break;
@@ -231,8 +230,6 @@ static void device_application(chanend c_modbus)
 
           case MODBUS_READ_INPUT_REGISTER:
           {
-            unsigned short address, rtnval;
-            c_modbus :> address;
             rtnval = read_input_register(address);
             c_modbus <: rtnval;
             break;
@@ -240,9 +237,6 @@ static void device_application(chanend c_modbus)
 
           case MODBUS_WRITE_SINGLE_COIL:
           {
-            unsigned short address, rtnval, value;
-            c_modbus :> address;
-            c_modbus :> value;
             rtnval = write_single_coil(address, value);
             c_modbus <: rtnval;
             break;
@@ -250,9 +244,6 @@ static void device_application(chanend c_modbus)
 
           case MODBUS_WRITE_SINGLE_REGISTER:
           {
-            unsigned short address, rtnval, value;
-            c_modbus :> address;
-            c_modbus :> value;
             rtnval = write_single_register(address, value);
             c_modbus <: rtnval;
             break;
@@ -303,7 +294,7 @@ int main(void)
   par
   {
     // The Modbus server
-    on tile[1]: modbus_server(c_modbus, xtcp_ports, ipconfig);
+    on tile[1]: modbus_tcp_server(c_modbus, xtcp_ports, ipconfig);
     // The webserver, GPIO handler
     on tile[1]: device_application(c_modbus);
   } // par
