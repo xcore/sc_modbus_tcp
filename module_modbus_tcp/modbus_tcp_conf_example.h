@@ -21,7 +21,7 @@
  ---------------------------------------------------------------------------*/
 // Where is the Ethernet slice connected on the Slicekit Core board
 // MODBUS_TCP_ETHERNET_SLOT_{STAR|TRIANGLE|CIRCLE|SQUARE}
-#define MODBUS_TCP_ETHERNET_SLOT_CIRCLE
+#define MODBUS_TCP_ETHERNET_SLOT_STAR
 
 /*---------------------------------------------------------------------------
  typedefs

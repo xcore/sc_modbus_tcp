@@ -164,7 +164,7 @@ generatedCode = {
          { 0, 0, 0, 0 }  // gateway (eg 192,168,0,1)
       };
     
-      static void application(${swblock.chanends.c_modbus})
+      static void application(chanend ${swblock.chanends.c_modbus})
       {
          while(1)
          {
@@ -172,7 +172,7 @@ generatedCode = {
             {
                case ${swblock.chanends.c_modbus} :> unsigned char cmd:
                {
-                  unsigned short address, value
+                  unsigned short address, value;
                   unsigned short rtnval = 0;
 
                   c_modbus :> address;
@@ -211,5 +211,7 @@ api = {
    'modbus_tcp_server',
 }
 
-files = {}
+files = {
+   ["module_modbus_tcp/modbus_conf_example.h"] = "src/modbus_conf.h",
+}
 
