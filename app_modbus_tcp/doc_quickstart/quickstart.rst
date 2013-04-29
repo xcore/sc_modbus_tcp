@@ -1,16 +1,30 @@
-Modbus TCP Demo Quick start Guide
-=================================
+Modbus TCP Demo Quickstart Guide
+================================
 
-This simple demonstration of xTIMEcomposer Studio functionality that uses the ``XA-SK-E100`` and ``XA-SK-GPIO`` Slice Cards together with the xSOFTip ``module_modbus_tcp``, ``module_xtcp`` and ``module_ethernet`` to demonstrate how the module is used to receive commands from a Modbus Master over TCP and service them to:
+This simple demonstration of xTIMEcomposer Studio functionality that uses the ``XA-SK-E100`` and ``XA-SK-GPIO`` Slice Cards together with the xSOFTip ``module_modbus_tcp`` to demonstrate how the module is used to receive commands from a Modbus Master over TCP and service them to:
 
 - Turn GPIO Slice Card LEDS on and off
 - Read the room temperature via the on-board ADC
 - Display GPIO Slice Card button presses
 
+Host Computer Setup
++++++++++++++++++++
+
+A Modbus Master application such as Simply Modbus TCP. Simply Modbus PC application is available from http://www.simplymodbus.ca/TCPclient.htm. Download the installer and install the application on your PC by running it. You can open the Modbus master emulator using Start -> All Programs -> Simply Modbus -> Simply Modbus TCP.
+
+*Note: The folder $\\app_modbus_tcp\\simplymodbus_config\\ contains sample Simply Modbus TCP specific configuration files to perform Read / Write operations. These files can be loaded by clicking on 'Restore CFG' button from the Simply Modbus PC application.*
+
 Hardware Setup
 ++++++++++++++
 
-The XP-SKC-L2 Slicekit Core board has four slots with edge connectors: ``SQUARE``, ``CIRCLE``, ``TRIANGLE`` and ``STAR``.
+The Modbus TCP Demo Application requires the following items:
+
+- XP-SKC-L2 Slicekit Core board marked with edge connectors: ``SQUARE``, ``CIRCLE``, ``TRIANGLE`` and ``STAR``.
+- XA-SK-E100 Ethernet Slice Card
+- XA-SK-GPIO GPIO Slice Card
+- XTAG2 and XTAG Adapter
+- Ethernet Cable and 
+- 12V DC power supply
 
 To setup up the system:
 
@@ -26,10 +40,6 @@ To setup up the system:
 
    Hardware Setup for a Modbus TCP Demo
 
-Software Setup
-++++++++++++++
-
-A Modbus Master application running on the host. For example, SimplyModbus on a PC (http://www.simplymodbus.ca/TCPclient.htm). Download the installer and install the application on your PC by running it. Open the Modbus master emulator using Start -> All Programs -> Simply Modbus -> Simply Modbus TCP.
    
 Import and Build the Application
 ++++++++++++++++++++++++++++++++
@@ -40,7 +50,7 @@ Import and Build the Application
 
 For help in using xTIMEcomposer, try the xTIMEcomposer tutorial, which you can find by selecting Help->Tutorials from the xTIMEcomposer menu.
 
-Note that the Developer Column in the xTIMEcomposer on the right hand side of your screen provides information on the xSOFTip components you are using. Select the module_modbus_tcp component in the Project Explorer, and you will see its description together with API documentation. Having done this, click the `back` icon until you return to this quickstart guide within the Developer Column.
+Note that the Developer Column in the xTIMEcomposer on the right hand side of your screen provides information on the xSOFTip components you are using. Select the module_modbus_tcp component in the Project Explorer, and you will see its description together with API documentation. Having done this, click the `back` icon until you return to this quick start guide within the Developer Column.
 
 Run the Application
 +++++++++++++++++++
@@ -54,28 +64,31 @@ Now that the application has been compiled, the next step is to run it on the Sl
 
    Example: IP address: 169.254.231.27
 
-- On your PC, open the SimplyModbus Client from Programs -> SimplyModbus and adjust to following settings:
+- On your PC, open the SimplyModbus Client from Start -> All Programs -> Simply Modbus -> Simply Modbus TCP and adjust to following settings:
 
    - mode = TCP
    - IP Address = user ip address provided in app_modbus_tcp.xc
    - Port = 502 (Modbus Listening Port)
 
-- Alternatively, load the read_coil configuration file from $\\app_modbus_tcp\\simplymodbus_config\\ and click CONNECT.
+- Alternatively, load the read_coil configuration file from $\\app_modbus_tcp\\simplymodbus_config\\ and click ``CONNECT``.
 
 .. figure:: images/init.png
    :align: center
 
 
-- Send a command as 'Read Coil' (load read_coil config from $\\app_modbus_tcp\\simplymodbus_config\\). This will read the status of GPIO LED on XA-SK-GPIO slice card. To read the status of the other three LEDs, change the ``First Coil`` value in the SimplyModbus application to one of the values as mentioned below. The result is a byte containing the status of LEDs arranged as bit positions. For example, Bit0 represents status of LED0, and so on... A value of '1' in the bit field represents 'LED is OFF' and '0' represents 'LED is ON'.
+- Send a command as 'Read Coil' (load read_coil config from $\\app_modbus_tcp\\simplymodbus_config\\). This will read the status of GPIO LED on XA-SK-GPIO slice card. To read the status of the other three LEDs, change the ``First Coil`` value in the SimplyModbus application to appropriate values. The result is a byte containing the status of LEDs arranged as bit positions:
 
-   ============ ===================
-   First coil    LED on Slice card 
-   ============ ===================
-   1             0
-   2             1
-   3             2
-   4             3
-   ============ ===================
+   +----+----+----+----+------+------+------+------+
+   | XX | XX | XX | XX | LED3 | LED2 | LED1 | LED0 |
+   +----+----+----+----+------+------+------+------+
+
+   Where,
+   
+   * Bit0 is LED0 status (1 is OFF and 0 is ON)
+   * Bit1 is LED1 status (1 is OFF and 0 is ON)
+   * Bit2 is LED2 status (1 is OFF and 0 is ON)
+   * Bit3 is LED3 status (1 is OFF and 0 is ON)
+   * XX is Don't care.
 
 .. figure:: images/read_coil.png
    :align: center
@@ -87,13 +100,23 @@ Now that the application has been compiled, the next step is to run it on the Sl
    :align: center
    
 
-- Send a 'Read Discrete Input' (load config from $\\app_modbus_tcp\\simplymodbus_config\\) command to read button status on the XA-SK-GPIO slice card. The result is a byte in which Bit0 represents Button0 and Bit1 represents Button1. A value of '1' in these fields indicate that a button was pressed (and released) since the last 'Read Discrete Input' command.
+- Send a 'Read Discrete Input' (load config from $\\app_modbus_tcp\\simplymodbus_config\\) command to read button status on the XA-SK-GPIO slice card. The result is a byte of format:
 
+   +----+----+----+----+----+----+-----+-----+
+   | XX | XX | XX | XX | XX | XX | SW2 | SW1 |
+   +----+----+----+----+----+----+-----+-----+
+
+   Where,
+   
+   * Bit0 is SW1 status (1 is Button Pressed and released)
+   * Bit1 is SW2 status (1 is Button Pressed and released)
+   * XX is Don't care.
+ 
 .. figure:: images/read_dis_ip.png
    :align: center
    
       
-- You can write using the WRITE interface. This can be brought up by clicking the WRITE button in simplyModbus. Load the write_coil config in WRITE window. Sending the command will toggle the requested LED. The position of LED is similar to 'Read Coil' command. To toggle other LEDs, change the 'First Register' value in the WRITE interface window.
+- You can write using the ``WRITE`` interface. This can be brought up by clicking the ``WRITE`` button in SimplyModbus. Load the write_coil config in ``WRITE`` window. Sending the command will toggle the requested LED. The position of LED is similar to 'Read Coil' command. To toggle other LEDs, change the 'First Register' value in the WRITE interface window.
 
 .. figure:: images/write_coil.png
    :align: center
@@ -112,10 +135,8 @@ Another example where the number of coils in 'Read Coil' (function code '1') com
    :align: center
 
 
-Examine the application code
-++++++++++++++++++++++++++++
-
-**File Structure**
+Next Steps
+++++++++++
 
 .. list-table:: Project structure
   :header-rows: 1
@@ -130,3 +151,6 @@ Examine the application code
     - ``app_modbus_tcp.xc``
     - File containing main() function for the application. Also contains Modbus call-back functions implementation.
 
+The ``module_modbus_tcp`` has an in-built Ethernet and TCP Server components. It uses the ``sc_ethernet`` and ``sc_xtcp`` xSOFTip to receive Modbus commands over TCP. 
+
+Try connecting the coils and registers to show other values. For example, a Read register command from Modbus Master should always read a specific address from the memory. 

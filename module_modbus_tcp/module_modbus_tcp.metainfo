@@ -16,8 +16,6 @@ configPoints = {}
 derivedValues = {}
 
 
-
-
 ports = {
    p_eth_rxclk = {
       short   = "MII RX Clock",
@@ -118,9 +116,6 @@ ports = {
 }
 
 
-
-
-
 channels = {
    c_modbus = {
       short = "Modbus TCP server channel",
@@ -128,8 +123,6 @@ channels = {
       help = "",
    }
 }
-
-
 
 
 function getConfigStatus()
@@ -171,11 +164,45 @@ generatedCode = {
          { 0, 0, 0, 0 }  // gateway (eg 192,168,0,1)
       };
     
+      static void application(${swblock.chanends.c_modbus})
+      {
+         while(1)
+         {
+            select
+            {
+               case ${swblock.chanends.c_modbus} :> unsigned char cmd:
+               {
+                  unsigned short address, value
+                  unsigned short rtnval = 0;
+
+                  c_modbus :> address;
+                  c_modbus :> value;
+
+                  switch(cmd)
+                  {
+                     case MODBUS_READ_COIL:
+                     case MODBUS_READ_DISCRETE_INPUT:
+                     case MODBUS_READ_HOLDING_REGISTER:
+                     case MODBUS_READ_INPUT_REGISTER:
+                     case MODBUS_WRITE_SINGLE_REGISTER:
+                     {
+                        c_modbus <: rtnval;
+                        break;
+                     }
+
+                     default: break;
+                  }
+                  break;
+               }
+            }
+         }
+      }
    ]],
 
    body = [[
 
       modbus_tcp_server(${swblock.chanends.c_modbus}, xtcp_ports, ipconfig);
+      application(${swblock.chanends.c_modbus});
     
    ]]
 }

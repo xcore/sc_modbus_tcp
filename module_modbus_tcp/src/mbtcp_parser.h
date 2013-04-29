@@ -39,13 +39,13 @@
 
 /*==========================================================================*/
 /**
- *  Parses Modbus commands, does a call-back to user application for values
- *  and forms Modbus TCP response. The call-back functions are defined in
- *  ``modbus_conf.h`` file.
+ *  Parses Modbus commands, does a requests device from user application for
+ *  values and forms Modbus TCP response. The requests are sent over c_modbus.
  *
- *  \param data   data received from the TCP layer
- *  \param len    length of data received
- *  \return length of Modbus TCP response
+ *  \param c_modbus   channel connecting to top level application
+ *  \param data       data received from the TCP layer
+ *  \param len        length of data received
+ *  \return           length of Modbus TCP response
  **/
 int modbus_tcp_parse_request(chanend c_modbus,
                              REFERENCE_PARAM(char, data),

@@ -13,9 +13,8 @@
  include files
  ---------------------------------------------------------------------------*/
 #include "modbus_tcp.h"
-#include <platform.h>
-#include "xtcp_client.h"
 #include "mbtcp.h"
+#include <platform.h>
 
 /*---------------------------------------------------------------------------
  constants
@@ -66,11 +65,11 @@ static void mbtcp_server(chanend c_tcp_svr, chanend c_modbus)
 }
 
 /*---------------------------------------------------------------------------
- Modbus Server
+ Modbus TCP Server
  ---------------------------------------------------------------------------*/
 void modbus_tcp_server(chanend c_modbus,
-                   ethernet_xtcp_ports_t &xtcp_ports,
-                   xtcp_ipconfig_t &ipconfig)
+                       ethernet_xtcp_ports_t &xtcp_ports,
+                       xtcp_ipconfig_t &ipconfig)
 {
   chan c_xtcp[1];
   par

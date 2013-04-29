@@ -9,18 +9,38 @@
 
  ===========================================================================*/
 
+#ifndef __ethernet_conf_h__
+#define __ethernet_conf_h__
+
 /*---------------------------------------------------------------------------
- include files
+ nested include files
  ---------------------------------------------------------------------------*/
-#include "mb_util.h"
+#ifdef __modbus_tcp_conf_h_exists__
+#include "modbus_tcp_conf.h"
+#endif
 
 /*---------------------------------------------------------------------------
  constants
  ---------------------------------------------------------------------------*/
+/* Get where the Ethernet slice is connected on the Slicekit core board and
+ * define appropriate ethernet confs. If nothing is mentioned in the
+ * modbus_tcp_conf.h about ethernet slice location, CIRCLE slot is assumed.
+ */
+#ifdef MODBUS_TCP_ETHERNET_SLOT_SQUARE
+  #define ETHERNET_USE_SQUARE_SLOT
+#endif
 
-/*---------------------------------------------------------------------------
- ports and clocks
- ---------------------------------------------------------------------------*/
+#ifdef MODBUS_TCP_ETHERNET_SLOT_STAR
+  #define ETHERNET_USE_STAR_SLOT
+#endif
+
+#ifdef MODBUS_TCP_ETHERNET_SLOT_TRIANGLE
+  #define ETHERNET_USE_TRIANGLE_SLOT
+#endif
+
+#ifdef MODBUS_TCP_ETHERNET_SLOT_CIRCLE
+  #define ETHERNET_USE_CIRCLE_SLOT
+#endif
 
 /*---------------------------------------------------------------------------
  typedefs
@@ -31,27 +51,13 @@
  ---------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------
- static variables
+ extern variables
  ---------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------
- static prototypes
+ prototypes
  ---------------------------------------------------------------------------*/
 
-/*---------------------------------------------------------------------------
- Access External Device
- ---------------------------------------------------------------------------*/
-unsigned short access_external_device(chanend c_modbus,
-                                      unsigned char fn_code,
-                                      unsigned short address,
-                                      unsigned short value)
-{
-  unsigned short rtnval;
-  c_modbus <: fn_code;
-  c_modbus <: address;
-  c_modbus <: value;
-  c_modbus :> rtnval;
-  return rtnval;
-}
 
+#endif // __ethernet_conf_h__
 /*==========================================================================*/

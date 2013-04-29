@@ -6,15 +6,13 @@
 /*===========================================================================
  Info
  ----
- 1. ``modbus_tcp_parse_request()`` is called by the user application after
- receiving data from the TCP layer.
+ 1. ``modbus_tcp_parse_request()`` is called by the TCP layer.
  2. The data received is parsed for Modbus command.
  3. Appropriate call-backs to the user application is made based on the command
  received.
- 4. After getting the data from call-back functions, a Modbus TCP response
- replaces the contents of ``data`` (the TCP data).
- 5. ``modbus_tcp_parse_request()`` exits. The user application must now send
- this response data over TCP to the host.
+ 4. After getting the data from application, a Modbus TCP response replaces the
+ contents of ``data`` (the TCP data).
+ 5. ``modbus_tcp_parse_request()`` exits. The TCP layer can now send ``data``.
  
  ===========================================================================*/
 

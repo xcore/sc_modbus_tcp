@@ -36,6 +36,23 @@
  prototypes
  ---------------------------------------------------------------------------*/
 
+/*==========================================================================*/
+/**
+ *  Send commands to the top level application in order to read/write device
+ *  values. This function will send:
+ *  unsigned char: Modbus command
+ *  unsigned short: Address to read/write
+ *  unsigned short: Value to write (sent always. on read command, this is 0)
+ *
+ *  And expects:
+ *  unsigned short: value (for Read) or status (for write)
+ *
+ *  \param c_modbus   Channel connecting to top leel application
+ *  \param fn_code    Modbus Function code
+ *  \param address    Device address
+ *  \param value      Value
+ *  \return           Value/Status
+ **/
 unsigned short access_external_device(chanend c_modbus,
                                       unsigned char fn_code,
                                       unsigned short address,

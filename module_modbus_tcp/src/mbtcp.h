@@ -16,6 +16,7 @@
  nested include files
  ---------------------------------------------------------------------------*/
 #include "xtcp_client.h"
+#include <xccompat.h>
 
 /*---------------------------------------------------------------------------
  constants
@@ -51,6 +52,7 @@ void mbtcp_init(chanend c_tcp_svr);
  *  Handle Events
  *
  *  \param c_tcp_svr    Channel connecting to XTCP
+ *  \param c_modbus     Channel connecting to top level application
  *  \param conn         Connection
  *  \return             None
  **/

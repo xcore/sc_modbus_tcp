@@ -102,57 +102,148 @@ static int read_temperature(r_i2c &p_i2c)
   return temperature;
 }
 
+/*==========================================================================*/
+/**
+ *  Read coil values. LEDs on the GPIO slice are imitated as coils. In the
+ *  Simply Modbus PC application: First Coil 1, Number of Coils 4
+ *  Output status byte is of format:
+ *  +----+----+----+----+------+------+------+------+
+ *  | XX | XX | XX | XX | LED3 | LED2 | LED1 | LED0 |
+ *  +----+----+----+----+------+------+------+------+
+ *
+ *  Where,
+ *  Bit0 is LED0 status (1 is OFF and 0 is ON)
+ *  Bit1 is LED1 status (1 is OFF and 0 is ON)
+ *  Bit2 is LED2 status (1 is OFF and 0 is ON)
+ *  Bit3 is LED3 status (1 is OFF and 0 is ON)
+ *  XX is Don't care.
+ *  Other coil addresses return as device failures (no LEDs at such addresses)
+ *  Device failure return value for coil = MODBUS_READ_1BIT_ERROR
+ *  (present in mb_codes.h)
+ *
+ *  \param address    address of coil to read
+ *  \return           coil value
+ **/
 static unsigned short read_coil(unsigned short address)
 {
-  /**
-   * In Modbus Conf file: Coil start is 0 and End is 3
-   * LEDs on the GPIO slice are imitated as coils.
-   * Modbus Coil Address 0 = LED0
-   * Modbus Coil Address 1 = LED1
-   * Modbus Coil Address 2 = LED2
-   * Modbus Coil Address 3 = LED3
-   * Other coil addresses return 0 (device failures)
-   */
-  int led_status;
+  unsigned led_status;
+
+  if(address > 3)
+  {
+    return MODBUS_READ_1BIT_ERROR;
+  }
 
   p_led :> led_status;
-  if(led_status & (1 << address)) { return 1; }
+  if(led_status & (1 << address))
+  {
+    return 1;
+  }
   return 0;
 }
 
+/*==========================================================================*/
+/**
+ *  Read Discrete Input values. Buttons on the GPIO slice are imitated as
+ *  discrete inputs. In the Simply Modbus PC application: First Coil 1,
+ *  Number of Coils 2. Output status byte is of format:
+ *  +----+----+----+----+----+----+-----+-----+
+ *  | XX | XX | XX | XX | XX | XX | SW2 | SW1 |
+ *  +----+----+----+----+----+----+-----+-----+
+ *
+ *  Where,
+ *  Bit0 is SW1 status (1 is Button Pressed)
+ *  Bit1 is SW2 status (1 is Button Pressed)
+ *  XX is Don't care.
+ *  Other addresses return as device failures (no Buttons at such addresses)
+ *  Device failure return value for discrete input = MODBUS_READ_1BIT_ERROR
+ *  (present in mb_codes.h)
+ *
+ *  \param address    address of discrete input to read
+ *  \return           discrete input value
+ **/
 static unsigned short read_discrete_input(unsigned short address)
 {
-  /*
-   * Button SW1 is at address 0
-   * Button SW2 is at address 1
-   */
   unsigned short rtnval = button_status;
+
+  if(address > 1)
+  {
+    return MODBUS_READ_1BIT_ERROR;
+  }
+
   button_status &= ~(1 << address);
-  if(rtnval & (1 << address)) { return 1; }
+  if(rtnval & (1 << address))
+  {
+    return 1;
+  }
   return 0;
 }
 
+/*==========================================================================*/
+/**
+ *  Read Holding Register values. Not implemented in this app.
+ *  All addresses return as device failures (no Holding Register at such
+ *  addresses)
+ *  Device failure return value for Holding register = MODBUS_READ_16BIT_ERROR
+ *  (present in mb_codes.h)
+ *
+ *  \param address    address of Holding Register to read
+ *  \return           Holding Register value
+ **/
 static unsigned short read_holding_register(unsigned short address)
 {
   return MODBUS_READ_16BIT_ERROR;
 }
 
+/*==========================================================================*/
+/**
+ *  Read Input Register values. The temperature sensor present on the GPIO slice
+ *  is imitated as an Input register. Temperature from this sensor is read using
+ *  I2C. This sensor is connected to Input Register address 0 of the Modbus.
+ *  All other addresses return as device failures (no Input Register at such
+ *  addresses)
+ *  Device failure return value for Input Register = MODBUS_READ_16BIT_ERROR
+ *  (present in mb_codes.h)
+ *
+ *  \param address    address of Input Register to read
+ *  \return           Input Register value
+ **/
 static unsigned short read_input_register(unsigned short address)
 {
-  return (unsigned short)(read_temperature(p_i2c));
+  if(address == 0)
+  {
+    return (unsigned short)(read_temperature(p_i2c));
+  }
+  else
+  {
+    return MODBUS_READ_16BIT_ERROR;
+  }
 }
 
-static unsigned short write_single_coil(unsigned short address, unsigned short value)
+/*==========================================================================*/
+/**
+ *  Write to coils. LEDs on the GPIO slice are imitated as coils which would
+ *  just toggle its state (ON/OFF) on this command. In the Simply Modbus Write
+ *  window:
+ *  Modbus First Register 1 = LED0
+ *  Modbus First Register 2 = LED1
+ *  Modbus First Register 3 = LED2
+ *  Modbus First Register 4 = LED3
+ *  Other coil addresses return as device failures (no LEDs at such addresses)
+ *  Device failure return value for write coil = MODBUS_WRITE_ERROR
+ *  (present in mb_codes.h)
+ *
+ *  \param address    address of coil to toggle
+ *  \return           write status
+ **/
+static unsigned short write_single_coil(unsigned short address,
+                                        unsigned short value)
 {
-  /**
-   * Write Single coil actually toggles the state of LED (imitated as coils).
-   * Modbus Coil Address 0 = LED0
-   * Modbus Coil Address 1 = LED1
-   * Modbus Coil Address 2 = LED2
-   * Modbus Coil Address 3 = LED3
-   * Other coil addresses return 0 (device failures)
-   */
   int led_status;
+
+  if(address > 3)
+  {
+    return MODBUS_WRITE_ERROR;
+  }
 
   p_led :> led_status;
 
@@ -169,15 +260,35 @@ static unsigned short write_single_coil(unsigned short address, unsigned short v
   return 1;
 }
 
-static unsigned short write_single_register(unsigned short address, unsigned short value)
+/*==========================================================================*/
+/**
+ *  Write to Register. Not implemented in this app.
+ *  All addresses return as device failures (no Register at such addresses)
+ *  Device failure return value for Write register = MODBUS_WRITE_ERROR
+ *  (present in mb_codes.h)
+ *
+ *  \param address    address of Register to write to
+ *  \return           write status
+ **/
+static unsigned short write_single_register(unsigned short address,
+                                            unsigned short value)
 {
-  // Not implemented, return 0
   return MODBUS_WRITE_ERROR;
 }
 
-/*---------------------------------------------------------------------------
- Device Application
- ---------------------------------------------------------------------------*/
+/*==========================================================================*/
+/**
+ *  Device Application. This task maps Modbus commands to external devices such
+ *  as coils / registers. In this Demo application:
+ *  Coils are mapped to LEDs on the GPIO Slice.
+ *  Discrete Input are mapped to Buttons on the GPIO Slice.
+ *  Holding Registers are mapped to Temperature sensor on the GPIO Slice.
+ *  Input Register are not mapped.
+ *
+ *  \param c_modbus   channel to receive Modbus commands from the
+ *                    modbus_tcp_server
+ *  \return           None
+ **/
 static void device_application(chanend c_modbus)
 {
   int scan_button_flag = 1;

@@ -23,6 +23,7 @@
 /*---------------------------------------------------------------------------
  typedefs
  ---------------------------------------------------------------------------*/
+/* Modbus Master commands */
 enum modbus_cmd
 {
   MODBUS_READ_COIL              = 0x01,
@@ -33,6 +34,7 @@ enum modbus_cmd
   MODBUS_WRITE_SINGLE_REGISTER  = 0x06,
 };
 
+/* Modbus Read/write operation errors */
 enum modbus_error
 {
   MODBUS_READ_1BIT_ERROR  = 2,

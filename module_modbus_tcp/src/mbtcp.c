@@ -13,7 +13,6 @@
  include files
  ---------------------------------------------------------------------------*/
 #include "mbtcp.h"
-#include "xtcp_client.h"
 #include "mbtcp_parser.h"
 #include <string.h>
 #include <print.h>

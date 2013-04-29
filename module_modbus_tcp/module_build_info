@@ -1,5 +1,5 @@
 DEPENDENT_MODULES = module_xtcp module_ethernet_board_support
-OPTIONAL_HEADERS += modbus_conf.h
+OPTIONAL_HEADERS += modbus_tcp_conf.h
 
 # You can set flags specifically for your module by using the MODULE_XCC_FLAGS
 # variable. So the following
