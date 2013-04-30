@@ -23,23 +23,32 @@
 /*---------------------------------------------------------------------------
  typedefs
  ---------------------------------------------------------------------------*/
-/* Modbus Master commands */
+/**
+ * \enum modbus_cmd
+ * \brief Modbus Commands currently supported by the modbus_tcp_server
+ */
 enum modbus_cmd
 {
-  MODBUS_READ_COIL              = 0x01,
-  MODBUS_READ_DISCRETE_INPUT    = 0x02,
-  MODBUS_READ_HOLDING_REGISTER  = 0x03,
-  MODBUS_READ_INPUT_REGISTER    = 0x04,
-  MODBUS_WRITE_SINGLE_COIL      = 0x05,
-  MODBUS_WRITE_SINGLE_REGISTER  = 0x06,
+  MODBUS_READ_COIL              = 0x01, /**<Modbus Read Coil */
+  MODBUS_READ_DISCRETE_INPUT    = 0x02, /**<Modbus Read Discrete Input */
+  MODBUS_READ_HOLDING_REGISTER  = 0x03, /**<Modbus Read Holding Register */
+  MODBUS_READ_INPUT_REGISTER    = 0x04, /**<Modbus Read Input Register */
+  MODBUS_WRITE_SINGLE_COIL      = 0x05, /**<Modbus Write Single Coil */
+  MODBUS_WRITE_SINGLE_REGISTER  = 0x06, /**<Modbus Write Single Register */
 };
 
-/* Modbus Read/write operation errors */
+/**
+ * \enum modbus_error
+ * \brief Modbus Error Status due to Read / Write operation performed by the
+ *        application.
+ */
 enum modbus_error
 {
-  MODBUS_READ_1BIT_ERROR  = 2,
-  MODBUS_READ_16BIT_ERROR = 0,
-  MODBUS_WRITE_ERROR      = 0,
+  MODBUS_READ_1BIT_ERROR  = 2,  /**<Application fails to read coil (or) discrete
+                                input*/
+  MODBUS_READ_16BIT_ERROR = 0,  /**<Application fails to read registers */
+  MODBUS_WRITE_OK         = 1,  /**<Application Writes successfully */
+  MODBUS_WRITE_ERROR      = 0,  /**<Application fails to write */
 };
 
 /*---------------------------------------------------------------------------

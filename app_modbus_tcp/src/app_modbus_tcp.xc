@@ -126,19 +126,22 @@ static int read_temperature(r_i2c &p_i2c)
  **/
 static unsigned short read_coil(unsigned short address)
 {
-  unsigned led_status;
+  unsigned char led_status = 0;
+  unsigned char tmp;
 
-  if(address > 3)
-  {
-    return MODBUS_READ_1BIT_ERROR;
-  }
+  if(address > 3) { return MODBUS_READ_1BIT_ERROR; }
 
   p_led :> led_status;
-  if(led_status & (1 << address))
+  p_led <: led_status;
+
+  if(led_status & (0x01 << address))
   {
     return 1;
   }
-  return 0;
+  else
+  {
+    return 0;
+  }
 }
 
 /*==========================================================================*/
@@ -257,7 +260,7 @@ static unsigned short write_single_coil(unsigned short address,
   }
 
   p_led <: led_status;
-  return 1;
+  return MODBUS_WRITE_OK;
 }
 
 /*==========================================================================*/
@@ -406,7 +409,7 @@ int main(void)
   {
     // The Modbus server
     on tile[1]: modbus_tcp_server(c_modbus, xtcp_ports, ipconfig);
-    // The webserver, GPIO handler
+    // The device application
     on tile[1]: device_application(c_modbus);
   } // par
 

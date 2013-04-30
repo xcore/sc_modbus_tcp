@@ -76,7 +76,7 @@ Now that the application has been compiled, the next step is to run it on the Sl
    :align: center
 
 
-- Send a command as 'Read Coil' (load read_coil config from $\\app_modbus_tcp\\simplymodbus_config\\). This will read the status of GPIO LED on XA-SK-GPIO slice card. To read the status of the other three LEDs, change the ``First Coil`` value in the SimplyModbus application to appropriate values. The result is a byte containing the status of LEDs arranged as bit positions:
+- Send a command as 'Read Coil' (load read_coil config from $\\app_modbus_tcp\\simplymodbus_config\\). This will read the status of 4 GPIO LEDs on XA-SK-GPIO slice card. The first LED is LED0 on the XA-SK-GPIO slice and the fourth LED is LED3 XA-SK-GPIO slice. The result is a byte containing the status of LEDs arranged as bit positions:
 
    +----+----+----+----+------+------+------+------+
    | XX | XX | XX | XX | LED3 | LED2 | LED1 | LED0 |
@@ -100,7 +100,7 @@ Now that the application has been compiled, the next step is to run it on the Sl
    :align: center
    
 
-- Send a 'Read Discrete Input' (load config from $\\app_modbus_tcp\\simplymodbus_config\\) command to read button status on the XA-SK-GPIO slice card. The result is a byte of format:
+- Send a 'Read Discrete Input' (load config from $\\app_modbus_tcp\\simplymodbus_config\\) command to read button status on the XA-SK-GPIO slice card. It would read status of SW1 and SW2 on XA-SK-GPIO slice. The result is a byte of format:
 
    +----+----+----+----+----+----+-----+-----+
    | XX | XX | XX | XX | XX | XX | SW2 | SW1 |
@@ -108,8 +108,8 @@ Now that the application has been compiled, the next step is to run it on the Sl
 
    Where,
    
-   * Bit0 is SW1 status (1 is Button Pressed and released)
-   * Bit1 is SW2 status (1 is Button Pressed and released)
+   * Bit0 is SW1 status (1 was Button Pressed and released since last read)
+   * Bit1 is SW2 status (1 was Button Pressed and released since last read)
    * XX is Don't care.
  
 .. figure:: images/read_dis_ip.png

@@ -197,7 +197,6 @@ static int modbus_read_data(chanend c_modbus,
                                                 MODBUS_READ_COIL,
                                                 (i+address),
                                                 0);
-
             if (read_value == 1u)
             {
               data[index_status + index_byte] |= (1u << index_bit);

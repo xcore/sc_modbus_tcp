@@ -21,3 +21,11 @@ Server functions
 ----------------
 
 .. doxygenfunction:: modbus_tcp_server
+
+Modbus commands & Status
+------------------------
+
+.. doxygenenum:: modbus_cmd
+
+.. doxygenenum:: modbus_error
+
