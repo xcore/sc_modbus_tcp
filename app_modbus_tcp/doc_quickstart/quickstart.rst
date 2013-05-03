@@ -253,10 +253,14 @@ For example, when a Function code '7' (Read Exception Status) is sent to the sla
 .. figure:: images/ill_fn.png
    :align: center
 
+   Illegal Function Code Screenshot   
+
 Another example where the number of coils in 'Read Coil' (function code '1') command is set to 80000 and is sent to Modbus slave. The slave returns an 'Illegal Data Value' error response as that number of coils is not supported by the slave.
 
 .. figure:: images/ill_data.png
    :align: center
+
+   Illegal Data Value Screenshot   
 
 
 Next Steps
