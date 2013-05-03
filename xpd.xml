@@ -42,6 +42,11 @@
         <uri>https://github.com/xcore/sc_otp.git</uri>
         <version>1.0.0rc0</version>
     </dependency>
+    <dependency repo = "sc_util">
+        <githash>1ed35a50e2d9cc98fcff4c7cc3fb399385ec5d70</githash>
+        <uri>git://github.com/xcore/sc_util.git</uri>
+        <version>1.0.1rc0</version>
+    </dependency>
     <description>Modbus TCP component</description>
     <docdir>module_modbus_tcp/doc</docdir>
     <docdir>app_modbus_tcp/doc_quickstart</docdir>
