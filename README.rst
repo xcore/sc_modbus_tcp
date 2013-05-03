@@ -1,9 +1,10 @@
 Modbus TCP Repository
 .....................
 
-:Latest release: unreleased
+:Latest release: 0.0.1beta0
 :Maintainer: vinithmundhra
-:Description: Modbus TCP Server component
+:Description: Modbus TCP component
+
 
 Firmware Overview
 =================
@@ -27,5 +28,9 @@ Issues may be submitted via the Issues tab in this github repo. Response to any 
 Required software (dependencies)
 ================================
 
-- sc_ethernet git://github.com/xcore/sc_ethernet.git
-- sc_xtcp git://github.com/xcore/sc_xtcp.git
+  * sc_xtcp (https://github.com/xcore/sc_xtcp.git)
+  * sc_ethernet (https://github.com/xcore/sc_ethernet.git)
+  * sc_i2c (https://github.com/xcore/sc_i2c.git)
+  * sc_otp (https://github.com/xcore/sc_otp.git)
+  * sc_util (git://github.com/xcore/sc_util.git)
+
