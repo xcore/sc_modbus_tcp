@@ -1,7 +1,7 @@
 Modbus TCP Repository
 .....................
 
-:Latest release: 0.0.1beta2
+:Latest release: 0.0.1beta3
 :Maintainer: vinithmundhra
 :Description: Modbus TCP component
 

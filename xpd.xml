@@ -56,7 +56,8 @@
     <partnumber>XM-002916-DH</partnumber>
     <release parenthash = "c6a617c504923fa8176783e4fbab62e1f781d4dd" version = "0.0.1beta0" githash = "f1523986ad58da245c769c7bcb22604ba71f7150"></release>
     <release parenthash = "8b417391715b13435fa0be29657f79c63f545b8c" version = "0.0.1beta1" githash = "3373bae4a958cb3eeef343f2929e9272804ea962"></release>
-    <release parenthash = "47faf8ed9e337f556749464acfb88b805ee5a8c3" version = "0.0.1beta2"></release>
+    <release parenthash = "47faf8ed9e337f556749464acfb88b805ee5a8c3" version = "0.0.1beta2" githash = "aadc7998ae80469abb7d55be476292c4044ee313"></release>
+    <release parenthash = "fc0faa71e28af137fac6cc635a4e3c6797fa0d6c" version = "0.0.1beta3"></release>
     <subpartnumber>XM-002917-SM</subpartnumber>
     <vendor>XMOS</vendor>
     <xcore_repo>sc_modbus_tcp.git</xcore_repo>
