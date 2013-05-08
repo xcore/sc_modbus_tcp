@@ -61,22 +61,6 @@ For help in using xTIMEcomposer, try the xTIMEcomposer tutorial, which you can f
 
 Note that the Developer Column in the xTIMEcomposer on the right hand side of your screen provides information on the xSOFTip components you are using. Select the module_modbus_tcp component in the Project Explorer, and you will see its description together with API documentation. Having done this, click the `back` icon until you return to this quick start guide within the Developer Column.
 
-Using Command Line
-------------------
-
-The following xSOFTip are required alongside ``sc_modbus_tcp`` in the project workspace. Make sure you have them; either using ``git clone`` or downloading from the mentioned link.
-
-- sc_ethernet https://github.com/xcore/sc_ethernet.git
-- sc_i2c https://github.com/xcore/sc_i2c.git
-- sc_otp https://github.com/xcore/sc_otp.git
-- sc_util https://github.com/xcore/sc_util.git
-- sc_xtcp https://github.com/xcore/sc_xtcp.git
-- xcommon https://github.com/xcore/xcommon.git
-
-To build from the command line, change to `app_modbus_tcp` directory and execute the command::
-
-   xmake
-
 Run the Application
 +++++++++++++++++++
 
@@ -88,13 +72,6 @@ Now that the application has been compiled, the next step is to run it on the Sl
 - Select the file ``app_modbus_tcp.xc`` in the ``app_modbus_tcp`` project from the Project Explorer.
 - Click on the ``Run`` icon (the white arrow in the green circle).
 - At the ``Select Device`` dialog select ``XMOS XTAG-2 connect to L1[0..1]`` and click ``OK``.
-
-Using Command Line
-------------------
-
-To run the ``app_modbus_tcp`` on xCORE multicore microcontroller, change to `($\\app_modbus_tcp\\bin)` directory and execute the command::
-
-   xrun app_modbus_tcp.xe
 
 The Demo
 ---------
@@ -111,15 +88,15 @@ This demo issues commands to read: coils, input register and discrete inputs and
    ================  ====================
 
 
-After issuing the command to run the ``app_modbus_tcp`` on xCORE multicore microcontroller, the console output should print an IP address.
+Once the run has started the console output should print an IP address::
 
-   Example: IP address: 169.254.231.27
+   IP address: 169.254.231.27
 
 On your PC, open the SimplyModbus Client from (Start -> All Programs -> Simply Modbus -> Simply Modbus TCP) and adjust to following settings:
 
-   - mode = TCP
-   - IP Address = user ip address provided in app_modbus_tcp.xc
-   - Port = 502 (Modbus Listening Port)
+   * mode = TCP
+   * Set the IP address to the address printed out as per above.
+   * Port = 502 (Modbus Listening Port)
 
 Alternatively, click on ``RESTORE CFG`` and change to `($\\app_modbus_tcp\\simplymodbus_config\\)`. Select the `read_coil.csv` configuration file and click ``CONNECT``.
 
@@ -140,16 +117,12 @@ Switch ON all LEDs using `Write Coil` command. You can issue `write` commands us
 
    SimplyModbus WRITE interface
 
-
-
 Click on ``RESTORE CFG`` (in the SimplyModbus Write interface window) and change to `($\\app_modbus_tcp\\simplymodbus_config\\)`. Select the `write_coil.csv` configuration file. This will load the WRITE_SINGLE_COIL command in the SimplyModbus write window with `First Register = 1` and `# values to write = 1`. This prepares a `Write Single Coil` command to be issued to the Modbus slave to Write a coil (LED) at address indicated in `First Register` box. Note that, First Register = 1 is address 0, First Register = 2 is address 1 and so on. In this demo, toggle the states of all four LEDs one by one by changing the `First Register` value and clicking on ``SEND``. Notice how the LED state changes on the XA-SK-GPIO slice card.
 
 .. figure:: images/write_led_0123.png
    :align: center
 
    Toggle LED states
-
-
 
 Read LED status
 ~~~~~~~~~~~~~~~
@@ -246,7 +219,7 @@ Now press Button SW1 & SW2 on the XA-SK-GPIO slice card. In the SimplyModbus mai
 Other commands
 ~~~~~~~~~~~~~~
 
-User can change appropriate values of address and data based on their application. Any unsupported Function code or data range will result in exception response.
+The values of address and data may be changed based on the application. Any unsupported Function code or data range will result in exception response.
 
 For example, when a Function code '7' (Read Exception Status) is sent to the slave, the slave returns an 'Illegal Function Code' error response as the slave does not support this command.
 
@@ -266,20 +239,9 @@ Another example where the number of coils in 'Read Coil' (function code '1') com
 Next Steps
 ++++++++++
 
-.. list-table:: Project structure
-  :header-rows: 1
+   * Try connecting the coils and registers in the app code to show other values. For example, a Read register command from Modbus Master should always read a specific address from the memory.
+   * Review the modbus application code, in ``app_modbus_tcp``, and review the code in the modbus module itself, ``module_modbus_tcp. Refer to the documentation for the modubus component module to review the API details and usage.
+   * The ``module_modbus_tcp`` has an in-built Ethernet and TCP Server components. It uses the ``sc_ethernet`` and ``sc_xtcp`` xSOFTip to receive Modbus commands over TCP. Review the documentation for the ``Layer 2 Ethernet MAC`` and ``Ethernet/TCP Module`` items in the xSOFTip Browser pane.
+   * Review other industrial communications IP, including the ``CAN Bus Module`` and the ``RS485 Transceiver Component`` in the xSOFTip Browser.
 
-  * - Project
-    - File
-    - Description
-  * - module_modbus_tcp
-    - ``modbus_tcp.h``
-    - Header file containing the APIs for the Modbus TCP component
-  * - app_modbus_tcp
-    - ``app_modbus_tcp.xc``
-    - File containing main() function for the application. Also contains Modbus call-back functions implementation.
-
-The ``module_modbus_tcp`` has an in-built Ethernet and TCP Server components. It uses the ``sc_ethernet`` and ``sc_xtcp`` xSOFTip to receive Modbus commands over TCP.
-
-Try connecting the coils and registers to show other values. For example, a Read register command from Modbus Master should always read a specific address from the memory.
 
