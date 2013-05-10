@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <xpd>
     <components>
-        <component description = "Demonstrates Modbus slave with GPIO slice card" type = "demoCode" scope = "Example" path = "app_modbus_tcp" local = "false" id = "app_modbus_tcp" name = "app_modbus_tcp">
+        <component description = "Demonstrates Modbus slave with GPIO slice card" type = "demoCode" scope = "Example" path = "app_modbus_tcp" local = "false" id = "app_modbus_tcp" name = "Modbus TCP GPIO Demo Application">
             <board>XA-SK-E100</board>
             <board>XA-SK-GPIO</board>
             <componentDependency>module_i2c_master</componentDependency>
@@ -14,7 +14,7 @@
             <componentDependency>module_xtcp</componentDependency>
             <keyword>ModbusTCP</keyword>
         </component>
-        <component name = "module_modbus_tcp" type = "component" buildresults_path = "module_modbus_tcp/.module_modbus_tcp.buildinfo" scope = "General Use" path = "module_modbus_tcp" metainfo_path = "module_modbus_tcp/module_modbus_tcp.metainfo" local = "false" id = "module_modbus_tcp" description = "Modbus TCP Server component">
+        <component name = "Modbus TCP Server Component" type = "component" buildresults_path = "module_modbus_tcp/.module_modbus_tcp.buildinfo" scope = "General Use" path = "module_modbus_tcp" metainfo_path = "module_modbus_tcp/module_modbus_tcp.metainfo" local = "false" id = "module_modbus_tcp" description = "Modbus TCP Server component">
             <board>XA-SK-E100</board>
             <componentDependency>module_ethernet_smi</componentDependency>
             <componentDependency>module_xtcp</componentDependency>
@@ -57,7 +57,7 @@
     <release parenthash = "c6a617c504923fa8176783e4fbab62e1f781d4dd" version = "0.0.1beta0" githash = "f1523986ad58da245c769c7bcb22604ba71f7150"></release>
     <release parenthash = "8b417391715b13435fa0be29657f79c63f545b8c" version = "0.0.1beta1" githash = "3373bae4a958cb3eeef343f2929e9272804ea962"></release>
     <release parenthash = "47faf8ed9e337f556749464acfb88b805ee5a8c3" version = "0.0.1beta2" githash = "aadc7998ae80469abb7d55be476292c4044ee313"></release>
-    <release parenthash = "fc0faa71e28af137fac6cc635a4e3c6797fa0d6c" version = "0.0.1beta3"></release>
+    <release parenthash = "fc0faa71e28af137fac6cc635a4e3c6797fa0d6c" version = "0.0.1beta3" githash = "2b6b308005403386290d0580798cf9980b65e605"></release>
     <subpartnumber>XM-002917-SM</subpartnumber>
     <vendor>XMOS</vendor>
     <xcore_repo>sc_modbus_tcp.git</xcore_repo>
