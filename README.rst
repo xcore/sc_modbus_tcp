@@ -1,9 +1,9 @@
 Modbus TCP Repository
 .....................
 
-:Latest release: 0.0.1beta4
-:Maintainer: vinithmundhra
-:Description: Modbus TCP component
+:Latest release: 0.0.1beta5
+:Maintainer: XMOS
+:Description: Modbus TCP (Slave) component
 
 
 Firmware Overview
