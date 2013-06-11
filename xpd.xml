@@ -47,12 +47,13 @@
         <uri>git://github.com/xcore/sc_util.git</uri>
         <version>1.0.1rc0</version>
     </dependency>
-    <description>Modbus TCP component</description>
+    <exclude_dir>app_modbus_tcp</exclude_dir>
+    <description>Modbus TCP (Slave) component</description>
     <docdir>module_modbus_tcp/doc</docdir>
     <docdir>app_modbus_tcp/doc_quickstart</docdir>
     <location>https://github.com/xcore/sc_modbus_tcp.git</location>
     <name>sc_modbus_tcp</name>
-    <maintainer>vinithmundhra</maintainer>
+    <maintainer>XMOS</maintainer>
     <partnumber>XM-002916-DH</partnumber>
     <release parenthash = "c6a617c504923fa8176783e4fbab62e1f781d4dd" version = "0.0.1beta0" githash = "f1523986ad58da245c769c7bcb22604ba71f7150"></release>
     <release parenthash = "8b417391715b13435fa0be29657f79c63f545b8c" version = "0.0.1beta1" githash = "3373bae4a958cb3eeef343f2929e9272804ea962"></release>
