@@ -6,7 +6,7 @@ Modbus TCP Server (Slave) Component
 :keywords: ModbusTCP
 :boards: XA-SK-E100
 
-The Modbus TCP component has an in-built TCP server which can receive Modbus TCP commands from a TCP client (Modbus Master). Based on the commands issued by the Modbus Master, the Modbus TCP component requests appropriate data from the user application. It then sends this data back to the Modbus Master (TCP client) and waits for next command. Master functionality is not supported. see this spiel when 
+The Modbus TCP component has an in-built TCP server which can receive Modbus TCP commands from a TCP client (Modbus Master). Based on the commands issued by the Modbus Master, the Modbus TCP component requests appropriate data from the user application. It then sends this data back to the Modbus Master (TCP client) and waits for next command. Master functionality is not supported. 
 
 Key Features
 ------------
