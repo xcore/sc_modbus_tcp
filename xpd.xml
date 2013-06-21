@@ -47,7 +47,7 @@
     <release parenthash = "47faf8ed9e337f556749464acfb88b805ee5a8c3" version = "0.0.1beta2" githash = "aadc7998ae80469abb7d55be476292c4044ee313"></release>
     <release parenthash = "fc0faa71e28af137fac6cc635a4e3c6797fa0d6c" version = "0.0.1beta3" githash = "2b6b308005403386290d0580798cf9980b65e605"></release>
     <release parenthash = "2b3dc1eb2fb17b2b206c69d3c920658e868667ce" version = "0.0.1beta4" githash = "e737026587aff4b0dd6d206face733946b4c2f8e"></release>
-    <release parenthash = "6c0643809371ab88eca72615c8e9df263418655a" version = "0.0.1beta5"></release>
+    <release parenthash = "6c0643809371ab88eca72615c8e9df263418655a" version = "0.0.1beta5" githash = "048fd5980911bb9b6267877c32c15b9cdcff7857"></release>
     <subpartnumber>XM-002917-SM</subpartnumber>
     <vendor>XMOS</vendor>
     <xcore_repo>sc_modbus_tcp.git</xcore_repo>
