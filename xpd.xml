@@ -36,7 +36,6 @@
     </dependency>
     <description>Modbus TCP (Slave) component</description>
     <docdir>module_modbus_tcp/doc</docdir>
-    <docdir>app_modbus_tcp/doc_quickstart</docdir>
     <exclude_dir>app_modbus_tcp</exclude_dir>
     <location>https://github.com/xcore/sc_modbus_tcp.git</location>
     <name>sc_modbus_tcp</name>
