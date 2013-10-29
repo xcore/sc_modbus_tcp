@@ -42,7 +42,7 @@
  *  Parses Modbus commands, does a requests device from user application for
  *  values and forms Modbus TCP response. The requests are sent over c_modbus.
  *
- *  \param c_modbus   channel connecting to top level application
+ *  \param c_modbus   channel connecting to top-level application
  *  \param data       data received from the TCP layer
  *  \param len        length of data received
  *  \return           length of Modbus TCP response

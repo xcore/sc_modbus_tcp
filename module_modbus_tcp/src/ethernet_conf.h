@@ -22,9 +22,9 @@
 /*---------------------------------------------------------------------------
  constants
  ---------------------------------------------------------------------------*/
-/* Get where the Ethernet slice is connected on the Slicekit core board and
- * define appropriate ethernet confs. If nothing is mentioned in the
- * modbus_tcp_conf.h about ethernet slice location, CIRCLE slot is assumed.
+/* Get where the Ethernet slice is connected on the sliceKIT core board and
+ * define appropriate Ethernet confs. If nothing is mentioned in the
+ * modbus_tcp_conf.h about Ethernet slice location, CIRCLE slot is assumed.
  */
 #ifdef MODBUS_TCP_ETHERNET_SLOT_SQUARE
   #define ETHERNET_USE_SQUARE_SLOT

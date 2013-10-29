@@ -62,7 +62,7 @@
  *  After receiving request data from user application, it sends the response
  *  back to Modbus master over TCP layer.
  *
- *  \param c_modbus   Channel conneting to top level application
+ *  \param c_modbus   Channel connecting to top-level application
  *  \param xtcp_ports Ethernet ports to use
  *  \param ipconfig   IP configuration to use
  *  \return None

@@ -38,7 +38,7 @@
 
 /*==========================================================================*/
 /**
- *  Send commands to the top level application in order to read/write device
+ *  Send commands to the top-level application in order to read/write device
  *  values. This function will send:
  *  unsigned char: Modbus command
  *  unsigned short: Address to read/write
@@ -47,7 +47,7 @@
  *  And expects:
  *  unsigned short: value (for Read) or status (for write)
  *
- *  \param c_modbus   Channel connecting to top leel application
+ *  \param c_modbus   Channel connecting to top-level application
  *  \param fn_code    Modbus Function code
  *  \param address    Device address
  *  \param value      Value

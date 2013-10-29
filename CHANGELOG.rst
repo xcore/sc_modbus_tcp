@@ -1,5 +1,11 @@
-Modbus TCP Components Change Log
-================================
+Modbus TCP component change log
+===============================
+
+1.0.1
+-----
+
+Document updates
+
 
 1.0.0
 -----
