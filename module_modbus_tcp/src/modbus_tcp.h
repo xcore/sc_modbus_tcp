@@ -42,23 +42,23 @@
 
 /*==========================================================================*/
 /**
- *  Modbus TCP Server. This Modbus Slave task must be called from the main 
- *  user application. It instantiates Ethernet and TCP server components to 
- *  receive Modbus TCP commands (from a Modbus Master - a TCP client) over 
+ *  Modbus TCP Server. This Modbus Slave task must be called from the main
+ *  user application. It instantiates Ethernet and TCP server components to
+ *  receive Modbus TCP commands (from a Modbus Master - a TCP client) over
  *  the TCP layer.
  *
  *  It processes Modbus commands and requests user application for data. These
- *  requests to user are made over ``c_modbus``. The data in c_modbus is of 
+ *  requests to user are made over ``c_modbus``. The data in c_modbus is of
  *  the following format:
- *  
+ *
  *  It sends:
  *  unsigned char: Modbus command
  *  unsigned short: Address to read/write
  *  unsigned short: Value to write (sent always. on read command, this is 0)
  *
  *  And expects:
- *  unsigned short: value (for Read) or status (for write) 
- *  
+ *  unsigned short: value (for Read) or status (for write)
+ *
  *  After receiving request data from user application, it sends the response
  *  back to Modbus master over TCP layer.
  *

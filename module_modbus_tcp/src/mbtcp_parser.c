@@ -13,7 +13,7 @@
  4. After getting the data from application, a Modbus TCP response replaces the
  contents of ``data`` (the TCP data).
  5. ``modbus_tcp_parse_request()`` exits. The TCP layer can now send ``data``.
- 
+
  ===========================================================================*/
 
 /*---------------------------------------------------------------------------
