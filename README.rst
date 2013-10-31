@@ -29,9 +29,9 @@ Required software (dependencies)
 ================================
 
   * sc_xtcp (https://github.com/xcore/sc_xtcp.git)
-  * sc_ethernet (git@github.com:xcore/sc_ethernet.git)
+  * sc_ethernet (https://github.com/xcore/sc_ethernet.git)
   * sc_i2c (https://github.com/xcore/sc_i2c.git)
-  * sc_slicekit_support (origin)
-  * sc_otp (git@github.com:xcore/sc_otp)
-  * sc_util (git@github.com:xcore/sc_util)
+  * sc_otp (https://github.com/xcore/sc_otp.git)
+  * sc_util (https://github.com/xcore/sc_util.git)
+  * sc_slicekit_support (https://github.com/xcore/sc_slicekit_support.git)
 
