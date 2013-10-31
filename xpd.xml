@@ -3,25 +3,25 @@
     <components>
         <component name = "Modbus TCP Server (Slave) Component" type = "component" buildresults_path = "module_modbus_tcp/.module_modbus_tcp.buildinfo" scope = "Early Development" path = "module_modbus_tcp" metainfo_path = "module_modbus_tcp/module_modbus_tcp.metainfo" local = "false" id = "module_modbus_tcp" description = "Modbus TCP Server (Slave) component">
             <board>XA-SK-E100</board>
-            <componentDependency repo = "git://github.com/xcore/sc_otp" version = "1.0.0">module_otp_board_info</componentDependency>
             <componentDependency repo = "git://github.com/davelxmos/sc_xtcp" version = "3.1.4">module_xtcp</componentDependency>
-            <componentDependency version = "2.2.5">module_ethernet_smi</componentDependency>
-            <componentDependency repo = "git://github.com/xcore/sc_ethernet.git" version = "2.2.5">module_ethernet</componentDependency>
-            <componentDependency repo = "git://github.com/xcore/sc_util" version = "1.0.3">module_locks</componentDependency>
             <componentDependency repo = "git://github.com/xcore/sc_ethernet.git" version = "2.2.5">module_ethernet_board_support</componentDependency>
+            <componentDependency repo = "git://github.com/xcore/sc_otp" version = "1.0.0">module_otp_board_info</componentDependency>
+            <componentDependency version = "2.2.5">module_ethernet_smi</componentDependency>
+            <componentDependency repo = "git://github.com/xcore/sc_util" version = "1.0.3">module_locks</componentDependency>
+            <componentDependency repo = "git://github.com/xcore/sc_ethernet.git" version = "2.2.5">module_ethernet</componentDependency>
             <keyword>ModbusTCP</keyword>
         </component>
         <component description = "Demonstrates Modbus slave with GPIO sliceCARD" type = "demoCode" scope = "Example" path = "app_modbus_tcp" local = "false" id = "app_modbus_tcp" name = "Modbus TCP Demo Application">
             <board>XA-SK-E100</board>
             <board>XA-SK-GPIO</board>
-            <componentDependency repo = "git://github.com/xcore/sc_ethernet.git" version = "2.2.5">module_ethernet_board_support</componentDependency>
+            <componentDependency repo = "git://github.com/xcore/sc_otp" version = "1.0.0">module_otp_board_info</componentDependency>
+            <componentDependency repo = "git://github.com/davelxmos/sc_xtcp" version = "3.1.4">module_xtcp</componentDependency>
+            <componentDependency version = "1.0.1">module_modbus_tcp</componentDependency>
+            <componentDependency repo = "git://github.com/xcore/sc_util" version = "1.0.3">module_locks</componentDependency>
             <componentDependency repo = "git://github.com/xcore/sc_i2c" version = "2.2.0">module_i2c_master</componentDependency>
             <componentDependency version = "2.2.5">module_ethernet_smi</componentDependency>
-            <componentDependency repo = "git://github.com/xcore/sc_util" version = "1.0.3">module_locks</componentDependency>
+            <componentDependency repo = "git://github.com/xcore/sc_ethernet.git" version = "2.2.5">module_ethernet_board_support</componentDependency>
             <componentDependency repo = "git://github.com/xcore/sc_ethernet.git" version = "2.2.5">module_ethernet</componentDependency>
-            <componentDependency repo = "git://github.com/xcore/sc_otp" version = "1.0.0">module_otp_board_info</componentDependency>
-            <componentDependency version = "1.0.0">module_modbus_tcp</componentDependency>
-            <componentDependency repo = "git://github.com/davelxmos/sc_xtcp" version = "3.1.4">module_xtcp</componentDependency>
             <keyword>ModbusTCP</keyword>
         </component>
     </components>
@@ -55,7 +55,8 @@
     <release parenthash = "6c0643809371ab88eca72615c8e9df263418655a" version = "0.0.1beta5" githash = "048fd5980911bb9b6267877c32c15b9cdcff7857"></release>
     <release parenthash = "dadb84e6af2b7a72b19dd6111f950aa394393112" version = "1.0.0rc0" githash = "1a95b4318190e6d3e79da4ee348e8e7d3e206209"></release>
     <release parenthash = "9127cc6ebcebd69520395b3414874f9104b05071" version = "1.0.0rc1" githash = "26940be64876020c5c13f30726af9821fe1c0cb0"></release>
-    <release parenthash = "f88c9c8256940eab1918030a72d94dde30c5fac9" version = "1.0.1beta0"></release>
+    <release parenthash = "f88c9c8256940eab1918030a72d94dde30c5fac9" version = "1.0.1beta0" githash = "cf88e5511e3227677f047728e03fed23ad4cbd1d"></release>
+    <release parenthash = "8c6dd4f6ae2455328c90e6c292218a57a3c257d0" version = "1.0.1beta1"></release>
     <subpartnumber>XM-002917-SM</subpartnumber>
     <vendor>XMOS</vendor>
     <version_defines></version_defines>
