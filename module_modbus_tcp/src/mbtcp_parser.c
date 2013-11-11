@@ -90,13 +90,13 @@ static uint8_t modbus_exception_code;
 static uint8_t check_range(int value, uint16_t limit_lo, uint16_t limit_hi);
 
 /** =========================================================================
- *  get_byte_count
+ *  modbus_get_byte_count
  *
  *  \param qty      quantity
  *  \return char    number of bytes required
  *
  **/
-static uint8_t get_byte_count(uint16_t qty);
+static uint8_t modbus_get_byte_count(uint16_t qty);
 
 /** =========================================================================
  *  modbus_read_data
@@ -452,7 +452,6 @@ int modbus_tcp_parse_request(chanend c_modbus, char *data, int len)
       // Check if quantity is within range
       if (qty == 0x0000 || qty == 0xFF00)
       {
-        uint16_t index_status = MODBUS_SIZE_MBAP + 1u;
         uint16_t read_value = 0;
 
         // Get number of bytes
@@ -495,7 +494,6 @@ int modbus_tcp_parse_request(chanend c_modbus, char *data, int len)
       // Check if quantity is within range
       if (check_range(qty, MODBUS_QUANTITY_START, MODBUS_QUANTITY_16BIT_END))
       {
-        uint16_t index_status = MODBUS_SIZE_MBAP + 1u;
         uint16_t read_value = 0;
 
         // Get number of bytes

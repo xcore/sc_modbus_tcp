@@ -127,7 +127,6 @@ static int read_temperature(r_i2c &p_i2c)
 static unsigned short read_coil(unsigned short address)
 {
   unsigned char led_status = 0;
-  unsigned char tmp;
 
   if(address > 3) { return MODBUS_READ_1BIT_ERROR; }
 
